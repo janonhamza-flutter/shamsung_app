@@ -1,0 +1,42 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../../../core/route/app_routes.dart';
+
+class SplashController extends GetxController
+    with GetSingleTickerProviderStateMixin {
+  late AnimationController animationController;
+  late Animation<double> scaleAnimation;
+  late Animation<double> fadeAnimation;
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 5),
+    );
+
+    scaleAnimation = Tween<double>(begin: 0.5, end: 1).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeOutBack),
+    );
+
+    fadeAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(animationController);
+
+    animationController.forward();
+  }
+
+  void navigateNext() {
+    Get.toNamed(AppRoutes.login);
+  }
+
+  @override
+  void onClose() {
+    animationController.dispose();
+    super.onClose();
+  }
+}
