@@ -14,14 +14,14 @@ class AuthRepository {
 
   /// SIGN UP
 
-  Future signUp( {
+  Future signUp({
     required String firstName,
     required String lastName,
     required String phone,
     required String email,
     required String password,
     required String passwordConfirmation,
-    required String birthdate, 
+    required String birthdate,
   }) async {
     return await dioService.postData(
       endpoint: "/customer/register",
