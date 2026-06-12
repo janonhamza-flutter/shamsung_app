@@ -47,49 +47,46 @@ class SignupController extends GetxController {
   /// SIGN UP
   /// =========================
 
-Future<void> signUp() async {
-  if (!formKey.currentState!.validate()) {
-    return;
-  }
-
-  if (passwordController.text != confirmPasswordController.text) {
-    AppSnackbar.error("Passwords do not match");
-    return;
-  }
-
-  try {
-    final response = await authRepository.signUp(
-      firstName: firstNameController.text,
-      lastName: lastNameController.text,
-      phone: phoneController.text,
-      email: emailController.text,
-      password: passwordController.text,
-      passwordConfirmation: confirmPasswordController.text,
-      birthdate: birthdateController.text,
-    );
-
-    print(response.data);
-
-    AppSnackbar.success(
-      response.data['message'],
-    );
-
-    Get.offAllNamed(AppRoutes.login);
-
-  } on DioException catch (e) {
-    print(e.response?.data);
-
-    String errorMessage = "Something went wrong";
-
-    if (e.response?.data != null) {
-      errorMessage = e.response?.data['message'] ?? errorMessage;
+  Future<void> signUp() async {
+    if (!formKey.currentState!.validate()) {
+      return;
     }
 
-    AppSnackbar.error(errorMessage);
+    if (passwordController.text != confirmPasswordController.text) {
+      AppSnackbar.error("Passwords do not match");
+      return;
+    }
 
-  } catch (e) {
-    print(e);
-    AppSnackbar.error("Something went wrong");
+    try {
+      final response = await authRepository.signUp(
+        firstName: firstNameController.text,
+        lastName: lastNameController.text,
+        phone: phoneController.text,
+        email: emailController.text,
+        password: passwordController.text,
+        passwordConfirmation: confirmPasswordController.text,
+        birthdate: birthdateController.text,
+      );
+
+      print(response.data);
+
+      AppSnackbar.success(response.data['message']);
+
+      Get.offAllNamed(AppRoutes.login);
+    } on DioException catch (e) {
+      print(e.response?.data);
+
+      String errorMessage = "Something went wrong";
+
+      if (e.response?.data != null) {
+        errorMessage = e.response?.data['message'] ?? errorMessage;
+      }
+
+      AppSnackbar.error(errorMessage);
+    } catch (e) {
+      print(e);
+      AppSnackbar.error("Something went wrong");
+    }
   }
 }
 
@@ -100,6 +97,49 @@ Future<void> signUp() async {
 
 
 
+
+
+  /*Future<void> signUp() async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
+
+    if (passwordController.text != confirmPasswordController.text) {
+      AppSnackbar.error("Passwords do not match");
+      return;
+    }
+
+    try {
+      final response = await authRepository.signUp(
+        firstName: firstNameController.text,
+        lastName: lastNameController.text,
+        phone: phoneController.text,
+        email: emailController.text,
+        password: passwordController.text,
+        passwordConfirmation: confirmPasswordController.text,
+        birthdate: birthdateController.text,
+      );
+
+      print(response.data);
+
+      AppSnackbar.success(response.data['message']);
+
+      Get.offAllNamed(AppRoutes.login);
+    } on DioException catch (e) {
+      print(e.response?.data);
+
+      String errorMessage = "Something went wrong";
+
+      if (e.response?.data != null) {
+        errorMessage = e.response?.data['message'] ?? errorMessage;
+      }
+
+      AppSnackbar.error(errorMessage);
+    } catch (e) {
+      print(e);
+      AppSnackbar.error("Something went wrong");
+    }
+  }
 
   /*Future<void> signUp() async {
     if (!formKey.currentState!.validate()) {
@@ -166,6 +206,5 @@ Future<void> signUp() async {
 
     //   birthdateController.dispose();
 
-    super.onClose();
-  }
-}
+    super.onClose();*/
+  

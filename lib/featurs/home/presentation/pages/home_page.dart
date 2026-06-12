@@ -19,7 +19,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.darkBlue,
 
-      bottomNavigationBar: const BottomNavBar(),
+      bottomNavigationBar: const BottomNavBar(currentIndex: 0),
 
       body: SafeArea(
         child: Padding(

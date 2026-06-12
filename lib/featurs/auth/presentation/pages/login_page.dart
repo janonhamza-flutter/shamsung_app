@@ -113,10 +113,10 @@ class LoginPage extends StatelessWidget {
                       );
                     }),
 
-                    const SizedBox(height: AppSizes.space20),
+                    const SizedBox(height: AppSizes.space70),
 
                     /// FORGET PASSWORD
-                    Align(
+                    /* Align(
                       alignment: Alignment.centerLeft,
 
                       child: TextButton(
@@ -130,7 +130,7 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(height: AppSizes.space50),
+                    const SizedBox(height: AppSizes.space50),*/
 
                     /// ======================
                     /// LOGIN BUTTON

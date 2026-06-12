@@ -27,34 +27,36 @@ class SplashPage extends StatelessWidget {
             builder: (context, child) {
               return FadeTransition(
                 opacity: controller.fadeAnimation,
-        
+
                 child: ScaleTransition(
                   scale: controller.scaleAnimation,
-        
+
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        
+
                     children: [
                       const SizedBox(height: 40),
-        
+
                       // Logo + Title
                       Column(
                         children: [
                           Image.asset(AppAssets.logo, width: 140),
-        
+
                           const SizedBox(height: 25),
-        
+
                           const Text(
                             AppStrings.appName,
                             style: AppTextStyles.splashTitle,
                           ),
                         ],
                       ),
-        
+
                       // Button
                       Padding(
-                        padding: const EdgeInsets.only(bottom: AppSizes.space50),
-        
+                        padding: const EdgeInsets.only(
+                          bottom: AppSizes.space50,
+                        ),
+
                         child: GetStartedButton(
                           onPressed: () {
                             controller.navigateNext();

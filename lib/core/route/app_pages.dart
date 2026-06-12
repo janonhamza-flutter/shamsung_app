@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:shamsoung/featurs/profile/presentation/bindings/profile_binding.dart';
+import 'package:shamsoung/featurs/profile/presentation/pages/profile_page.dart';
 
 import '../../featurs/auth/presentation/bindings/auth_binding.dart';
 import '../../featurs/auth/presentation/pages/login_page.dart';
@@ -40,6 +42,11 @@ class AppPages {
       page: () => HomePage(),
 
       binding: HomeBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.profile,
+      page: () => ProfilePage(),
+      binding: ProfileBinding(),
     ),
   ];
 }
