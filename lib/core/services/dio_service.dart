@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 
+import 'storage_service.dart';
+
 class DioService {
   late Dio dio;
-
+  final StorageService storage = StorageService();
   DioService() {
     // انشاء اوبجكت من dio بدير كل الاتصالات بالسيرفر
     dio = Dio(
@@ -19,6 +21,7 @@ class DioService {
         headers: {
           "Accept": "application/json",
           "Content-Type": "application/json",
+          "Authorization": "Bearer ${storage.getToken()}",
         },
       ),
     );

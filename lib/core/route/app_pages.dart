@@ -4,10 +4,12 @@ import 'package:shamsoung/featurs/profile/presentation/pages/profile_page.dart';
 
 import '../../featurs/auth/presentation/bindings/auth_binding.dart';
 import '../../featurs/auth/presentation/pages/login_page.dart';
+import '../../featurs/auth/presentation/pages/otp_page.dart';
+import '../../featurs/auth/presentation/pages/send_otp_page.dart';
 import '../../featurs/auth/presentation/pages/signup_page.dart';
 import '../../featurs/home/presentation/bindings/home_binding.dart';
 import '../../featurs/home/presentation/pages/home_page.dart';
-import '../../featurs/splash/bindings/splash_binding.dart';
+import '../../featurs/splash/presentation/bindings/splash_binding.dart';
 import '../../featurs/splash/presentation/pages/splash_page.dart';
 import 'app_routes.dart';
 
@@ -28,6 +30,15 @@ class AppPages {
 
       binding: AuthBinding(),
     ),
+
+    GetPage(
+      name: AppRoutes.sendOtp,
+      page: () => SendOtpPage(),
+      binding: AuthBinding(),
+    ),
+
+    GetPage(name: AppRoutes.otp, page: () => OtpPage(), binding: AuthBinding()),
+
     GetPage(
       name: AppRoutes.signup,
 

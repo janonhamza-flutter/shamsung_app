@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../controller/profile_controller.dart';
+
 class ProfileLogoutSection extends StatelessWidget {
-  const ProfileLogoutSection({super.key});
+  ProfileLogoutSection({super.key});
+  final ProfileController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +19,9 @@ class ProfileLogoutSection extends StatelessWidget {
             style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
           ),
 
-          onTap: () {},
+          onTap: () {
+            controller.logout();
+          },
         ),
 
         const SizedBox(height: 15),
@@ -41,7 +46,11 @@ class ProfileLogoutSection extends StatelessWidget {
 
               confirmTextColor: Colors.white,
 
-              onConfirm: () {},
+              onConfirm: () {
+                Get.back();
+
+                controller.deleteAccount();
+              },
             );
           },
         ),

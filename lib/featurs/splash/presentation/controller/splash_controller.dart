@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/route/app_routes.dart';
+import '../../../../core/services/storage_service.dart';
 
 class SplashController extends GetxController
     with GetSingleTickerProviderStateMixin {
   late AnimationController animationController;
   late Animation<double> scaleAnimation;
   late Animation<double> fadeAnimation;
+  final StorageService storage = StorageService();
 
   @override
   void onInit() {
@@ -31,7 +33,12 @@ class SplashController extends GetxController
   }
 
   void navigateNext() {
-    Get.toNamed(AppRoutes.login);
+    // Get.toNamed(AppRoutes.login);
+    if (storage.isLoggedIn()) {
+      Get.offAllNamed(AppRoutes.home);
+    } else {
+      Get.offAllNamed(AppRoutes.sendOtp);
+    }
   }
 
   @override

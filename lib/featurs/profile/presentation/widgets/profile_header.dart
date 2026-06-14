@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../../core/theme/app_colors.dart';
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key});
+  final String name;
+  final String email;
+
+  const ProfileHeader({super.key, required this.name, required this.email});
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +21,8 @@ class ProfileHeader extends StatelessWidget {
 
         const SizedBox(height: 15),
 
-        const Text(
-          "Ahmad Ali",
+        Text(
+          name,
           style: TextStyle(
             color: Colors.white,
             fontSize: 22,
@@ -29,10 +32,7 @@ class ProfileHeader extends StatelessWidget {
 
         const SizedBox(height: 5),
 
-        const Text(
-          "ahmad@gmail.com",
-          style: TextStyle(color: Colors.white70, fontSize: 16),
-        ),
+        Text(email, style: TextStyle(color: Colors.white70, fontSize: 16)),
       ],
     );
   }
