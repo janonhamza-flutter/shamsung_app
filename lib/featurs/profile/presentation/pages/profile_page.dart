@@ -8,7 +8,9 @@ import 'package:shamsoung/featurs/profile/presentation/widgets/profile_tile.dart
 import '../../../../../core/constants/app_sizes.dart';
 import '../../../../../core/theme/app_colors.dart';
 
+import '../../../../core/route/app_routes.dart';
 import '../controller/profile_controller.dart';
+import 'about_page.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
@@ -29,15 +31,18 @@ class ProfilePage extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Obx(
-                  () => ProfileHeader(
+                Obx(() {
+                  if (controller.customer.value == null) {
+                    return const CircularProgressIndicator();
+                  }
+                  return ProfileHeader(
                     name: controller.customer.value == null
                         ? ""
                         : "${controller.customer.value!.firstName} ${controller.customer.value!.lastName}",
 
                     email: controller.customer.value?.email ?? "",
-                  ),
-                ),
+                  );
+                }),
 
                 const SizedBox(height: 30),
 
@@ -55,6 +60,12 @@ class ProfilePage extends StatelessWidget {
                 ProfileTile(
                   icon: Icons.notifications_none,
                   title: "Notifications",
+                  onTap: () {},
+                ),
+
+                ProfileTile(
+                  icon: Icons.notifications_none,
+                  title: "Language",
                   onTap: () {},
                 ),
 
@@ -78,7 +89,9 @@ class ProfilePage extends StatelessWidget {
                 ProfileTile(
                   icon: Icons.info_outline,
                   title: "About App",
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(Get.toNamed(AppRoutes.about));
+                  },
                 ),
 
                 const SizedBox(height: 30),

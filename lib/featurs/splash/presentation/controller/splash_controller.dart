@@ -33,8 +33,12 @@ class SplashController extends GetxController
   }
 
   void navigateNext() {
-    // Get.toNamed(AppRoutes.login);
-    if (storage.isLoggedIn()) {
+    print("onboardingSeen = ${storage.isOnboardingSeen()}");
+
+    print("loggedIn = ${storage.isLoggedIn()}");
+    if (!storage.isOnboardingSeen()) {
+      Get.offAllNamed(AppRoutes.onboarding);
+    } else if (storage.isLoggedIn()) {
       Get.offAllNamed(AppRoutes.home);
     } else {
       Get.offAllNamed(AppRoutes.sendOtp);
@@ -43,7 +47,7 @@ class SplashController extends GetxController
 
   @override
   void onClose() {
-    animationController.dispose();
-    super.onClose();
+    //  animationController.dispose();
+    //super.onClose();
   }
 }

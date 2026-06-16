@@ -15,6 +15,21 @@ class AppStrings {
 
   static const getStarted = "Get Started";
 
+  // Onboarding 1
+  static const onboardingTitle1 = "Welcome to Shamsung";
+  static const onboardingSubtitle1 =
+      "Fast and reliable maintenance services at your fingertips.";
+
+  // Onboarding 2
+  static const onboardingTitle2 = "Track Your Orders";
+  static const onboardingSubtitle2 =
+      "Follow your maintenance requests and service progress easily.";
+
+  // Onboarding 3
+  static const onboardingTitle3 = "Get Started";
+  static const onboardingSubtitle3 =
+      "Book services, manage your account, and enjoy a seamless experience.";
+
   /// =========================
   /// AUTH
   /// =========================
@@ -104,4 +119,14 @@ class AppStrings {
   static const loginFailed = "Login failed";
 
   static const signupFailed = "Signup failed";
+
+  /// ========================
+  /// delete account
+  /// ========================
+  static const deleteAccount = "Delete Account";
+  static const sureDelete = "Are you sure you want to delete your account?";
+
+  static const confirmDelete = "Delete";
+
+  static const cancelDelete = "Cancel";
 }

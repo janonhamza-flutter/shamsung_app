@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shamsoung/core/constants/app_strings.dart';
 
 import '../controller/profile_controller.dart';
 
@@ -14,8 +15,8 @@ class ProfileLogoutSection extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.logout, color: Colors.orange),
 
-          title: const Text(
-            "Logout",
+          title: Text(
+            AppStrings.logout,
             style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
           ),
 
@@ -29,27 +30,27 @@ class ProfileLogoutSection extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.delete_forever, color: Colors.red),
 
-          title: const Text(
-            "Delete Account",
+          title: Text(
+            AppStrings.deleteAccount,
             style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
           ),
 
           onTap: () {
             Get.defaultDialog(
-              title: "Delete Account",
+              title: AppStrings.deleteAccount,
 
-              middleText: "Are you sure you want to delete your account?",
+              middleText: AppStrings.sureDelete,
 
-              textConfirm: "Delete",
+              textConfirm: AppStrings.confirmDelete,
 
-              textCancel: "Cancel",
+              textCancel: AppStrings.cancelDelete,
 
               confirmTextColor: Colors.white,
 
-              onConfirm: () {
+              onConfirm: () async {
                 Get.back();
 
-                controller.deleteAccount();
+                await controller.deleteAccount();
               },
             );
           },

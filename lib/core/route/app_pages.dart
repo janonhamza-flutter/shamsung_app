@@ -9,6 +9,9 @@ import '../../featurs/auth/presentation/pages/send_otp_page.dart';
 import '../../featurs/auth/presentation/pages/signup_page.dart';
 import '../../featurs/home/presentation/bindings/home_binding.dart';
 import '../../featurs/home/presentation/pages/home_page.dart';
+import '../../featurs/onboarding/presentation/bindings/onboarding_binding.dart';
+import '../../featurs/onboarding/presentation/pages/onboarding_page.dart';
+import '../../featurs/profile/presentation/pages/about_page.dart';
 import '../../featurs/splash/presentation/bindings/splash_binding.dart';
 import '../../featurs/splash/presentation/pages/splash_page.dart';
 import 'app_routes.dart';
@@ -21,6 +24,12 @@ class AppPages {
       page: () => SplashPage(),
 
       binding: SplashBinding(),
+    ),
+
+    GetPage(
+      name: AppRoutes.onboarding,
+      page: () => OnboardingPage(),
+      binding: OnboardingBinding(),
     ),
 
     GetPage(
@@ -59,5 +68,7 @@ class AppPages {
       page: () => ProfilePage(),
       binding: ProfileBinding(),
     ),
+
+    GetPage(name: AppRoutes.about, page: () => const AboutPage()),
   ];
 }

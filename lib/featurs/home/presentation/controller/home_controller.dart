@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:shamsoung/core/services/storage_service.dart';
 
 class HomeController extends GetxController {
+  // final orders = dummyOrders;
   RxInt currentIndex = 0.obs;
   final StorageService storage = StorageService();
 
