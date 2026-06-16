@@ -8,4 +8,5 @@ class AppRoutes {
   static const home = "/home";
   static const profile = '/profile';
   static const about = '/about';
+  static const createRequest = "/maintenance-requests";
 }
