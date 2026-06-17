@@ -8,7 +8,7 @@ List<OrderModel> orders = [
 
     status: "Repairing",
 
-    image: "assets/images/iphone11.png",
+    image: "assets/images/a12.jpg",
   ),
 
   OrderModel(
@@ -18,7 +18,7 @@ List<OrderModel> orders = [
 
     status: "Pending",
 
-    image: "assets/images/iphone11.png",
+    image: "assets/images/s23.jpg",
   ),
 
   OrderModel(
@@ -28,6 +28,6 @@ List<OrderModel> orders = [
 
     status: "Completed",
 
-    image: "assets/images/iphone11.png",
+    image: "assets/images/tablet.jpg",
   ),
 ];

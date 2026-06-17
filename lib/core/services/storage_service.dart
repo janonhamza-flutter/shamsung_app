@@ -3,6 +3,14 @@ import 'package:get_storage/get_storage.dart';
 class StorageService {
   final GetStorage _box = GetStorage();
 
+  void saveOnboardingSeen() {
+    _box.write("onboardingSeen", true);
+  }
+
+  bool isOnboardingSeen() {
+    return _box.read("onboardingSeen") ?? false;
+  }
+
   // =========================
   // TOKEN
   // =========================

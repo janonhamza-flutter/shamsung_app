@@ -1,4 +1,5 @@
 import '../../../../core/services/dio_service.dart';
+import '../models/otp_response_model.dart';
 
 class AuthRepository {
   final DioService dioService = DioService();
@@ -10,6 +11,29 @@ class AuthRepository {
       endpoint: "/customer/login",
       data: {"login": login, "password": password},
     );
+  }
+
+  ///  send otp
+
+  Future sendOtp({required String phone}) async {
+    return await dioService.postData(
+      endpoint: "/customer/send-otp",
+      data: {"phone": phone},
+    );
+  }
+
+  /// verify otp
+
+  Future<OtpResponseModel> verifyOtp({
+    required String phone,
+    required String code,
+  }) async {
+    final response = await dioService.postData(
+      endpoint: "/customer/verify-otp",
+      data: {"phone": phone, "code": code},
+    );
+
+    return OtpResponseModel.fromJson(response.data);
   }
 
   /// SIGN UP

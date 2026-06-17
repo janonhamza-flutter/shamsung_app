@@ -27,6 +27,15 @@ class SignupController extends GetxController {
 
   final formKey = GlobalKey<FormState>();
 
+  late String phone;
+
+  @override
+  void onInit() {
+    phone = Get.arguments ?? "";
+
+    super.onInit();
+  }
+
   /// =========================
   /// DIO SERVICE
   /// =========================

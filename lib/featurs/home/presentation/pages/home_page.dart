@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
 import '../../../../../core/theme/app_colors.dart';
 
+import '../../../../core/route/app_routes.dart';
 import '../../data/dummy/dummy_orders.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/home_header.dart';
@@ -33,6 +35,33 @@ class HomePage extends StatelessWidget {
               /// HEADER
               /// =========================
               const HomeHeader(),
+
+              const SizedBox(height: AppSizes.space30),
+
+              /// create request
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(top: 15),
+
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.toNamed(AppRoutes.createRequest);
+                  },
+
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.green,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+
+                  child: const Text(
+                    "Create Maintenance Request",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
 
               const SizedBox(height: AppSizes.space30),
 
