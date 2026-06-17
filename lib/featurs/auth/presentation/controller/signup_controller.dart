@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/route/app_routes.dart';
+import '../../../../core/services/storage_service.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../data/repositories/auth_repository.dart';
 
@@ -24,6 +25,8 @@ class SignupController extends GetxController {
   final confirmPasswordController = TextEditingController();
 
   final birthdateController = TextEditingController();
+
+  final StorageService storageService = StorageService();
 
   final formKey = GlobalKey<FormState>();
 
@@ -77,11 +80,15 @@ class SignupController extends GetxController {
         birthdate: birthdateController.text,
       );
 
-      print(response.data);
+      final token = response.data["data"]["token"];
+
+      storageService.saveToken(token);
+
+      print("TOKEN SAVED = ${storageService.getToken()}");
 
       AppSnackbar.success(response.data['message']);
 
-      Get.offAllNamed(AppRoutes.login);
+      Get.offAllNamed(AppRoutes.home);
     } on DioException catch (e) {
       print(e.response?.data);
 

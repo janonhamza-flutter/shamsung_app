@@ -6,6 +6,7 @@ class DioService {
   late Dio dio;
   final StorageService storage = StorageService();
   DioService() {
+    print("TOKEN = ${storage.getToken()}");
     // انشاء اوبجكت من dio بدير كل الاتصالات بالسيرفر
     dio = Dio(
       // اعدادت عامة لكل requests

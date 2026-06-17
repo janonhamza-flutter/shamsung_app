@@ -29,7 +29,7 @@ class BottomNavBar extends StatelessWidget {
             break;
 
           case 1:
-            //   Get.toNamed(AppRoutes.createRequest);
+            Get.offNamed(AppRoutes.myRequests);
             break;
 
           case 2:
