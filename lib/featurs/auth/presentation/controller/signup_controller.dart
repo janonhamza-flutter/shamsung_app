@@ -81,7 +81,7 @@ class SignupController extends GetxController {
 
       AppSnackbar.success(response.data['message']);
 
-      Get.offAllNamed(AppRoutes.login);
+      Get.offAllNamed(AppRoutes.home);
     } on DioException catch (e) {
       print(e.response?.data);
 

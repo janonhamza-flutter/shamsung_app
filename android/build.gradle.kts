@@ -2,6 +2,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven("https://dl.google.com/dl/android/maven2")
     }
 }
 

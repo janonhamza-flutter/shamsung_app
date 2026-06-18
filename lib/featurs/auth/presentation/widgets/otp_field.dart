@@ -17,7 +17,7 @@ class OtpField extends StatelessWidget {
 
       length: 5,
 
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.phone,
 
       animationType: AnimationType.fade,
 

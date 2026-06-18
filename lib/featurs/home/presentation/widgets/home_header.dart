@@ -26,7 +26,11 @@ class HomeHeader extends StatelessWidget {
           children: [
             Text(
               "Hello, ${controller.customerName}",
-              style: AppTextStyles.authTitle,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
 
             SizedBox(height: AppSizes.space5),
