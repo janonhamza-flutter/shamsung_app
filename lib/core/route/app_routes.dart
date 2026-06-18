@@ -9,4 +9,6 @@ class AppRoutes {
   static const profile = '/profile';
   static const about = '/about';
   static const createRequest = "/maintenance-requests";
+  static const myRequests = "/my-requests";
+  static const requestDetails = "/request-details";
 }

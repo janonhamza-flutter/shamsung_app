@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/route/app_routes.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../data/repositories/maintenance_repository.dart';
 
@@ -18,16 +19,19 @@ class CreateRequestController extends GetxController {
     try {
       isLoading.value = true;
 
-      await repository.createRequest(
+      final response = await repository.createRequest(
         shopId: selectedShopId.value,
         deviceModel: deviceController.text.trim(),
         problemDescription: problemController.text.trim(),
       );
 
+      print("STATUS = ${response.statusCode}");
+      print("BODY = ${response.data}");
       AppSnackbar.success("Maintenance request submitted successfully");
 
-      Get.back();
+      Get.offNamed(AppRoutes.myRequests);
     } catch (e) {
+      print("ERROR = $e");
       AppSnackbar.error("Failed to create request");
     } finally {
       isLoading.value = false;
