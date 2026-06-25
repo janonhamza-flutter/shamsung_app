@@ -35,11 +35,11 @@ class AppValidator {
     if (value.isEmpty) {
       return "Mobile is required";
     }
-    if (!value.startsWith("09")) {
-      return "Mobile number should start with 09";
-    }
-    if (value.length < 10) {
-      return "Mobile number should be only 10 digits";
+    // if (!value.startsWith("09")) {
+    //   return "Mobile number should start with 09";
+    // }
+    if (value.length < 13) {
+      return "Mobile number should be only 13 digits";
     }
 
     return null;

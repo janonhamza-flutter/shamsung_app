@@ -13,12 +13,10 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       backgroundColor: AppColors.blue,
-
       selectedItemColor: Colors.white,
-
       unselectedItemColor: Colors.grey,
-
       currentIndex: currentIndex,
+      type: BottomNavigationBarType.fixed,
 
       onTap: (index) {
         if (index == currentIndex) return;
@@ -27,22 +25,25 @@ class BottomNavBar extends StatelessWidget {
           case 0:
             Get.offNamed(AppRoutes.home);
             break;
-
           case 1:
             Get.offNamed(AppRoutes.myRequests);
             break;
-
           case 2:
-            Get.toNamed(AppRoutes.profile);
+            Get.offNamed(AppRoutes.store);
+            break;
+          case 3:
+            Get.offNamed(AppRoutes.profile);
             break;
         }
       },
 
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
-
         BottomNavigationBarItem(icon: Icon(Icons.build), label: ""),
-
+        BottomNavigationBarItem(
+          icon: Icon(Icons.storefront_outlined),
+          label: "",
+        ),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
       ],
     );

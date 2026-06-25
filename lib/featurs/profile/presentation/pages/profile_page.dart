@@ -10,7 +10,6 @@ import '../../../../../core/theme/app_colors.dart';
 
 import '../../../../core/route/app_routes.dart';
 import '../controller/profile_controller.dart';
-import 'about_page.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
@@ -22,7 +21,7 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.darkBlue,
 
-      bottomNavigationBar: const BottomNavBar(currentIndex: 2),
+      bottomNavigationBar: const BottomNavBar(currentIndex: 3),
 
       body: SafeArea(
         child: Padding(
@@ -90,7 +89,7 @@ class ProfilePage extends StatelessWidget {
                   icon: Icons.info_outline,
                   title: "About App",
                   onTap: () {
-                    Get.to(Get.toNamed(AppRoutes.about));
+                    Get.toNamed(AppRoutes.about);
                   },
                 ),
 

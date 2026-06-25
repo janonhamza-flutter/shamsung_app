@@ -19,7 +19,7 @@ class CreateRequestPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(20),
 
-        child: Column(
+        child: ListView(
           children: [
             TextField(
               controller: controller.deviceController,

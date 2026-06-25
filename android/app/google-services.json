@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "822735011402",
+    "project_id": "shamsoung-d2d58",
+    "storage_bucket": "shamsoung-d2d58.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:822735011402:android:36d83f495957abb1f970b3",
+        "android_client_info": {
+          "package_name": "com.example.shamsoung"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvqD3yCpHxv9InLx8LTHEeU1ShYTd2pUU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
