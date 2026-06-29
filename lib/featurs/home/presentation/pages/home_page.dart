@@ -63,6 +63,37 @@ class HomePage extends StatelessWidget {
                 ),
               ),
 
+              const SizedBox(height: 12),
+
+              /// consultation button
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Get.toNamed(AppRoutes.consultations);
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppColors.green, width: 1.5),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  icon: const Icon(
+                    Icons.chat_bubble_outline,
+                    color: AppColors.green,
+                    size: 20,
+                  ),
+                  label: const Text(
+                    "Ask AI / Technician",
+                    style: TextStyle(
+                      color: AppColors.green,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+
               const SizedBox(height: AppSizes.space30),
 
               /// =========================

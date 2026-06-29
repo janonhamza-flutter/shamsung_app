@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/services/dio_service.dart';
 import '../models/accessory_model.dart';
 import '../models/cart_item_model.dart';
+import '../models/checkout_model.dart';
 
 class StoreRepository {
   final DioService _dioService = DioService();
@@ -150,12 +151,39 @@ class StoreRepository {
     }
   }
 
+  // ── POST /checkout ────────────────────────────────────────────────────────
+  /// [paymentMethod] must be either "cash_on_delivery" or "online"
+  Future<CheckoutResponseModel> checkout({
+    required String paymentMethod,
+  }) async {
+    try {
+      final Response response = await _dioService.postData(
+        endpoint: '/checkout',
+        data: {'payment_method': paymentMethod},
+      );
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        final raw = response.data;
+        if (raw is Map<String, dynamic>) {
+          return CheckoutResponseModel.fromJson(raw);
+        }
+        throw Exception('تعذر قراءة بيانات الطلب.');
+      }
+      throw Exception('حدث خطأ غير متوقع.');
+    } on DioException catch (e) {
+      throw _handleError(e, isCheckout: true);
+    } catch (e) {
+      if (e is Exception) rethrow;
+      throw Exception('حدث خطأ: $e');
+    }
+  }
+
   // ── Error handler ─────────────────────────────────────────────────────────
   Exception _handleError(
     DioException e, {
     bool isDetails = false,
     bool isCart = false,
     bool isDeleteCart = false,
+    bool isCheckout = false,
   }) {
     final code = e.response?.statusCode;
     String? msg;
@@ -166,6 +194,8 @@ class StoreRepository {
 
     if (code == 400 && isCart) {
       return Exception(msg ?? 'المنتج غير متاح أو الكمية المطلوبة غير كافية.');
+    } else if (code == 400 && isCheckout) {
+      return Exception(msg ?? 'السلة فارغة، أضف منتجات أولاً.');
     } else if (code == 401) {
       return Exception('غير مصرح: يرجى تسجيل الدخول مجدداً.');
     } else if (code == 403) {
@@ -176,6 +206,19 @@ class StoreRepository {
           ? Exception('المنتج غير موجود.')
           : Exception('لم يتم العثور على البيانات.');
     } else if (code == 422) {
+      // Extract first validation error message if available
+      try {
+        final body = e.response?.data;
+        if (body is Map) {
+          final errors = body['errors'];
+          if (errors is Map && errors.isNotEmpty) {
+            final firstField = errors.values.first;
+            if (firstField is List && firstField.isNotEmpty) {
+              return Exception(firstField.first.toString());
+            }
+          }
+        }
+      } catch (_) {}
       return Exception(msg ?? 'بيانات غير صالحة.');
     } else if (code == 500) {
       return Exception('خطأ في الخادم، يرجى المحاولة لاحقاً.');

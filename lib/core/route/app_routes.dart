@@ -16,4 +16,13 @@ class AppRoutes {
   static const store = "/store";
   static const accessoryDetails = "/store/details";
   static const cart = "/store/cart";
+  static const checkout = "/store/checkout";
+
+  // Orders
+  static const myOrders = "/my-orders";
+
+  // Consultation
+  static const consultations = "/consultations";
+  static const createConsultation = "/create-consultation";
+  static const consultationChat = "/consultation-chat";
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../../core/route/app_routes.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../controllers/store_controller.dart';
 import '../widgets/cart_item_tile.dart';
@@ -193,7 +194,7 @@ class _CartPageState extends State<CartPage> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () => _showOrderSuccess(context),
+                      onPressed: () => Get.toNamed(AppRoutes.checkout),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.green,
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -217,58 +218,6 @@ class _CartPageState extends State<CartPage> {
           ],
         );
       }),
-    );
-  }
-
-  void _showOrderSuccess(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: AppColors.blue,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: 12),
-            Icon(Icons.check_circle_rounded, color: AppColors.green, size: 72),
-            SizedBox(height: 16),
-            Text(
-              'تم تأكيد الطلب!',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'سنتواصل معك قريباً لتأكيد توصيل طلبك.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white60, fontSize: 14),
-            ),
-            SizedBox(height: 12),
-          ],
-        ),
-        actions: [
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                controller.clearCart();
-                Get.back();
-                Get.back();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.green,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text('حسناً', style: TextStyle(color: Colors.white)),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

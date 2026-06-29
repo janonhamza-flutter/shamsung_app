@@ -88,6 +88,46 @@ class StorageService {
   }
 
   // =========================
+  // CONSULTATION THREADS
+  // =========================
+
+  /// يحفظ رسائل محادثة معينة بـ consultationId
+  void saveThread(int consultationId, List<Map<String, dynamic>> messages) {
+    _box.write('thread_$consultationId', messages);
+  }
+
+  /// يقرأ رسائل محادثة معينة
+  List<Map<String, dynamic>> loadThread(int consultationId) {
+    final data = _box.read('thread_$consultationId');
+    if (data is List) {
+      return data.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+    }
+    return [];
+  }
+
+  /// يمسح thread محادثة معينة
+  void clearThread(int consultationId) {
+    _box.remove('thread_$consultationId');
+  }
+
+  // =========================
+  // HIDDEN CONSULTATION IDs
+  // (استشارات أُنشئت كرسائل إضافية — لا تظهر كـ cards منفصلة)
+  // =========================
+
+  void saveHiddenConsultationIds(Set<int> ids) {
+    _box.write('hiddenConsultationIds', ids.toList());
+  }
+
+  Set<int> loadHiddenConsultationIds() {
+    final data = _box.read('hiddenConsultationIds');
+    if (data is List) {
+      return data.map((e) => e as int).toSet();
+    }
+    return {};
+  }
+
+  // =========================
   // LOGIN CHECK
   // =========================
 

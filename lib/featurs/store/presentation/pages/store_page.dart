@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shamsoung/core/services/storage_service.dart';
 
 import '../../../../../core/route/app_routes.dart';
 import '../../../../../core/theme/app_colors.dart';
@@ -171,6 +172,8 @@ class StorePage extends StatelessWidget {
                   ),
                   itemCount: controller.filteredAccessories.length,
                   itemBuilder: (context, index) {
+                    final StorageService _storage = StorageService();
+                    print("==================${_storage.getToken()}");
                     final item = controller.filteredAccessories[index];
                     return Obx(
                       () => AccessoryCard(

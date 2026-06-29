@@ -1,4 +1,9 @@
 import 'package:get/get.dart';
+import 'package:shamsoung/featurs/consultation/data/models/consultation_model.dart';
+import 'package:shamsoung/featurs/consultation/presentation/bindings/consultation_binding.dart';
+import 'package:shamsoung/featurs/consultation/presentation/pages/consultation_chat_page.dart';
+import 'package:shamsoung/featurs/consultation/presentation/pages/consultation_list_page.dart';
+import 'package:shamsoung/featurs/consultation/presentation/pages/create_consultation_page.dart';
 import 'package:shamsoung/featurs/profile/presentation/bindings/profile_binding.dart';
 import 'package:shamsoung/featurs/profile/presentation/pages/profile_page.dart';
 
@@ -18,9 +23,12 @@ import '../../featurs/onboarding/presentation/pages/onboarding_page.dart';
 import '../../featurs/profile/presentation/pages/about_page.dart';
 import '../../featurs/splash/presentation/bindings/splash_binding.dart';
 import '../../featurs/splash/presentation/pages/splash_page.dart';
+import '../../featurs/orders/presentation/bindings/orders_binding.dart';
+import '../../featurs/orders/presentation/pages/my_orders_page.dart';
 import '../../featurs/store/presentation/bindings/store_binding.dart';
 import '../../featurs/store/presentation/pages/accessory_details_page.dart';
 import '../../featurs/store/presentation/pages/cart_page.dart';
+import '../../featurs/store/presentation/pages/checkout_page.dart';
 import '../../featurs/store/presentation/pages/store_page.dart';
 import 'app_routes.dart';
 
@@ -81,6 +89,35 @@ class AppPages {
       name: AppRoutes.cart,
       page: () => CartPage(),
       binding: StoreBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.checkout,
+      page: () => CheckoutPage(),
+      binding: StoreBinding(),
+    ),
+    // Orders
+    GetPage(
+      name: AppRoutes.myOrders,
+      page: () => MyOrdersPage(),
+      binding: OrdersBinding(),
+    ),
+    // Consultation
+    GetPage(
+      name: AppRoutes.consultations,
+      page: () => const ConsultationListPage(),
+      binding: ConsultationBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.createConsultation,
+      page: () => const CreateConsultationPage(),
+      binding: ConsultationBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.consultationChat,
+      page: () => ConsultationChatPage(
+        initialConsultation: Get.arguments as ConsultationModel?,
+      ),
+      binding: ConsultationBinding(),
     ),
   ];
 }

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../data/models/accessory_model.dart';
 import '../../data/models/cart_item_model.dart';
+import '../../data/models/checkout_model.dart';
 import '../../data/repositories/store_repository.dart';
 
 class StoreController extends GetxController {
@@ -26,6 +27,11 @@ class StoreController extends GetxController {
 
   // Tracks which accessory IDs have an in-flight API call
   final RxSet<int> addingToCartIds = <int>{}.obs;
+
+  // Checkout state
+  final RxBool isCheckingOut = false.obs;
+  final Rx<CheckoutResponseModel?> lastCheckoutResult =
+      Rx<CheckoutResponseModel?>(null);
 
   // ── Computed ────────────────────────────────────────────────────────────
   List<AccessoryModel> get filteredAccessories {
@@ -222,6 +228,24 @@ class StoreController extends GetxController {
       AppSnackbar.error(e.toString().replaceFirst('Exception: ', ''));
     } finally {
       addingToCartIds.remove(accessoryId);
+    }
+  }
+
+  // ── Checkout — POST /checkout ─────────────────────────────────────────
+  /// Returns true on success, false on failure.
+  Future<bool> checkout({required String paymentMethod}) async {
+    if (isCheckingOut.value) return false;
+    isCheckingOut.value = true;
+    try {
+      final result = await _repository.checkout(paymentMethod: paymentMethod);
+      lastCheckoutResult.value = result;
+      clearCart();
+      return true;
+    } catch (e) {
+      AppSnackbar.error(e.toString().replaceFirst('Exception: ', ''));
+      return false;
+    } finally {
+      isCheckingOut.value = false;
     }
   }
 

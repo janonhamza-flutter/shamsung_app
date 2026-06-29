@@ -57,6 +57,11 @@ class ProfilePage extends StatelessWidget {
                   onTap: () {},
                 ),*/
                 ProfileTile(
+                  icon: Icons.inventory_2_outlined,
+                  title: "My Orders",
+                  onTap: () => Get.toNamed(AppRoutes.myOrders),
+                ),
+                ProfileTile(
                   icon: Icons.notifications_none,
                   title: "Notifications",
                   onTap: () {},

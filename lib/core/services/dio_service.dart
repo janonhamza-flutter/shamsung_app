@@ -24,6 +24,23 @@ class DioService {
     );
   }
 
+  /// Returns an authorized Dio instance for use-cases that need FormData
+  /// (e.g. multipart uploads). The caller sets Content-Type via FormData.
+  Dio buildAuthorizedDio() {
+    final token = _storage.getToken();
+    return Dio(
+      BaseOptions(
+        baseUrl: _baseUrl,
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        headers: {
+          "Accept": "application/json",
+          if (token.isNotEmpty) "Authorization": "Bearer $token",
+        },
+      ),
+    );
+  }
+
   /// GET
   Future<Response> getData(String endpoint) async {
     return await _buildDio().get(endpoint);

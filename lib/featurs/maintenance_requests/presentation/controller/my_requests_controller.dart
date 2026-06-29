@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../data/models/maintenance_request_model.dart';
@@ -8,7 +10,7 @@ class MyRequestsController extends GetxController {
       MaintenanceRequestsRepository();
 
   RxBool isLoading = false.obs;
-
+  RxString errorMessage = ''.obs;
   RxList<MaintenanceRequestModel> requests = <MaintenanceRequestModel>[].obs;
 
   @override
@@ -20,18 +22,37 @@ class MyRequestsController extends GetxController {
   Future<void> getRequests() async {
     try {
       isLoading.value = true;
+      errorMessage.value = '';
 
       final response = await repository.getAllRequests();
-      print("STATUS = ${response.statusCode}");
-      print("BODY = ${response.data}");
-      final List requestsList = response.data["data"]["data"];
+      debugPrint("▶ STATUS = ${response.statusCode}");
 
-      requests.value = requestsList
-          .map((e) => MaintenanceRequestModel.fromJson(e))
+      // Response structure:
+      // { "data": { "current_page": 1, "data": [ ...requests... ] } }
+      final List rawList = response.data["data"]["data"] ?? [];
+
+      requests.value = rawList
+          .map(
+            (e) => MaintenanceRequestModel.fromJson(e as Map<String, dynamic>),
+          )
           .toList();
-      print("REQUESTS COUNT = ${requests.length}");
+
+      debugPrint("▶ LOADED ${requests.length} requests");
+    } on DioException catch (e) {
+      debugPrint("▶ DIO ERROR status = ${e.response?.statusCode}");
+      debugPrint("▶ DIO ERROR body   = ${e.response?.data}");
+
+      final status = e.response?.statusCode;
+      if (status == 401) {
+        errorMessage.value = "Session expired. Please log in again.";
+      } else if (status != null) {
+        errorMessage.value = "Server error ($status). Pull to refresh.";
+      } else {
+        errorMessage.value = "Network error. Check your connection.";
+      }
     } catch (e) {
-      print("ERROR = $e");
+      debugPrint("▶ ERROR = $e");
+      errorMessage.value = "Failed to load requests. Pull to refresh.";
     } finally {
       isLoading.value = false;
     }

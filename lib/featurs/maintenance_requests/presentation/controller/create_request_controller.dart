@@ -12,27 +12,39 @@ class CreateRequestController extends GetxController {
   final problemController = TextEditingController();
 
   RxBool isLoading = false.obs;
-
   RxInt selectedShopId = 1.obs;
 
+  // List of available shops — extend when the API exposes a /shops endpoint
+  final List<Map<String, dynamic>> shops = [
+    {"id": 1, "name": "Main Shop — Damascus"},
+  ];
+
   Future<void> createRequest() async {
+    final device = deviceController.text.trim();
+    final problem = problemController.text.trim();
+
+    if (device.isEmpty || problem.isEmpty) {
+      AppSnackbar.error("Please fill in all fields");
+      return;
+    }
+
     try {
       isLoading.value = true;
 
       final response = await repository.createRequest(
         shopId: selectedShopId.value,
-        deviceModel: deviceController.text.trim(),
-        problemDescription: problemController.text.trim(),
+        deviceModel: device,
+        problemDescription: problem,
       );
 
-      print("STATUS = ${response.statusCode}");
-      print("BODY = ${response.data}");
-      AppSnackbar.success("Maintenance request submitted successfully");
+      debugPrint("STATUS = ${response.statusCode}");
+      debugPrint("BODY = ${response.data}");
 
+      AppSnackbar.success("Maintenance request submitted successfully");
       Get.offNamed(AppRoutes.myRequests);
     } catch (e) {
-      print("ERROR = $e");
-      AppSnackbar.error("Failed to create request");
+      debugPrint("ERROR = $e");
+      AppSnackbar.error("Failed to create request. Please try again.");
     } finally {
       isLoading.value = false;
     }
@@ -40,46 +52,8 @@ class CreateRequestController extends GetxController {
 
   @override
   void onClose() {
-    //  deviceController.dispose();
-    //problemController.dispose();
+    deviceController.dispose();
+    problemController.dispose();
     super.onClose();
   }
 }
-
-
-/*import 'package:get/get.dart';
-
-import '../../data/models/maintenance_request_model.dart';
-import '../../data/repositories/maintenance_repository.dart';
-
-
-class CreateRequestController extends GetxController {
-  final MaintenanceRequestsRepository repository =
-      MaintenanceRequestsRepository();
-
-  RxBool isLoading = false.obs;
-
-  RxList<MaintenanceRequestModel> requests =
-      <MaintenanceRequestModel>[].obs;
-
-  @override
-  void onInit() {
-    getRequests();
-    super.onInit();
-  }
-
-  Future<void> getRequests() async {
-    try {
-      isLoading.value = true;
-
-      final response = await repository.getAllRequests();
-
-      requests.value =
-          (response.data["data"] as List)
-              .map((e) => MaintenanceRequestModel.fromJson(e))
-              .toList();
-    } finally {
-      isLoading.value = false;
-    }
-  }
-}*/
