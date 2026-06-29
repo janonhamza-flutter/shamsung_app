@@ -1,6 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
-import '../../data/models/maintenance_request_model.dart';
 import '../../data/repositories/maintenance_requests_repository.dart';
 
 class RequestDetailsController extends GetxController {
@@ -8,7 +8,7 @@ class RequestDetailsController extends GetxController {
 
   RxBool isLoading = false.obs;
 
-  MaintenanceRequestModel? request;
+  RxMap request = {}.obs;
 
   @override
   void onInit() {
@@ -24,7 +24,17 @@ class RequestDetailsController extends GetxController {
 
       final response = await repository.getRequestDetails(requestId);
 
-      print(response.data);
+      print("DETAILS STATUS = ${response.statusCode}");
+      print("DETAILS BODY = ${response.data}");
+
+      request.value = response.data["data"];
+    } catch (e) {
+      print("DETAILS ERROR = $e");
+
+      if (e is DioException) {
+        print("STATUS = ${e.response?.statusCode}");
+        print("BODY = ${e.response?.data}");
+      }
     } finally {
       isLoading.value = false;
     }

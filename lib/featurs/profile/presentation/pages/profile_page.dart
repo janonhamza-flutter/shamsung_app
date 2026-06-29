@@ -10,7 +10,6 @@ import '../../../../../core/theme/app_colors.dart';
 
 import '../../../../core/route/app_routes.dart';
 import '../controller/profile_controller.dart';
-import 'about_page.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});

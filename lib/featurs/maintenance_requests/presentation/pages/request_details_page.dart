@@ -130,24 +130,52 @@ class RequestDetailsPage extends StatelessWidget {
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../controller/request_details_controller.dart';
+
 class RequestDetailsPage extends StatelessWidget {
   RequestDetailsPage({super.key});
 
-  final int requestId = Get.arguments;
+  final controller = Get.put(RequestDetailsController());
 
   @override
   Widget build(BuildContext context) {
-    print("REQUEST ID = $requestId");
-
     return Scaffold(
       appBar: AppBar(title: const Text("Request Details")),
 
-      body: Center(
-        child: Text(
-          "Request ID = $requestId",
-          style: const TextStyle(fontSize: 22),
-        ),
-      ),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final request = controller.request;
+
+        return ListView(
+          padding: const EdgeInsets.all(20),
+
+          children: [
+            Text(
+              request["tracking_number"] ?? "",
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 20),
+
+            Text("Device: ${request["device_model"]}"),
+
+            const SizedBox(height: 10),
+
+            Text("Problem: ${request["problem_description"]}"),
+
+            const SizedBox(height: 10),
+
+            Text("Status: ${request["status"]}"),
+
+            const SizedBox(height: 10),
+
+            Text("Customer Status: ${request["customer_status"]}"),
+          ],
+        );
+      }),
     );
   }
 }
