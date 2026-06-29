@@ -47,7 +47,7 @@ class SplashController extends GetxController
 
   @override
   void onClose() {
-    //  animationController.dispose();
-    //super.onClose();
+    animationController.dispose();
+    super.onClose();
   }
 }

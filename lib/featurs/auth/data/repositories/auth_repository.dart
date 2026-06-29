@@ -6,12 +6,12 @@ class AuthRepository {
 
   /// LOGIN
 
-  Future login({required String login, required String password}) async {
-    return await dioService.postData(
-      endpoint: "/customer/login",
-      data: {"login": login, "password": password},
-    );
-  }
+  // Future login({required String login, required String password}) async {
+  //   return await dioService.postData(
+  //     endpoint: "/customer/login",
+  //     data: {"login": login, "password": password},
+  //   );
+  // }
 
   ///  send otp
 

@@ -3,224 +3,88 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/route/app_routes.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../../../core/services/storage_service.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../data/repositories/auth_repository.dart';
 
 class SignupController extends GetxController {
-  /// =========================
-  /// TEXT CONTROLLERS
-  /// =========================
+  // ─── Text Controllers ─────────────────────────────────────────────────────
 
   final firstNameController = TextEditingController();
-
   final lastNameController = TextEditingController();
-
   final phoneController = TextEditingController();
-
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
-
   final confirmPasswordController = TextEditingController();
-
   final birthdateController = TextEditingController();
 
   final StorageService storageService = StorageService();
-
+  final AuthRepository authRepository = AuthRepository();
   final formKey = GlobalKey<FormState>();
+
+  RxBool obscureText = true.obs;
 
   late String phone;
 
   @override
   void onInit() {
-    phone = Get.arguments ?? "";
-
+    phone = Get.arguments ?? '';
     super.onInit();
   }
 
-  /// =========================
-  /// DIO SERVICE
-  /// =========================
-
-  final AuthRepository authRepository = AuthRepository();
-
-  /// =========================
-  /// PASSWORD VISIBILITY
-  /// =========================
-
-  RxBool obscureText = true.obs;
+  // ─── Password Visibility ──────────────────────────────────────────────────
 
   void togglePasswordVisibility() {
     obscureText.value = !obscureText.value;
   }
 
-  /// =========================
-  /// SIGN UP
-  /// =========================
+  // ─── Sign Up ──────────────────────────────────────────────────────────────
 
   Future<void> signUp() async {
-    if (!formKey.currentState!.validate()) {
-      return;
-    }
+    if (!formKey.currentState!.validate()) return;
 
     if (passwordController.text != confirmPasswordController.text) {
-      AppSnackbar.error("Passwords do not match");
+      AppSnackbar.error('Passwords do not match');
       return;
     }
 
     try {
       final response = await authRepository.signUp(
-        firstName: firstNameController.text,
-        lastName: lastNameController.text,
-        phone: phoneController.text,
-        email: emailController.text,
+        firstName: firstNameController.text.trim(),
+        lastName: lastNameController.text.trim(),
+        phone: phoneController.text.trim(),
+        email: emailController.text.trim(),
         password: passwordController.text,
         passwordConfirmation: confirmPasswordController.text,
-        birthdate: birthdateController.text,
+        birthdate: birthdateController.text.trim(),
       );
 
-      final token = response.data["data"]["token"];
-
+      final token = response.data['data']['token'];
       storageService.saveToken(token);
 
-      print("TOKEN SAVED = ${storageService.getToken()}");
+      // FIX #3: token is now saved — safe to register FCM token with the API
+      await NotificationService.syncTokenAfterLogin();
 
       AppSnackbar.success(response.data['message']);
-
       Get.offAllNamed(AppRoutes.home);
     } on DioException catch (e) {
-      print(e.response?.data);
-
-      String errorMessage = "Something went wrong";
-
-      if (e.response?.data != null) {
-        errorMessage = e.response?.data['message'] ?? errorMessage;
-      }
-
-      AppSnackbar.error(errorMessage);
+      final message = e.response?.data?['message'] ?? 'Something went wrong';
+      AppSnackbar.error(message);
     } catch (e) {
-      print(e);
-      AppSnackbar.error("Something went wrong");
+      AppSnackbar.error('Something went wrong');
     }
   }
-}
-
-
-
-
-
-
-
-
-
-
-  /*Future<void> signUp() async {
-    if (!formKey.currentState!.validate()) {
-      return;
-    }
-
-    if (passwordController.text != confirmPasswordController.text) {
-      AppSnackbar.error("Passwords do not match");
-      return;
-    }
-
-    try {
-      final response = await authRepository.signUp(
-        firstName: firstNameController.text,
-        lastName: lastNameController.text,
-        phone: phoneController.text,
-        email: emailController.text,
-        password: passwordController.text,
-        passwordConfirmation: confirmPasswordController.text,
-        birthdate: birthdateController.text,
-      );
-
-      print(response.data);
-
-      AppSnackbar.success(response.data['message']);
-
-      Get.offAllNamed(AppRoutes.login);
-    } on DioException catch (e) {
-      print(e.response?.data);
-
-      String errorMessage = "Something went wrong";
-
-      if (e.response?.data != null) {
-        errorMessage = e.response?.data['message'] ?? errorMessage;
-      }
-
-      AppSnackbar.error(errorMessage);
-    } catch (e) {
-      print(e);
-      AppSnackbar.error("Something went wrong");
-    }
-  }
-
-  /*Future<void> signUp() async {
-    if (!formKey.currentState!.validate()) {
-      return;
-    }
-
-    // =========================
-    // CHECK PASSWORD MATCH
-    // =========================
-
-    if (passwordController.text != confirmPasswordController.text) {
-      AppSnackbar.error("Passwords do not match");
-
-      return;
-    }
-    try {
-     final response = await authRepository.signUp(
-        firstName: firstNameController.text,
-
-        lastName: lastNameController.text,
-
-        phone: phoneController.text,
-
-        email: emailController.text,
-
-        password: passwordController.text,
-
-        passwordConfirmation: confirmPasswordController.text,
-
-        birthdate: birthdateController.text,
-      );
-
-      print(response.data);
-
-      AppSnackbar.success(/*"Account Created Successfully"*/ response.message);
-      Get.offAllNamed(AppRoutes.login);
-    } catch (e) {
-      print(e);
-      if (e is DioException) {
-        print(e.response?.data);
-      }
-
-      AppSnackbar.error(response['message']);
-    }
-  }
-*/
-  /// =========================
-  /// DISPOSE
-  /// =========================
 
   @override
   void onClose() {
-    //   firstNameController.dispose();
-
-    //   lastNameController.dispose();
-
-    //   phoneController.dispose();
-
-    //   //emailController.dispose();
-
-    //   //passwordController.dispose();
-
-    //   confirmPasswordController.dispose();
-
-    //   birthdateController.dispose();
-
-    super.onClose();*/
-  
+    firstNameController.dispose();
+    lastNameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    birthdateController.dispose();
+    super.onClose();
+  }
+}

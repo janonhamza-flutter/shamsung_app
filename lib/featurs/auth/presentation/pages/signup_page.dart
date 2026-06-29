@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:shamsoung/core/validators/app_validator.dart';
 
 import '../../../../../core/constants/app_strings.dart';
-import '../../../../../core/route/app_routes.dart';
-
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_sizes.dart';
@@ -93,8 +91,7 @@ class SignupPage extends StatelessWidget {
 
                       controller: controller.phoneController,
                       validator: AppValidator.validateMobile,
-                      keyboardType: TextInputType.phone
-
+                      keyboardType: TextInputType.phone,
                     ),
 
                     const SizedBox(height: AppSizes.space20),
@@ -190,7 +187,6 @@ class SignupPage extends StatelessWidget {
                       hint: "Birth Date Ex: 2002-01-03",
                       controller: controller.birthdateController,
                       icon: Icons.date_range,
-                      
                     ),
 
                     const SizedBox(height: AppSizes.space55),
@@ -223,7 +219,7 @@ class SignupPage extends StatelessWidget {
 
                         GestureDetector(
                           onTap: () {
-                            Get.offNamed(AppRoutes.login);
+                            //   Get.offNamed(AppRoutes.login);
                           },
 
                           child: const Text(

@@ -60,6 +60,34 @@ class StorageService {
   }
 
   // =========================
+  // FCM TOKEN
+  // =========================
+
+  void saveFcmToken(String token) {
+    _box.write("fcmToken", token);
+  }
+
+  String getFcmToken() {
+    return _box.read("fcmToken") ?? "";
+  }
+
+  // =========================
+  // NOTIFICATIONS
+  // =========================
+
+  void saveNotifications(List<Map<String, dynamic>> notifications) {
+    _box.write("notifications", notifications);
+  }
+
+  List<Map<String, dynamic>> getNotifications() {
+    final data = _box.read("notifications");
+    if (data is List) {
+      return data.map((e) => Map<String, dynamic>.from(e)).toList();
+    }
+    return [];
+  }
+
+  // =========================
   // LOGIN CHECK
   // =========================
 

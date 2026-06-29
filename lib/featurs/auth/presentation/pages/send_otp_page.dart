@@ -59,7 +59,8 @@ class SendOtpPage extends StatelessWidget {
                   const SizedBox(height: AppSizes.space90),
 
                   CustomTextField(
-                    hint: "Phone Number",
+                    keyboardType: TextInputType.phone,
+                    hint: "Phone Number ex:+963 999999999",
 
                     icon: Icons.phone_outlined,
 

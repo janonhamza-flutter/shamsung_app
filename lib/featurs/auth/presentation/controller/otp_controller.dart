@@ -6,6 +6,7 @@ import '../../data/repositories/auth_repository.dart';
 
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../core/route/app_routes.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../../../core/services/storage_service.dart';
 
 class OtpController extends GetxController {
@@ -50,6 +51,8 @@ class OtpController extends GetxController {
 
           storageService.saveCustomerEmail(otpResponse.customer!.email);
         }
+
+        await NotificationService.syncTokenAfterLogin();
 
         Get.offAllNamed(AppRoutes.home);
       }

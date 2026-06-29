@@ -21,7 +21,7 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.darkBlue,
 
-      bottomNavigationBar: const BottomNavBar(currentIndex: 2),
+      bottomNavigationBar: const BottomNavBar(currentIndex: 3),
 
       body: SafeArea(
         child: Padding(
@@ -89,7 +89,7 @@ class ProfilePage extends StatelessWidget {
                   icon: Icons.info_outline,
                   title: "About App",
                   onTap: () {
-                    Get.to(Get.toNamed(AppRoutes.about));
+                    Get.toNamed(AppRoutes.about);
                   },
                 ),
 
