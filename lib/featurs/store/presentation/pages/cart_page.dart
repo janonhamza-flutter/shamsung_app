@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../../core/route/app_routes.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/lottie_loading.dart';
 import '../controllers/store_controller.dart';
 import '../widgets/cart_item_tile.dart';
 
@@ -19,7 +20,6 @@ class _CartPageState extends State<CartPage> {
   @override
   void initState() {
     super.initState();
-    // Fetch fresh cart from server every time the page opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchCart();
     });
@@ -31,21 +31,22 @@ class _CartPageState extends State<CartPage> {
       backgroundColor: AppColors.darkBlue,
       appBar: AppBar(
         backgroundColor: AppColors.blue,
-        title: const Text(
-          'سلة المشتريات',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: Text(
+          'cart'.tr,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Obx(() {
-        // ── Loading (first time, no data yet) ───────────────────────
+        // ── Loading ─────────────────────────────────────────────────
         if (controller.isLoadingCart.value && controller.cartItems.isEmpty) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.green),
-          );
+          return LottieLoading(label: 'loading_cart'.tr);
         }
 
-        // ── Error with no data ───────────────────────────────────────
+        // ── Error ────────────────────────────────────────────────────
         if (controller.cartError.value.isNotEmpty &&
             controller.cartItems.isEmpty) {
           return Center(
@@ -75,9 +76,9 @@ class _CartPageState extends State<CartPage> {
                       ),
                     ),
                     icon: const Icon(Icons.refresh, color: Colors.white),
-                    label: const Text(
-                      'إعادة المحاولة',
-                      style: TextStyle(color: Colors.white),
+                    label: Text(
+                      'retry'.tr,
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
@@ -86,22 +87,20 @@ class _CartPageState extends State<CartPage> {
           );
         }
 
-        // ── Empty cart ───────────────────────────────────────────────
+        // ── Empty ────────────────────────────────────────────────────
         if (controller.cartItems.isEmpty) {
-          return const _EmptyCartView();
+          return _EmptyCartView();
         }
 
-        // ── Cart content ─────────────────────────────────────────────
+        // ── Content ──────────────────────────────────────────────────
         return Column(
           children: [
-            // Subtle progress bar while refreshing in background
             if (controller.isLoadingCart.value)
               const LinearProgressIndicator(
                 color: AppColors.green,
                 backgroundColor: AppColors.blue,
               ),
 
-            // Cart items list with pull-to-refresh
             Expanded(
               child: RefreshIndicator(
                 color: AppColors.green,
@@ -132,87 +131,90 @@ class _CartPageState extends State<CartPage> {
             ),
 
             // ── Order Summary ────────────────────────────────────────
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: AppColors.blue,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(24),
-                  topRight: Radius.circular(24),
+            SafeArea(
+              top: false,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+                decoration: const BoxDecoration(
+                  color: AppColors.blue,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
+                  ),
                 ),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'عدد المنتجات',
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.7),
-                          fontSize: 14,
-                        ),
-                      ),
-                      Obx(
-                        () => Text(
-                          '${controller.cartCount} قطعة',
-                          style: const TextStyle(
-                            color: Colors.white,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'items_count'.tr,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
                             fontSize: 14,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  const Divider(color: Colors.white12),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'الإجمالي',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
+                        Obx(
+                          () => Text(
+                            '${controller.cartCount} ${'pieces'.tr}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
                         ),
-                      ),
-                      Obx(
-                        () => Text(
-                          '${controller.cartTotal.toStringAsFixed(2)} SP',
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    const Divider(color: Colors.white12),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'total'.tr,
                           style: const TextStyle(
-                            color: AppColors.green,
-                            fontSize: 20,
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Obx(
+                          () => Text(
+                            '${controller.cartTotal.toStringAsFixed(2)} ${'currency'.tr}',
+                            style: const TextStyle(
+                              color: AppColors.green,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => Get.toNamed(AppRoutes.checkout),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.green,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        child: Text(
+                          'place_order'.tr,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 18),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () => Get.toNamed(AppRoutes.checkout),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.green,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      child: const Text(
-                        'تأكيد الطلب',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -222,10 +224,7 @@ class _CartPageState extends State<CartPage> {
   }
 }
 
-// ── Empty Cart ────────────────────────────────────────────────────────────────
 class _EmptyCartView extends StatelessWidget {
-  const _EmptyCartView();
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -238,18 +237,18 @@ class _EmptyCartView extends StatelessWidget {
             size: 80,
           ),
           const SizedBox(height: 20),
-          const Text(
-            'السلة فارغة',
-            style: TextStyle(
+          Text(
+            'cart_empty'.tr,
+            style: const TextStyle(
               color: Colors.white60,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'أضف منتجات من المتجر',
-            style: TextStyle(color: Colors.white38, fontSize: 14),
+          Text(
+            'cart_empty_sub'.tr,
+            style: const TextStyle(color: Colors.white38, fontSize: 14),
           ),
           const SizedBox(height: 28),
           ElevatedButton.icon(
@@ -262,9 +261,9 @@ class _EmptyCartView extends StatelessWidget {
               ),
             ),
             icon: const Icon(Icons.storefront_outlined, color: Colors.white),
-            label: const Text(
-              'تصفح المتجر',
-              style: TextStyle(color: Colors.white),
+            label: Text(
+              'browse_store'.tr,
+              style: const TextStyle(color: Colors.white),
             ),
           ),
         ],

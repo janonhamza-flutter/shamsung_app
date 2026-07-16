@@ -22,9 +22,9 @@ class CreateRequestPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
-          "New Maintenance Request",
-          style: TextStyle(
+        title: Text(
+          'new_maintenance_request'.tr,
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -39,26 +39,26 @@ class CreateRequestPage extends StatelessWidget {
             children: [
               const RequestFormHeaderBanner(),
               const SizedBox(height: AppSizes.space30),
-              _sectionLabel("Device Information"),
+              _sectionLabel('device_information'.tr),
               const SizedBox(height: AppSizes.space15),
               RequestFormTextField(
                 controller: controller.deviceController,
-                label: "Device Model",
-                hint: "e.g. Samsung Galaxy S24 Ultra",
+                label: 'device_model'.tr,
+                hint: 'device_model_hint'.tr,
                 icon: Icons.phone_android_outlined,
               ),
               const SizedBox(height: AppSizes.space20),
-              _sectionLabel("Problem Description"),
+              _sectionLabel('problem_description'.tr),
               const SizedBox(height: AppSizes.space15),
               RequestFormTextField(
                 controller: controller.problemController,
-                label: "Describe the issue",
-                hint: "Describe what's wrong with your device...",
+                label: 'describe_issue'.tr,
+                hint: 'describe_issue_hint'.tr,
                 icon: Icons.report_problem_outlined,
                 maxLines: 5,
               ),
               const SizedBox(height: AppSizes.space20),
-              _sectionLabel("Select Shop"),
+              _sectionLabel('select_shop'.tr),
               const SizedBox(height: AppSizes.space15),
               RequestFormShopDropdown(controller: controller),
               const SizedBox(height: AppSizes.space40),

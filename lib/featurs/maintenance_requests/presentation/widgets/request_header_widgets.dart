@@ -134,15 +134,13 @@ class RequestTrackingCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.qr_code_2_rounded, color: AppColors.green, size: 28),
-          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Tracking Number",
-                  style: TextStyle(color: Colors.white54, fontSize: 12),
+                Text(
+                  'tracking_number'.tr,
+                  style: const TextStyle(color: Colors.white54, fontSize: 12),
                 ),
                 const SizedBox(height: 3),
                 Text(
@@ -161,8 +159,8 @@ class RequestTrackingCard extends StatelessWidget {
             onPressed: () {
               Clipboard.setData(ClipboardData(text: trackingNumber));
               Get.snackbar(
-                "Copied",
-                "Tracking number copied",
+                'copied'.tr,
+                'tracking_number_copied'.tr,
                 backgroundColor: AppColors.green,
                 colorText: Colors.white,
                 duration: const Duration(seconds: 2),

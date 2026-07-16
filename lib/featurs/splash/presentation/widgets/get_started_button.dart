@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class GetStartedButton extends StatelessWidget {
@@ -22,9 +22,9 @@ class GetStartedButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(35),
           ),
         ),
-        child: const Text(
-          AppStrings.getStarted,
-          style: TextStyle(
+        child: Text(
+          'get_started'.tr,
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.w600,

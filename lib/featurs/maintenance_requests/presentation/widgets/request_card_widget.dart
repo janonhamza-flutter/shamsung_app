@@ -5,6 +5,7 @@ import '../../../../../core/constants/app_sizes.dart';
 import '../../../../../core/route/app_routes.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../data/models/maintenance_request_model.dart';
+import '../controller/my_requests_controller.dart';
 import 'request_status_helpers.dart';
 
 /// Card shown in the MyRequestsPage list.
@@ -18,7 +19,13 @@ class RequestCardWidget extends StatelessWidget {
     final statusColor = RequestStatusHelpers.color(request.status);
 
     return InkWell(
-      onTap: () => Get.toNamed(AppRoutes.requestDetails, arguments: request.id),
+      onTap: () async {
+        await Get.toNamed(AppRoutes.requestDetails, arguments: request.id);
+        // Refresh list when returning from details (status may have changed)
+        if (Get.isRegistered<MyRequestsController>()) {
+          Get.find<MyRequestsController>().getRequests();
+        }
+      },
       borderRadius: BorderRadius.circular(AppSizes.radius),
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -35,19 +42,20 @@ class RequestCardWidget extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Device icon
+            // Logo icon
             Container(
-              width: 56,
-              height: 56,
+              width: 68,
+              height: 68,
+              padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                 color: statusColor.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: statusColor.withValues(alpha: 0.25),
+                  width: 1,
+                ),
               ),
-              child: Icon(
-                Icons.phone_android_rounded,
-                color: statusColor,
-                size: 28,
-              ),
+              child: Image.asset('assets/images/logo.png', fit: BoxFit.contain),
             ),
             const SizedBox(width: 14),
 
@@ -80,12 +88,143 @@ class RequestCardWidget extends StatelessWidget {
             ),
 
             const SizedBox(width: 8),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: Colors.white38,
-              size: 22,
+
+            // Actions
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: Colors.white38,
+                  size: 22,
+                ),
+                const SizedBox(height: 12),
+                GestureDetector(
+                  onTap: () => _showDeleteDialog(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Colors.red.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.delete_outline_rounded,
+                      color: Colors.red,
+                      size: 18,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  void _showDeleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        backgroundColor: AppColors.blue,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Colors.red.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.delete_outline_rounded,
+                  color: Colors.red,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'delete_request'.tr,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'delete_request_confirm'.tr,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.6),
+                  fontSize: 13,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Get.back(),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        side: BorderSide(
+                          color: Colors.white.withValues(alpha: 0.2),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        'no'.tr,
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.7),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                        Get.find<MyRequestsController>().deleteRequest(
+                          request.id,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        'delete'.tr,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

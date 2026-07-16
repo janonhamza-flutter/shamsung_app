@@ -18,19 +18,19 @@ class DeviceSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const RequestSectionTitle(title: "Device Information"),
+        RequestSectionTitle(title: 'device_information'.tr),
         const SizedBox(height: AppSizes.space10),
         RequestInfoCard(
           children: [
             RequestInfoRow(
               icon: Icons.phone_android_outlined,
-              label: "Device Model",
+              label: 'device_model'.tr,
               value: req.deviceModel,
             ),
             const RequestCardDivider(),
             RequestInfoRow(
               icon: Icons.report_problem_outlined,
-              label: "Problem Description",
+              label: 'problem_description'.tr,
               value: req.problemDescription,
             ),
           ],
@@ -58,13 +58,12 @@ class EstimateSection extends StatelessWidget {
     return Obx(() {
       final days =
           controller.requestParts.value?.estimatedDays ?? req.estimatedDays;
-      if (req.estimatedCost == null && days == null) {
+      if (req.estimatedCost == null && days == null)
         return const SizedBox.shrink();
-      }
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const RequestSectionTitle(title: "Repair Estimate"),
+          RequestSectionTitle(title: 'repair_estimate'.tr),
           const SizedBox(height: AppSizes.space10),
           RequestEstimateCard(
             estimatedCost: req.estimatedCost,
@@ -88,20 +87,20 @@ class ShopSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const RequestSectionTitle(title: "Shop Information"),
+        RequestSectionTitle(title: 'shop_information'.tr),
         const SizedBox(height: AppSizes.space10),
         RequestInfoCard(
           children: [
             RequestInfoRow(
               icon: Icons.store_outlined,
-              label: "Shop Name",
+              label: 'shop_name'.tr,
               value: shop.name,
             ),
             if (shop.address.isNotEmpty) ...[
               const RequestCardDivider(),
               RequestInfoRow(
                 icon: Icons.location_on_outlined,
-                label: "Address",
+                label: 'address'.tr,
                 value: shop.address,
               ),
             ],
@@ -109,7 +108,7 @@ class ShopSection extends StatelessWidget {
               const RequestCardDivider(),
               RequestInfoRow(
                 icon: Icons.phone_outlined,
-                label: "Phone",
+                label: 'phone'.tr,
                 value: shop.phone,
               ),
             ],
@@ -138,16 +137,13 @@ class PartsSection extends StatelessWidget {
       final parts = partsData?.parts ?? req.parts;
       final total = partsData?.totalPrice ?? req.totalPartsPrice;
 
-      if (isPartsLoading) {
-        return const _PartsLoadingState();
-      }
-
+      if (isPartsLoading) return const _PartsLoadingState();
       if (parts.isEmpty && partsError.isEmpty) return const SizedBox.shrink();
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RequestSectionTitle(title: "Parts (${parts.length})"),
+          RequestSectionTitle(title: '${'parts'.tr} (${parts.length})'),
           const SizedBox(height: AppSizes.space10),
           if (partsError.isNotEmpty && parts.isEmpty)
             RequestPartsErrorBanner(
@@ -173,10 +169,10 @@ class _PartsLoadingState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        RequestSectionTitle(title: "Parts"),
-        SizedBox(height: AppSizes.space10),
-        Center(
+      children: [
+        RequestSectionTitle(title: 'parts'.tr),
+        const SizedBox(height: AppSizes.space10),
+        const Center(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 20),
             child: CircularProgressIndicator(
@@ -185,7 +181,7 @@ class _PartsLoadingState extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: AppSizes.space20),
+        const SizedBox(height: AppSizes.space20),
       ],
     );
   }

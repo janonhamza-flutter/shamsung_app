@@ -24,14 +24,14 @@ class ConsultationTypeSelector extends StatelessWidget {
         child: Row(
           children: [
             _Tab(
-              label: 'Ask AI',
+              label: 'ask_ai'.tr,
               icon: Icons.smart_toy_outlined,
               isSelected: selected == 'ai',
               accentColor: Colors.purpleAccent,
               onTap: () => controller.selectType('ai'),
             ),
             _Tab(
-              label: 'Ask Technician',
+              label: 'ask_technician'.tr,
               icon: Icons.engineering_outlined,
               isSelected: selected == 'technician',
               accentColor: Colors.blueAccent,
@@ -69,11 +69,11 @@ class _Tab extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
             color: isSelected
-                ? accentColor.withOpacity(0.2)
+                ? accentColor.withValues(alpha: 0.2)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             border: isSelected
-                ? Border.all(color: accentColor.withOpacity(0.6))
+                ? Border.all(color: accentColor.withValues(alpha: 0.6))
                 : null,
           ),
           child: Row(

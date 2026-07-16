@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../../../core/route/app_routes.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/lottie_loading.dart';
 import '../../data/models/accessory_model.dart';
 import '../controllers/store_controller.dart';
 
@@ -20,8 +21,6 @@ class _AccessoryDetailsPageState extends State<AccessoryDetailsPage> {
   @override
   void initState() {
     super.initState();
-    // The list page passes the AccessoryModel as arguments for instant display.
-    // We also trigger a fresh API fetch to get up-to-date details.
     final AccessoryModel? initial = Get.arguments as AccessoryModel?;
     if (initial != null) {
       controller.fetchAccessoryDetails(initial.id, initial: initial);
@@ -34,13 +33,15 @@ class _AccessoryDetailsPageState extends State<AccessoryDetailsPage> {
       backgroundColor: AppColors.darkBlue,
       appBar: AppBar(
         backgroundColor: AppColors.blue,
-        title: const Text(
-          'تفاصيل المنتج',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: Text(
+          'product_details'.tr,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
-          // Cart icon with badge
           Obx(() {
             final count = controller.cartCount;
             return Stack(
@@ -83,14 +84,10 @@ class _AccessoryDetailsPageState extends State<AccessoryDetailsPage> {
         final isLoading = controller.isLoadingDetails.value;
         final error = controller.detailsError.value;
 
-        // No data at all → loading spinner
         if (accessory == null && isLoading) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.green),
-          );
+          return LottieLoading(label: 'loading_product'.tr);
         }
 
-        // No data and error → error view with retry
         if (accessory == null && error.isNotEmpty) {
           return _ErrorView(
             message: error,
@@ -102,16 +99,12 @@ class _AccessoryDetailsPageState extends State<AccessoryDetailsPage> {
         }
 
         if (accessory == null) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.green),
-          );
+          return LottieLoading(label: 'loading_product'.tr);
         }
 
-        // Show content (with optional loading indicator overlay while refreshing)
         return Stack(
           children: [
             _DetailsContent(accessory: accessory, controller: controller),
-            // Subtle top loading bar while refreshing in background
             if (isLoading)
               const Positioned(
                 top: 0,
@@ -129,7 +122,6 @@ class _AccessoryDetailsPageState extends State<AccessoryDetailsPage> {
   }
 }
 
-// ── Main Content ─────────────────────────────────────────────────────────────
 class _DetailsContent extends StatelessWidget {
   final AccessoryModel accessory;
   final StoreController controller;
@@ -138,243 +130,246 @@ class _DetailsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Product Image ─────────────────────────────────────────────
-          Container(
-            width: double.infinity,
-            height: 280,
-            color: AppColors.blue,
-            child: accessory.imageUrl.isNotEmpty
-                ? CachedNetworkImage(
-                    imageUrl: accessory.imageUrl,
-                    fit: BoxFit.contain,
-                    placeholder: (_, __) => const Center(
-                      child: CircularProgressIndicator(color: AppColors.green),
-                    ),
-                    errorWidget: (_, __, ___) => const _PlaceholderImage(),
-                  )
-                : const _PlaceholderImage(),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ── Name & Price ──────────────────────────────────────
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        accessory.name,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.green.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: AppColors.green.withValues(alpha: 0.4),
-                        ),
-                      ),
-                      child: Text(
-                        '${accessory.price.toStringAsFixed(2)} SP',
-                        style: const TextStyle(
+    return SafeArea(
+      top: false,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Product Image ─────────────────────────────────────────
+            Container(
+              width: double.infinity,
+              height: 280,
+              color: AppColors.blue,
+              child: accessory.imageUrl.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: accessory.imageUrl,
+                      fit: BoxFit.contain,
+                      placeholder: (_, __) => const Center(
+                        child: CircularProgressIndicator(
                           color: AppColors.green,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                      errorWidget: (_, __, ___) => const _PlaceholderImage(),
+                    )
+                  : const _PlaceholderImage(),
+            ),
 
-                const SizedBox(height: 16),
-
-                // ── Stock Badge ───────────────────────────────────────
-                _StockBadge(stockQuantity: accessory.stockQuantity),
-
-                const SizedBox(height: 20),
-
-                // ── Description ───────────────────────────────────────
-                const Text(
-                  'الوصف',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  accessory.description,
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.75),
-                    fontSize: 15,
-                    height: 1.6,
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                // ── Shop Info ─────────────────────────────────────────
-                if (accessory.shop != null) ...[
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.blue,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.store_outlined,
-                          color: AppColors.green,
-                          size: 22,
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                accessory.shop!.name,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                accessory.shop!.address,
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.6),
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ],
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ── Name & Price ──────────────────────────────────
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          accessory.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
+                      ),
+                      const SizedBox(width: 12),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.green.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: AppColors.green.withValues(alpha: 0.4),
+                          ),
+                        ),
+                        child: Text(
+                          '${accessory.price.toStringAsFixed(2)} ${'currency'.tr}',
+                          style: const TextStyle(
+                            color: AppColors.green,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+                  _StockBadge(stockQuantity: accessory.stockQuantity),
+                  const SizedBox(height: 20),
+
+                  // ── Description ───────────────────────────────────
+                  Text(
+                    'description'.tr,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 8),
+                  Text(
+                    accessory.description,
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.75),
+                      fontSize: 15,
+                      height: 1.6,
+                    ),
+                  ),
+
                   const SizedBox(height: 24),
-                ],
 
-                // ── Add to Cart Button ────────────────────────────────
-                Obx(() {
-                  final inCart = controller.isInCart(accessory.id);
-                  final isAdding = controller.isAddingToCart(accessory.id);
-                  return SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: (accessory.stockQuantity == 0 || isAdding)
-                          ? null
-                          : () => controller.addToCart(accessory),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: inCart
-                            ? AppColors.blue
-                            : AppColors.green,
-                        disabledBackgroundColor: isAdding
-                            ? AppColors.blue
-                            : Colors.grey.shade700,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          side: inCart
-                              ? const BorderSide(color: AppColors.green)
-                              : BorderSide.none,
-                        ),
+                  // ── Shop Info ─────────────────────────────────────
+                  if (accessory.shop != null) ...[
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.blue,
+                        borderRadius: BorderRadius.circular(14),
                       ),
-                      icon: isAdding
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: AppColors.green,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : Icon(
-                              inCart
-                                  ? Icons.check_circle_outline
-                                  : Icons.shopping_cart_outlined,
-                              color: inCart ? AppColors.green : Colors.white,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.store_outlined,
+                            color: AppColors.green,
+                            size: 22,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  accessory.shop!.name,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  accessory.shop!.address,
+                                  style: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.6),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
                             ),
-                      label: Text(
-                        accessory.stockQuantity == 0
-                            ? 'غير متوفر'
-                            : isAdding
-                            ? 'جاري الإضافة...'
-                            : inCart
-                            ? 'تمت الإضافة إلى السلة'
-                            : 'أضف إلى السلة',
-                        style: TextStyle(
-                          color: inCart ? AppColors.green : Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  );
-                }),
+                    const SizedBox(height: 24),
+                  ],
 
-                const SizedBox(height: 12),
-
-                // ── View Cart Button ──────────────────────────────────
-                Obx(() {
-                  if (controller.cartCount == 0) return const SizedBox();
-                  return SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () => Get.toNamed(AppRoutes.cart),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: AppColors.green),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                  // ── Add to Cart Button ────────────────────────────
+                  Obx(() {
+                    final inCart = controller.isInCart(accessory.id);
+                    final isAdding = controller.isAddingToCart(accessory.id);
+                    return SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: (accessory.stockQuantity == 0 || isAdding)
+                            ? null
+                            : () => controller.addToCart(accessory),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: inCart
+                              ? AppColors.blue
+                              : AppColors.green,
+                          disabledBackgroundColor: isAdding
+                              ? AppColors.blue
+                              : Colors.grey.shade700,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            side: inCart
+                                ? const BorderSide(color: AppColors.green)
+                                : BorderSide.none,
+                          ),
+                        ),
+                        icon: isAdding
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: AppColors.green,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Icon(
+                                inCart
+                                    ? Icons.check_circle_outline
+                                    : Icons.shopping_cart_outlined,
+                                color: inCart ? AppColors.green : Colors.white,
+                              ),
+                        label: Text(
+                          accessory.stockQuantity == 0
+                              ? 'out_of_stock'.tr
+                              : isAdding
+                              ? 'adding_to_cart'.tr
+                              : inCart
+                              ? 'added_to_cart'.tr
+                              : 'add_to_cart'.tr,
+                          style: TextStyle(
+                            color: inCart ? AppColors.green : Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                      icon: const Icon(
-                        Icons.shopping_bag_outlined,
-                        color: AppColors.green,
-                      ),
-                      label: Text(
-                        'عرض السلة (${controller.cartCount})',
-                        style: const TextStyle(
+                    );
+                  }),
+
+                  const SizedBox(height: 12),
+
+                  // ── View Cart Button ──────────────────────────────
+                  Obx(() {
+                    if (controller.cartCount == 0) return const SizedBox();
+                    return SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () => Get.toNamed(AppRoutes.cart),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: AppColors.green),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        icon: const Icon(
+                          Icons.shopping_bag_outlined,
                           color: AppColors.green,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
+                        ),
+                        label: Text(
+                          '${'view_cart'.tr} (${controller.cartCount})',
+                          style: const TextStyle(
+                            color: AppColors.green,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }),
-              ],
+                    );
+                  }),
+
+                  SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-// ── Error View ────────────────────────────────────────────────────────────────
 class _ErrorView extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
@@ -410,9 +405,9 @@ class _ErrorView extends StatelessWidget {
                 ),
               ),
               icon: const Icon(Icons.refresh, color: Colors.white),
-              label: const Text(
-                'إعادة المحاولة',
-                style: TextStyle(color: Colors.white),
+              label: Text(
+                'retry'.tr,
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           ],
@@ -422,7 +417,6 @@ class _ErrorView extends StatelessWidget {
   }
 }
 
-// ── Placeholder Image ─────────────────────────────────────────────────────────
 class _PlaceholderImage extends StatelessWidget {
   const _PlaceholderImage();
 
@@ -438,7 +432,6 @@ class _PlaceholderImage extends StatelessWidget {
   }
 }
 
-// ── Stock Badge ───────────────────────────────────────────────────────────────
 class _StockBadge extends StatelessWidget {
   final int stockQuantity;
   const _StockBadge({required this.stockQuantity});
@@ -469,7 +462,7 @@ class _StockBadge extends StatelessWidget {
           ),
           const SizedBox(width: 6),
           Text(
-            inStock ? 'متوفر في المخزون ($stockQuantity)' : 'غير متوفر',
+            inStock ? '${'in_stock'.tr} ($stockQuantity)' : 'out_of_stock'.tr,
             style: TextStyle(
               color: inStock ? AppColors.green : Colors.red,
               fontSize: 13,

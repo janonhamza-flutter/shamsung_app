@@ -152,14 +152,20 @@ class StoreRepository {
   }
 
   // ── POST /checkout ────────────────────────────────────────────────────────
-  /// [paymentMethod] must be either "cash_on_delivery" or "online"
+  /// [paymentMethod] must be either "cash_on_delivery" or "pay_after_service"
   Future<CheckoutResponseModel> checkout({
     required String paymentMethod,
+    required double latitude,
+    required double longitude,
   }) async {
     try {
       final Response response = await _dioService.postData(
         endpoint: '/checkout',
-        data: {'payment_method': paymentMethod},
+        data: {
+          'payment_method': paymentMethod,
+          'latitude': latitude.toString(),
+          'longitude': longitude.toString(),
+        },
       );
       if (response.statusCode == 201 || response.statusCode == 200) {
         final raw = response.data;

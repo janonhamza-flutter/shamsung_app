@@ -3,21 +3,41 @@ import 'package:get/get.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/map_picker_page.dart';
 import '../../data/models/maintenance_request_details_model.dart';
 import '../controller/request_details_controller.dart';
 
 /// Bottom sheet for reviewing and approving a maintenance request.
-/// Shows selectable parts list + payment method picker.
-class ApproveSheetWidget extends StatelessWidget {
+class ApproveSheetWidget extends StatefulWidget {
   final RequestDetailsController controller;
 
   const ApproveSheetWidget({super.key, required this.controller});
 
   @override
+  State<ApproveSheetWidget> createState() => _ApproveSheetWidgetState();
+}
+
+class _ApproveSheetWidgetState extends State<ApproveSheetWidget> {
+  double? _latitude;
+  String? _locationName;
+
+  Future<void> _openMapPicker() async {
+    final result = await Get.to<MapPickerResult>(() => const MapPickerPage());
+    if (result != null) {
+      setState(() {
+        _latitude = result.latitude;
+        _locationName = result.locationName;
+      });
+      widget.controller.approveLatitude = result.latitude;
+      widget.controller.approveLongitude = result.longitude;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final parts =
-        controller.requestParts.value?.parts ??
-        controller.request.value?.parts ??
+        widget.controller.requestParts.value?.parts ??
+        widget.controller.request.value?.parts ??
         [];
 
     return DraggableScrollableSheet(
@@ -65,21 +85,21 @@ class ApproveSheetWidget extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Review & Approve",
-                            style: TextStyle(
+                            'review_and_approve'.tr,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            "Select parts and choose payment method",
-                            style: TextStyle(
+                            'approve_sheet_sub'.tr,
+                            style: const TextStyle(
                               color: Colors.white54,
                               fontSize: 12,
                             ),
@@ -97,13 +117,22 @@ class ApproveSheetWidget extends StatelessWidget {
                   controller: scrollController,
                   padding: const EdgeInsets.all(20),
                   children: [
-                    _PartsSection(controller: controller, parts: parts),
+                    _PartsSection(controller: widget.controller, parts: parts),
                     const SizedBox(height: 20),
-                    _PaymentSection(controller: controller),
+                    _PaymentSection(controller: widget.controller),
                     const SizedBox(height: 20),
-                    _TotalRow(controller: controller),
+                    _ApproveLocationCard(
+                      locationName: _locationName,
+                      isSelected: _latitude != null,
+                      onTap: _openMapPicker,
+                    ),
+                    const SizedBox(height: 20),
+                    _TotalRow(controller: widget.controller),
                     const SizedBox(height: 24),
-                    _ConfirmButton(controller: controller),
+                    _ConfirmButton(
+                      controller: widget.controller,
+                      locationSelected: _latitude != null,
+                    ),
                     const SizedBox(height: 12),
                   ],
                 ),
@@ -129,18 +158,18 @@ class _PartsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "Select Parts",
-          style: TextStyle(
+        Text(
+          'select_parts'.tr,
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 4),
-        const Text(
-          "Required parts are mandatory and cannot be deselected",
-          style: TextStyle(color: Colors.white38, fontSize: 12),
+        Text(
+          'required_parts_note'.tr,
+          style: const TextStyle(color: Colors.white38, fontSize: 12),
         ),
         const SizedBox(height: 12),
         ...parts.map((p) => _PartTile(controller: controller, part: p)),
@@ -235,9 +264,9 @@ class _PartTile extends StatelessWidget {
                                     color: Colors.orange.withValues(alpha: 0.4),
                                   ),
                                 ),
-                                child: const Text(
-                                  "Required",
-                                  style: TextStyle(
+                                child: Text(
+                                  'required'.tr,
+                                  style: const TextStyle(
                                     color: Colors.orange,
                                     fontSize: 10,
                                     fontWeight: FontWeight.w600,
@@ -248,7 +277,7 @@ class _PartTile extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          "Qty: ${part.quantity}  •  \$${part.price}",
+                          '${'qty'.tr}: ${part.quantity}  •  ${part.price} ${'currency'.tr}',
                           style: const TextStyle(
                             color: Colors.white38,
                             fontSize: 12,
@@ -259,7 +288,7 @@ class _PartTile extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    "\$${part.total.toStringAsFixed(2)}",
+                    '${part.total.toStringAsFixed(2)} ${'currency'.tr}',
                     style: TextStyle(
                       color: isSelected ? AppColors.green : Colors.white38,
                       fontSize: 14,
@@ -287,9 +316,9 @@ class _PaymentSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "Payment Method",
-          style: TextStyle(
+        Text(
+          'payment_method'.tr,
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -318,9 +347,7 @@ class _PaymentSection extends StatelessWidget {
                 value: method["value"]!,
                 groupValue: controller.selectedPaymentMethod.value,
                 onChanged: (v) {
-                  if (v != null) {
-                    controller.selectedPaymentMethod.value = v;
-                  }
+                  if (v != null) controller.selectedPaymentMethod.value = v;
                 },
                 title: Text(
                   method["label"]!,
@@ -369,16 +396,16 @@ class _TotalRow extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              "Selected Total",
-              style: TextStyle(
+            Text(
+              'selected_total'.tr,
+              style: const TextStyle(
                 color: Colors.white70,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
             ),
             Text(
-              "\$${total.toStringAsFixed(2)}",
+              '${total.toStringAsFixed(2)} ${'currency'.tr}',
               style: const TextStyle(
                 color: AppColors.green,
                 fontSize: 18,
@@ -392,11 +419,124 @@ class _TotalRow extends StatelessWidget {
   }
 }
 
+// ── Approve Location Card ─────────────────────────────────────────────────────
+
+class _ApproveLocationCard extends StatelessWidget {
+  final String? locationName;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _ApproveLocationCard({
+    required this.locationName,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'pickup_location'.tr,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 12),
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AppColors.blue,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: isSelected
+                    ? AppColors.green.withValues(alpha: 0.4)
+                    : Colors.white24,
+                width: isSelected ? 1.5 : 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? AppColors.green.withValues(alpha: 0.15)
+                        : Colors.white10,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    isSelected
+                        ? Icons.location_on_rounded
+                        : Icons.add_location_alt_rounded,
+                    color: isSelected ? AppColors.green : Colors.white54,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        isSelected
+                            ? 'location_selected'.tr
+                            : 'set_pickup_location'.tr,
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : Colors.white70,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (isSelected &&
+                          locationName != null &&
+                          locationName!.isNotEmpty) ...[
+                        const SizedBox(height: 3),
+                        Text(
+                          locationName!,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.55),
+                            fontSize: 11,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                Icon(
+                  isSelected
+                      ? Icons.edit_location_alt_rounded
+                      : Icons.arrow_forward_ios_rounded,
+                  color: isSelected ? AppColors.green : Colors.white38,
+                  size: isSelected ? 20 : 14,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 // ── Confirm button ────────────────────────────────────────────────────────────
 
 class _ConfirmButton extends StatelessWidget {
   final RequestDetailsController controller;
-  const _ConfirmButton({required this.controller});
+  final bool locationSelected;
+
+  const _ConfirmButton({
+    required this.controller,
+    required this.locationSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -405,7 +545,7 @@ class _ConfirmButton extends StatelessWidget {
         width: double.infinity,
         height: AppSizes.buttonHeight,
         child: ElevatedButton(
-          onPressed: controller.isApproving.value
+          onPressed: (controller.isApproving.value || !locationSelected)
               ? null
               : controller.approveRequest,
           style: ElevatedButton.styleFrom(
@@ -425,18 +565,20 @@ class _ConfirmButton extends StatelessWidget {
                     strokeWidth: 2.5,
                   ),
                 )
-              : const Row(
+              : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.check_circle_rounded,
                       color: Colors.white,
                       size: 20,
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Text(
-                      "Confirm Approval",
-                      style: TextStyle(
+                      locationSelected
+                          ? 'confirm_approval'.tr
+                          : 'select_location_first'.tr,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

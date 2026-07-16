@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../data/models/accessory_model.dart';
@@ -64,10 +65,10 @@ class AccessoryCard extends StatelessWidget {
                             topRight: Radius.circular(16),
                           ),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Text(
-                            'نفد المخزون',
-                            style: TextStyle(
+                            'out_of_stock'.tr,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
@@ -101,7 +102,7 @@ class AccessoryCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${accessory.price.toStringAsFixed(2)} SP',
+                        '${accessory.price.toStringAsFixed(2)} ${'currency'.tr}',
                         style: const TextStyle(
                           color: AppColors.green,
                           fontWeight: FontWeight.bold,

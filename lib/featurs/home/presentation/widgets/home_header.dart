@@ -32,7 +32,7 @@ class HomeHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Hello, ${controller.customerName}",
+              '${'hello'.tr}, ${controller.customerName}',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 24,
@@ -40,7 +40,7 @@ class HomeHeader extends StatelessWidget {
               ),
             ),
             SizedBox(height: AppSizes.space5),
-            Text("Welcome back to ShamSung", style: AppTextStyles.body),
+            Text('welcome_back'.tr, style: AppTextStyles.body),
           ],
         ),
         GestureDetector(

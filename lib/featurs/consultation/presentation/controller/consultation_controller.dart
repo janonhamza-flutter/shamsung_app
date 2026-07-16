@@ -136,7 +136,7 @@ class ConsultationController extends GetxController {
   Future<void> submitConsultation() async {
     final msg = messageController.text.trim();
     if (msg.isEmpty) {
-      AppSnackbar.error('Please enter your question first');
+      AppSnackbar.error('enter_question_first'.tr);
       return;
     }
 
@@ -235,7 +235,7 @@ class ConsultationController extends GetxController {
       thread.removeWhere((m) => m.isPending);
       thread.add(
         ChatMessage(
-          text: '⚠ Failed to send. Please try again.',
+          text: 'failed_to_send'.tr,
           isFromUser: false,
           time: DateTime.now(),
         ),

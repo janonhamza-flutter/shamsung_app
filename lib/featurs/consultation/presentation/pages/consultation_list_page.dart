@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../../../core/constants/app_sizes.dart';
 import '../../../../../core/route/app_routes.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/lottie_loading.dart';
 import '../controller/consultation_controller.dart';
 import '../widgets/consultation_card.dart';
 
@@ -19,9 +20,12 @@ class ConsultationListPage extends StatelessWidget {
 
       appBar: AppBar(
         backgroundColor: AppColors.blue,
-        title: const Text(
-          'My Consultations',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: Text(
+          'my_consultations'.tr,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
         leading: IconButton(
@@ -29,7 +33,6 @@ class ConsultationListPage extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         actions: [
-          // Refresh
           IconButton(
             icon: const Icon(Icons.refresh, color: Colors.white),
             onPressed: controller.fetchConsultations,
@@ -42,17 +45,18 @@ class ConsultationListPage extends StatelessWidget {
         onPressed: () => Get.toNamed(AppRoutes.createConsultation),
         backgroundColor: AppColors.green,
         icon: const Icon(Icons.add, color: Colors.white),
-        label: const Text(
-          'New',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        label: Text(
+          'new_consultation_fab'.tr,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
 
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.green),
-          );
+          return LottieLoading(label: 'loading_consultations'.tr);
         }
 
         if (controller.consultations.isEmpty) {
@@ -70,7 +74,6 @@ class ConsultationListPage extends StatelessWidget {
               padding: const EdgeInsets.all(AppSizes.padding),
               itemCount: controller.consultations.length,
               itemBuilder: (_, index) {
-                // كل card تستمع مباشرة للتغييرات في العنصر
                 final c = controller.consultations[index];
                 return ConsultationCard(consultation: c);
               },
@@ -111,19 +114,23 @@ class _EmptyState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          const Text(
-            'No consultations yet',
-            style: TextStyle(
+          Text(
+            'no_consultations_yet'.tr,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Ask AI or a technician\nabout your device issue',
+          Text(
+            'no_consultations_hint'.tr,
             textAlign: TextAlign.center,
-            style: TextStyle(color: AppColors.grey, fontSize: 14, height: 1.5),
+            style: const TextStyle(
+              color: AppColors.grey,
+              fontSize: 14,
+              height: 1.5,
+            ),
           ),
           const SizedBox(height: 32),
           ElevatedButton.icon(
@@ -136,9 +143,9 @@ class _EmptyState extends StatelessWidget {
               ),
             ),
             icon: const Icon(Icons.add, color: Colors.white),
-            label: const Text(
-              'Start a Consultation',
-              style: TextStyle(
+            label: Text(
+              'start_consultation'.tr,
+              style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 15,

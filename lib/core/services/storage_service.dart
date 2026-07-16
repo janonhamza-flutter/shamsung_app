@@ -128,6 +128,19 @@ class StorageService {
   }
 
   // =========================
+  // LANGUAGE
+  // =========================
+
+  void saveLanguage(String languageCode) {
+    _box.write('languageCode', languageCode);
+  }
+
+  /// Returns saved language code, defaults to 'en'
+  String getLanguage() {
+    return _box.read('languageCode') ?? 'en';
+  }
+
+  // =========================
   // LOGIN CHECK
   // =========================
 

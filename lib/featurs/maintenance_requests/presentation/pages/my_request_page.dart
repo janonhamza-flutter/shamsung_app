@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/route/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/exit_scope.dart';
 import '../../../home/presentation/widgets/bottom_nav_bar.dart';
 import '../controller/my_requests_controller.dart';
 import '../widgets/request_card_widget.dart';
@@ -15,60 +17,68 @@ class MyRequestsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBlue,
-      bottomNavigationBar: const BottomNavBar(currentIndex: 1),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: AppColors.green,
-        onPressed: () => Get.toNamed(AppRoutes.createRequest),
-        icon: const Icon(Icons.add_rounded, color: Colors.white),
-        label: const Text(
-          "New Request",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-      ),
-      appBar: AppBar(
+    return ExitScope(
+      child: Scaffold(
         backgroundColor: AppColors.darkBlue,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: const Text(
-          "My Requests",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+        bottomNavigationBar: const BottomNavBar(currentIndex: 1),
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: AppColors.green,
+          onPressed: () => Get.toNamed(AppRoutes.createRequest),
+          icon: const Icon(Icons.add_rounded, color: Colors.white),
+          label: Text(
+            'new_request'.tr,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh_rounded, color: Colors.white70),
-            onPressed: controller.getRequests,
-            tooltip: "Refresh",
+        appBar: AppBar(
+          backgroundColor: AppColors.darkBlue,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          title: Text(
+            'my_requests'.tr,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          const SizedBox(width: 4),
-        ],
+        ),
+        body: Obx(() {
+          if (controller.isLoading.value) return _buildLoadingState();
+          if (controller.errorMessage.value.isNotEmpty) {
+            return _buildErrorState(controller.errorMessage.value);
+          }
+          if (controller.requests.isEmpty) return _buildEmptyState();
+          return _buildRequestsList();
+        }),
       ),
-      body: Obx(() {
-        if (controller.isLoading.value) return _buildLoadingState();
-        if (controller.errorMessage.value.isNotEmpty) {
-          return _buildErrorState(controller.errorMessage.value);
-        }
-        if (controller.requests.isEmpty) return _buildEmptyState();
-        return _buildRequestsList();
-      }),
     );
   }
 
   Widget _buildLoadingState() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(color: AppColors.green),
-          SizedBox(height: 16),
+          Lottie.asset(
+            'assets/animations/loading.json',
+            width: 160,
+            height: 160,
+            fit: BoxFit.contain,
+            repeat: true,
+            delegates: LottieDelegates(
+              values: [
+                ValueDelegate.color(const ['**'], value: AppColors.green),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
           Text(
-            "Loading requests...",
-            style: TextStyle(color: Colors.white54, fontSize: 14),
+            'loading_requests'.tr,
+            style: const TextStyle(color: Colors.white54, fontSize: 14),
           ),
         ],
       ),
@@ -103,7 +113,10 @@ class MyRequestsPage extends StatelessWidget {
                 ),
               ),
               icon: const Icon(Icons.refresh, color: Colors.white),
-              label: const Text("Retry", style: TextStyle(color: Colors.white)),
+              label: Text(
+                'retry'.tr,
+                style: const TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),
@@ -138,18 +151,18 @@ class MyRequestsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              "No Requests Yet",
-              style: TextStyle(
+            Text(
+              'no_requests_yet'.tr,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              "Submit your first maintenance request\nand track it here",
-              style: TextStyle(color: Colors.white54, fontSize: 14),
+            Text(
+              'no_requests_hint'.tr,
+              style: const TextStyle(color: Colors.white54, fontSize: 14),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
@@ -166,9 +179,9 @@ class MyRequestsPage extends StatelessWidget {
                 ),
               ),
               icon: const Icon(Icons.add_rounded, color: Colors.white),
-              label: const Text(
-                "Create Request",
-                style: TextStyle(
+              label: Text(
+                'create_request'.tr,
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),

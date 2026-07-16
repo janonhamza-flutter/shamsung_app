@@ -13,7 +13,7 @@ import 'package:shamsoung/main.dart';
 void main() {
   testWidgets('app builds successfully', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const MyApp(initialRoute: '/login'),
+      const MyApp(initialRoute: '/', locale: Locale('en', 'US')),
     );
     await tester.pumpAndSettle();
 

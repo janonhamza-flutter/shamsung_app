@@ -1,5 +1,6 @@
 class AppRoutes {
   static const splash = "/";
+  static const loading = "/loading";
   static const onboarding = "/onboarding";
   static const sendOtp = "/send-otp";
   static const otp = "/otp";
@@ -25,4 +26,10 @@ class AppRoutes {
   static const consultations = "/consultations";
   static const createConsultation = "/create-consultation";
   static const consultationChat = "/consultation-chat";
+
+  // Shops
+  static const nearestShop = "/shops/nearest";
+
+  // Deliveries
+  static const myDeliveries = "/my-deliveries";
 }

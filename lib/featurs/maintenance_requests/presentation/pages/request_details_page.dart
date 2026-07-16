@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -24,9 +25,8 @@ class RequestDetailsPage extends StatelessWidget {
       appBar: _buildAppBar(),
       bottomNavigationBar: Obx(() {
         final status = controller.request.value?.status.toLowerCase() ?? '';
-        if (status != 'waiting_customer_approval') {
+        if (status != 'waiting_customer_approval')
           return const SizedBox.shrink();
-        }
         return ApproveRejectBar(controller: controller);
       }),
       body: Obx(() {
@@ -38,8 +38,6 @@ class RequestDetailsPage extends StatelessWidget {
     );
   }
 
-  // ── AppBar ────────────────────────────────────────────────────────────────
-
   AppBar _buildAppBar() {
     return AppBar(
       backgroundColor: AppColors.darkBlue,
@@ -48,9 +46,9 @@ class RequestDetailsPage extends StatelessWidget {
         icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
         onPressed: () => Get.back(),
       ),
-      title: const Text(
-        "Request Details",
-        style: TextStyle(
+      title: Text(
+        'request_details'.tr,
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 18,
           fontWeight: FontWeight.bold,
@@ -78,7 +76,7 @@ class RequestDetailsPage extends StatelessWidget {
                       Icons.block_rounded,
                       color: Colors.redAccent,
                     ),
-                    tooltip: "Cancel Request",
+                    tooltip: 'cancel_request'.tr,
                     onPressed: () =>
                         CancelDialogWidget.show(Get.context!, controller),
                   ),
@@ -93,17 +91,26 @@ class RequestDetailsPage extends StatelessWidget {
     );
   }
 
-  // ── States ────────────────────────────────────────────────────────────────
-
-  Widget _loadingState() => const Center(
+  Widget _loadingState() => Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        CircularProgressIndicator(color: AppColors.green),
-        SizedBox(height: 16),
+        Lottie.asset(
+          'assets/animations/loading.json',
+          width: 160,
+          height: 160,
+          fit: BoxFit.contain,
+          repeat: true,
+          delegates: LottieDelegates(
+            values: [
+              ValueDelegate.color(const ['**'], value: AppColors.green),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
         Text(
-          "Loading details...",
-          style: TextStyle(color: Colors.white54, fontSize: 14),
+          'loading_details'.tr,
+          style: const TextStyle(color: Colors.white54, fontSize: 14),
         ),
       ],
     ),
@@ -136,14 +143,15 @@ class RequestDetailsPage extends StatelessWidget {
               ),
             ),
             icon: const Icon(Icons.refresh, color: Colors.white),
-            label: const Text("Retry", style: TextStyle(color: Colors.white)),
+            label: Text(
+              'retry'.tr,
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
     ),
   );
-
-  // ── Content ───────────────────────────────────────────────────────────────
 
   Widget _buildContent(MaintenanceRequestDetailsModel req) {
     return SingleChildScrollView(
@@ -153,23 +161,19 @@ class RequestDetailsPage extends StatelessWidget {
         children: [
           RequestStatusBanner(deviceModel: req.deviceModel, status: req.status),
           const SizedBox(height: AppSizes.space20),
-
           RequestTrackingCard(trackingNumber: req.trackingNumber),
           const SizedBox(height: AppSizes.space20),
-
           DeviceSection(req: req),
           EstimateSection(req: req, controller: controller),
           if (req.shop != null) ShopSection(shop: req.shop!),
           PartsSection(req: req, controller: controller),
-
           if (req.rejectionReason != null &&
               req.rejectionReason!.isNotEmpty) ...[
-            const RequestSectionTitle(title: "Rejection Reason"),
+            RequestSectionTitle(title: 'rejection_reason'.tr),
             const SizedBox(height: AppSizes.space10),
             RequestRejectionCard(reason: req.rejectionReason!),
             const SizedBox(height: AppSizes.space20),
           ],
-
           const SizedBox(height: AppSizes.space30),
         ],
       ),

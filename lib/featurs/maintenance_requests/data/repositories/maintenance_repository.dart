@@ -1,4 +1,5 @@
 import '../../../../core/services/dio_service.dart';
+import '../../../shops/data/models/shop_model.dart';
 
 class MaintenanceRepository {
   final DioService dioService = DioService();
@@ -16,5 +17,17 @@ class MaintenanceRepository {
         "problem_description": problemDescription,
       },
     );
+  }
+
+  /// جلب جميع المتاجر عبر nearest shops بموقع مركز دمشق كافتراضي
+  Future<List<ShopModel>> getAllShops() async {
+    final response = await dioService.postData(
+      endpoint: '/shops/nearest',
+      data: {'latitude': 33.5138, 'longitude': 36.2765},
+    );
+    final List<dynamic> raw = response.data['data'] as List<dynamic>;
+    return raw
+        .map((e) => ShopModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }

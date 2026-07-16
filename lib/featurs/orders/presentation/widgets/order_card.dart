@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../data/models/order_model.dart';
@@ -28,29 +29,21 @@ class OrderCard extends StatelessWidget {
               borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Order number
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.receipt_long_rounded,
-                      color: AppColors.green,
-                      size: 18,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      order.orderNumber,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
+                const Icon(
+                  Icons.receipt_long_rounded,
+                  color: AppColors.green,
+                  size: 18,
                 ),
-                // Status badge
-                _StatusBadge(status: order.status),
+                const SizedBox(width: 8),
+                Text(
+                  order.orderNumber,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
               ],
             ),
           ),
@@ -97,7 +90,7 @@ class OrderCard extends StatelessWidget {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            item.accessory?.name ?? 'منتج',
+                            item.accessory?.name ?? 'product'.tr,
                             style: const TextStyle(
                               color: Colors.white60,
                               fontSize: 13,
@@ -106,7 +99,7 @@ class OrderCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${item.quantity} × ${item.unitPrice.toStringAsFixed(2)} SP',
+                          '${item.quantity} × ${item.unitPrice.toStringAsFixed(2)} ${'currency'.tr}',
                           style: const TextStyle(
                             color: Colors.white54,
                             fontSize: 12,
@@ -123,7 +116,6 @@ class OrderCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Payment method
                     Row(
                       children: [
                         Icon(
@@ -136,8 +128,8 @@ class OrderCard extends StatelessWidget {
                         const SizedBox(width: 5),
                         Text(
                           order.paymentMethod == 'cash_on_delivery'
-                              ? 'الدفع عند الاستلام'
-                              : 'دفع إلكتروني',
+                              ? 'payment_cash_on_delivery'.tr
+                              : 'payment_pay_after_service'.tr,
                           style: const TextStyle(
                             color: Colors.white38,
                             fontSize: 12,
@@ -145,9 +137,8 @@ class OrderCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    // Total
                     Text(
-                      '${order.totalAmount.toStringAsFixed(2)} SP',
+                      '${order.totalAmount.toStringAsFixed(2)} ${'currency'.tr}',
                       style: const TextStyle(
                         color: AppColors.green,
                         fontWeight: FontWeight.bold,
@@ -163,83 +154,4 @@ class OrderCard extends StatelessWidget {
       ),
     );
   }
-}
-
-// ── Status Badge ──────────────────────────────────────────────────────────────
-
-class _StatusBadge extends StatelessWidget {
-  final String status;
-
-  const _StatusBadge({required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    final config = _statusConfig(status);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: config.color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: config.color.withValues(alpha: 0.4)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(config.icon, color: config.color, size: 12),
-          const SizedBox(width: 4),
-          Text(
-            config.label,
-            style: TextStyle(
-              color: config.color,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  _StatusConfig _statusConfig(String status) {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return _StatusConfig(
-          label: 'قيد الانتظار',
-          color: const Color(0xFFFFB300),
-          icon: Icons.hourglass_empty_rounded,
-        );
-      case 'processing':
-        return _StatusConfig(
-          label: 'جاري المعالجة',
-          color: const Color(0xFF42A5F5),
-          icon: Icons.sync_rounded,
-        );
-      case 'completed':
-        return _StatusConfig(
-          label: 'مكتمل',
-          color: AppColors.green,
-          icon: Icons.check_circle_rounded,
-        );
-      case 'cancelled':
-        return _StatusConfig(
-          label: 'ملغى',
-          color: const Color(0xFFEF5350),
-          icon: Icons.cancel_rounded,
-        );
-      default:
-        return _StatusConfig(
-          label: status,
-          color: Colors.white54,
-          icon: Icons.info_outline_rounded,
-        );
-    }
-  }
-}
-
-class _StatusConfig {
-  final String label;
-  final Color color;
-  final IconData icon;
-
-  _StatusConfig({required this.label, required this.color, required this.icon});
 }

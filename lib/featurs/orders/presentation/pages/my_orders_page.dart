@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:shamsoung/core/route/app_routes.dart';
 
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/lottie_loading.dart';
 import '../controllers/orders_controller.dart';
 import '../widgets/order_card.dart';
 
@@ -17,9 +18,12 @@ class MyOrdersPage extends StatelessWidget {
       backgroundColor: AppColors.darkBlue,
       appBar: AppBar(
         backgroundColor: AppColors.blue,
-        title: const Text(
-          'طلباتي',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: Text(
+          'my_orders'.tr,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
@@ -43,7 +47,7 @@ class MyOrdersPage extends StatelessWidget {
                       color: Colors.white,
                     ),
                     onPressed: controller.fetchMyOrders,
-                    tooltip: 'تحديث',
+                    tooltip: 'refresh'.tr,
                   ),
           ),
         ],
@@ -51,9 +55,7 @@ class MyOrdersPage extends StatelessWidget {
       body: Obx(() {
         // ── Loading state ────────────────────────────────────────────────
         if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.green),
-          );
+          return LottieLoading(label: 'loading_orders'.tr);
         }
 
         // ── Error state ──────────────────────────────────────────────────
@@ -114,9 +116,9 @@ class _ErrorView extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh_rounded, color: Colors.white),
-              label: const Text(
-                'إعادة المحاولة',
-                style: TextStyle(color: Colors.white),
+              label: Text(
+                'retry'.tr,
+                style: const TextStyle(color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.green,
@@ -157,18 +159,18 @@ class _EmptyView extends StatelessWidget {
               size: 80,
             ),
             const SizedBox(height: 20),
-            const Text(
-              'لا توجد طلبات حتى الآن',
-              style: TextStyle(
+            Text(
+              'no_orders_yet'.tr,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'ابدأ التسوق وستظهر طلباتك هنا',
-              style: TextStyle(color: Colors.white54, fontSize: 14),
+            Text(
+              'no_orders_hint'.tr,
+              style: const TextStyle(color: Colors.white54, fontSize: 14),
             ),
             const SizedBox(height: 28),
             ElevatedButton.icon(
@@ -177,9 +179,9 @@ class _EmptyView extends StatelessWidget {
                 Icons.shopping_bag_outlined,
                 color: Colors.white,
               ),
-              label: const Text(
-                'تصفح المتجر',
-                style: TextStyle(color: Colors.white),
+              label: Text(
+                'browse_store'.tr,
+                style: const TextStyle(color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.green,

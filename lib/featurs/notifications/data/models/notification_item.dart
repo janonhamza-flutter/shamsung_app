@@ -1,9 +1,11 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:get/get.dart';
 
 class NotificationItem {
   final String id;
   final String title;
   final String body;
+  final String? type;
   final DateTime createdAt;
   bool isRead;
   final Map<String, dynamic> data;
@@ -12,6 +14,7 @@ class NotificationItem {
     required this.id,
     required this.title,
     required this.body,
+    this.type,
     required this.createdAt,
     this.isRead = false,
     this.data = const {},
@@ -20,8 +23,8 @@ class NotificationItem {
   factory NotificationItem.fromRemoteMessage(RemoteMessage message) {
     return NotificationItem(
       id: message.messageId ?? DateTime.now().microsecondsSinceEpoch.toString(),
-      title: message.notification?.title ?? 'New notification',
-      body: message.notification?.body ?? 'You have a new message',
+      title: message.notification?.title ?? 'notifications'.tr,
+      body: message.notification?.body ?? '',
       createdAt: DateTime.now(),
       data: message.data,
     );
@@ -30,12 +33,27 @@ class NotificationItem {
   factory NotificationItem.fromMap(Map<String, dynamic> map) {
     return NotificationItem(
       id: map['id']?.toString() ?? '',
-      title: map['title']?.toString() ?? 'New notification',
+      title: map['title']?.toString() ?? 'notifications'.tr,
       body: map['body']?.toString() ?? '',
-      createdAt: DateTime.tryParse(map['createdAt']?.toString() ?? '') ??
+      createdAt:
+          DateTime.tryParse(map['createdAt']?.toString() ?? '') ??
           DateTime.now(),
       isRead: map['isRead'] == true,
       data: Map<String, dynamic>.from(map['data'] ?? const {}),
+    );
+  }
+
+  factory NotificationItem.fromApi(Map<String, dynamic> json) {
+    return NotificationItem(
+      id: json['id']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      body: json['body']?.toString() ?? '',
+      type: json['type']?.toString(),
+      createdAt:
+          DateTime.tryParse(json['created_at']?.toString() ?? '') ??
+          DateTime.now(),
+      isRead: json['is_read'] == true,
+      data: Map<String, dynamic>.from(json['data'] ?? const {}),
     );
   }
 

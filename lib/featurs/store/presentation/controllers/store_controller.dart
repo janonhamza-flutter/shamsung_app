@@ -16,6 +16,10 @@ class StoreController extends GetxController {
   final RxString errorMessage = ''.obs;
   final RxString searchQuery = ''.obs;
 
+  /// null = عرض كل المتجر | int = تصفية بفرع معين (من nearest shop)
+  final Rx<int?> filterShopId = Rx<int?>(null);
+  final RxString filterShopName = ''.obs;
+
   // Details state
   final Rx<AccessoryModel?> selectedAccessory = Rx<AccessoryModel?>(null);
   final RxBool isLoadingDetails = false.obs;
@@ -35,15 +39,26 @@ class StoreController extends GetxController {
 
   // ── Computed ────────────────────────────────────────────────────────────
   List<AccessoryModel> get filteredAccessories {
-    if (searchQuery.value.isEmpty) return accessories;
-    final q = searchQuery.value.toLowerCase();
-    return accessories
-        .where(
-          (a) =>
-              a.name.toLowerCase().contains(q) ||
-              a.description.toLowerCase().contains(q),
-        )
-        .toList();
+    var list = accessories.toList();
+
+    // تصفية بالفرع إذا كان محدداً
+    if (filterShopId.value != null) {
+      list = list.where((a) => a.shopId == filterShopId.value).toList();
+    }
+
+    // تصفية بالبحث
+    if (searchQuery.value.isNotEmpty) {
+      final q = searchQuery.value.toLowerCase();
+      list = list
+          .where(
+            (a) =>
+                a.name.toLowerCase().contains(q) ||
+                a.description.toLowerCase().contains(q),
+          )
+          .toList();
+    }
+
+    return list;
   }
 
   int get cartCount => cartItems.fold(0, (sum, i) => sum + i.quantity);
@@ -54,6 +69,12 @@ class StoreController extends GetxController {
   void onInit() {
     super.onInit();
     fetchAccessories();
+  }
+
+  /// يُستدعى من StorePage في كل مرة تُفتح فيها الصفحة
+  void applyShopFilter({int? shopId, String? shopName}) {
+    filterShopId.value = shopId;
+    filterShopName.value = shopName ?? '';
   }
 
   // ── Fetch Accessories ────────────────────────────────────────────────────
@@ -233,11 +254,19 @@ class StoreController extends GetxController {
 
   // ── Checkout — POST /checkout ─────────────────────────────────────────
   /// Returns true on success, false on failure.
-  Future<bool> checkout({required String paymentMethod}) async {
+  Future<bool> checkout({
+    required String paymentMethod,
+    required double latitude,
+    required double longitude,
+  }) async {
     if (isCheckingOut.value) return false;
     isCheckingOut.value = true;
     try {
-      final result = await _repository.checkout(paymentMethod: paymentMethod);
+      final result = await _repository.checkout(
+        paymentMethod: paymentMethod,
+        latitude: latitude,
+        longitude: longitude,
+      );
       lastCheckoutResult.value = result;
       clearCart();
       return true;

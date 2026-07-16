@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
 import '../../../../../core/theme/app_colors.dart';
@@ -7,7 +8,6 @@ import 'approve_sheet_widget.dart';
 import 'reject_dialog_widget.dart';
 
 /// Bottom action bar shown when status == waiting_customer_approval.
-/// Contains Reject (outlined) + Review & Approve (filled) buttons.
 class ApproveRejectBar extends StatelessWidget {
   final RequestDetailsController controller;
 
@@ -55,9 +55,9 @@ class ApproveRejectBar extends StatelessWidget {
                       color: Colors.redAccent,
                       size: 18,
                     ),
-                    label: const Text(
-                      "Reject",
-                      style: TextStyle(
+                    label: Text(
+                      'reject'.tr,
+                      style: const TextStyle(
                         color: Colors.redAccent,
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -92,9 +92,9 @@ class ApproveRejectBar extends StatelessWidget {
                       color: Colors.white,
                       size: 18,
                     ),
-                    label: const Text(
-                      "Review & Approve",
-                      style: TextStyle(
+                    label: Text(
+                      'review_and_approve'.tr,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -121,14 +121,14 @@ class _InfoBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
       ),
-      child: const Row(
+      child: Row(
         children: [
-          Icon(Icons.info_outline_rounded, color: Colors.amber, size: 16),
-          SizedBox(width: 8),
+          const Icon(Icons.info_outline_rounded, color: Colors.amber, size: 16),
+          const SizedBox(width: 8),
           Expanded(
             child: Text(
-              "The technician is waiting for your approval to start the repair",
-              style: TextStyle(color: Colors.amber, fontSize: 12),
+              'technician_waiting_approval'.tr,
+              style: const TextStyle(color: Colors.amber, fontSize: 12),
             ),
           ),
         ],

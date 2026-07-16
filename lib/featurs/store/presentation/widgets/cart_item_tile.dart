@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../data/models/cart_item_model.dart';
@@ -93,7 +94,7 @@ class CartItemTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    '${item.accessory.price.toStringAsFixed(2)} SP',
+                    '${item.accessory.price.toStringAsFixed(2)} ${'currency'.tr}',
                     style: const TextStyle(
                       color: AppColors.green,
                       fontSize: 13,
@@ -133,7 +134,7 @@ class CartItemTile extends StatelessWidget {
                       ),
                       const Spacer(),
                       Text(
-                        'الإجمالي: ${item.totalPrice.toStringAsFixed(2)} SP',
+                        '${'item_total'.tr}: ${item.totalPrice.toStringAsFixed(2)} ${'currency'.tr}',
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.6),
                           fontSize: 12,

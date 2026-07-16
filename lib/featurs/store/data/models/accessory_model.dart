@@ -48,9 +48,17 @@ class AccessoryModel {
       price: double.tryParse(json['price'].toString()) ?? 0.0,
       stockQuantity: json['stock_quantity'] ?? 0,
       isActive: json['is_active'] ?? false,
-      imageUrl: json['image_url'] ?? '',
+      imageUrl: _fixImageUrl(json['image_url'] ?? ''),
       createdAt: json['created_at'] ?? '',
       shop: json['shop'] != null ? ShopModel.fromJson(json['shop']) : null,
     );
+  }
+
+  /// يستبدل localhost/127.0.0.1 بالـ base URL الحقيقي للـ server
+  static String _fixImageUrl(String url) {
+    if (url.isEmpty) return url;
+    return url
+        .replaceFirst('http://localhost:8000', 'https://shamsung.haderin.sy')
+        .replaceFirst('http://127.0.0.1:8000', 'https://shamsung.haderin.sy');
   }
 }

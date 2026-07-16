@@ -21,6 +21,8 @@ import '../../featurs/notifications/presentation/pages/notifications_page.dart';
 import '../../featurs/onboarding/presentation/bindings/onboarding_binding.dart';
 import '../../featurs/onboarding/presentation/pages/onboarding_page.dart';
 import '../../featurs/profile/presentation/pages/about_page.dart';
+import '../../featurs/loading/presentation/bindings/loading_binding.dart';
+import '../../featurs/loading/presentation/pages/loading_page.dart';
 import '../../featurs/splash/presentation/bindings/splash_binding.dart';
 import '../../featurs/splash/presentation/pages/splash_page.dart';
 import '../../featurs/orders/presentation/bindings/orders_binding.dart';
@@ -30,6 +32,9 @@ import '../../featurs/store/presentation/pages/accessory_details_page.dart';
 import '../../featurs/store/presentation/pages/cart_page.dart';
 import '../../featurs/store/presentation/pages/checkout_page.dart';
 import '../../featurs/store/presentation/pages/store_page.dart';
+import '../../featurs/shops/presentation/pages/nearest_shop_page.dart';
+import '../../featurs/deliveries/presentation/bindings/deliveries_binding.dart';
+import '../../featurs/deliveries/presentation/pages/my_deliveries_page.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -38,6 +43,11 @@ class AppPages {
       name: AppRoutes.splash,
       page: () => SplashPage(),
       binding: SplashBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.loading,
+      page: () => LoadingPage(),
+      binding: LoadingBinding(),
     ),
     GetPage(
       name: AppRoutes.onboarding,
@@ -118,6 +128,14 @@ class AppPages {
         initialConsultation: Get.arguments as ConsultationModel?,
       ),
       binding: ConsultationBinding(),
+    ),
+    // Shops
+    GetPage(name: AppRoutes.nearestShop, page: () => NearestShopPage()),
+    // Deliveries
+    GetPage(
+      name: AppRoutes.myDeliveries,
+      page: () => MyDeliveriesPage(),
+      binding: DeliveriesBinding(),
     ),
   ];
 }

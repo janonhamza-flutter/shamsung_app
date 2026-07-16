@@ -5,7 +5,6 @@ import '../../../../../core/theme/app_colors.dart';
 import '../controller/request_details_controller.dart';
 
 /// Confirmation dialog for cancelling a maintenance request.
-/// Call [CancelDialogWidget.show] to open it.
 class CancelDialogWidget extends StatelessWidget {
   final RequestDetailsController controller;
 
@@ -47,18 +46,18 @@ class CancelDialogWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              "Cancel Request?",
-              style: TextStyle(
+            Text(
+              'cancel_request_title'.tr,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              "This action cannot be undone. The request will be permanently cancelled.",
-              style: TextStyle(
+            Text(
+              'cancel_request_body'.tr,
+              style: const TextStyle(
                 color: Colors.white54,
                 fontSize: 13,
                 height: 1.5,
@@ -78,9 +77,9 @@ class CancelDialogWidget extends StatelessWidget {
                         side: const BorderSide(color: Colors.white24),
                       ),
                     ),
-                    child: const Text(
-                      "Keep It",
-                      style: TextStyle(
+                    child: Text(
+                      'keep_it'.tr,
+                      style: const TextStyle(
                         color: Colors.white70,
                         fontWeight: FontWeight.w600,
                       ),
@@ -107,9 +106,9 @@ class CancelDialogWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text(
-                        "Cancel Request",
-                        style: TextStyle(
+                      child: Text(
+                        'cancel_request'.tr,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),

@@ -5,7 +5,6 @@ import '../../../../../core/theme/app_colors.dart';
 import '../controller/request_details_controller.dart';
 
 /// Dialog for rejecting a maintenance request.
-/// Call [RejectDialogWidget.show] to open it.
 class RejectDialogWidget extends StatelessWidget {
   final RequestDetailsController controller;
 
@@ -19,11 +18,11 @@ class RejectDialogWidget extends StatelessWidget {
     );
   }
 
-  static const _presets = [
-    "Price is too high",
-    "Found another service",
-    "Problem resolved itself",
-    "Changed my mind",
+  List<String> get _presets => [
+    'reject_preset_1'.tr,
+    'reject_preset_2'.tr,
+    'reject_preset_3'.tr,
+    'reject_preset_4'.tr,
   ];
 
   @override
@@ -45,9 +44,9 @@ class RejectDialogWidget extends StatelessWidget {
           children: [
             _DialogHeader(),
             const SizedBox(height: 20),
-            const Text(
-              "Quick Reasons",
-              style: TextStyle(color: Colors.white54, fontSize: 12),
+            Text(
+              'quick_reasons'.tr,
+              style: const TextStyle(color: Colors.white54, fontSize: 12),
             ),
             const SizedBox(height: 8),
             _PresetChips(
@@ -83,21 +82,21 @@ class _DialogHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Reject Request",
-                style: TextStyle(
+                'reject_request'.tr,
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
-                "Tell us why you're rejecting",
-                style: TextStyle(color: Colors.white54, fontSize: 12),
+                'reject_request_sub'.tr,
+                style: const TextStyle(color: Colors.white54, fontSize: 12),
               ),
             ],
           ),
@@ -163,11 +162,11 @@ class _ReasonTextField extends StatelessWidget {
         controller: controller,
         maxLines: 3,
         style: const TextStyle(color: Colors.white, fontSize: 14),
-        decoration: const InputDecoration(
-          hintText: "Or write your own reason...",
-          hintStyle: TextStyle(color: Colors.white30, fontSize: 14),
+        decoration: InputDecoration(
+          hintText: 'write_own_reason'.tr,
+          hintStyle: const TextStyle(color: Colors.white30, fontSize: 14),
           border: InputBorder.none,
-          contentPadding: EdgeInsets.all(14),
+          contentPadding: const EdgeInsets.all(14),
         ),
       ),
     );
@@ -185,9 +184,9 @@ class _ActionButtons extends StatelessWidget {
         Expanded(
           child: TextButton(
             onPressed: () => Get.back(),
-            child: const Text(
-              "Cancel",
-              style: TextStyle(color: Colors.white54),
+            child: Text(
+              'cancel'.tr,
+              style: const TextStyle(color: Colors.white54),
             ),
           ),
         ),
@@ -217,9 +216,9 @@ class _ActionButtons extends StatelessWidget {
                         strokeWidth: 2,
                       ),
                     )
-                  : const Text(
-                      "Confirm Reject",
-                      style: TextStyle(
+                  : Text(
+                      'confirm_reject'.tr,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),

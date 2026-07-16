@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/map_picker_page.dart';
 import '../controllers/store_controller.dart';
 
 class CheckoutPage extends StatefulWidget {
@@ -14,102 +15,30 @@ class CheckoutPage extends StatefulWidget {
 class _CheckoutPageState extends State<CheckoutPage> {
   final StoreController controller = Get.find<StoreController>();
 
-  // Selected payment method: "cash_on_delivery" | "online"
   String _selectedMethod = 'cash_on_delivery';
+  double? _latitude;
+  double? _longitude;
+  String? _locationName;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBlue,
-      appBar: AppBar(
-        backgroundColor: AppColors.blue,
-        title: const Text(
-          'تأكيد الطلب',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ── Order Summary ───────────────────────────────────────────
-            const _SectionTitle(title: 'ملخص الطلب'),
-            const SizedBox(height: 12),
-            _OrderSummaryCard(controller: controller),
-            const SizedBox(height: 28),
-
-            // ── Payment Method ──────────────────────────────────────────
-            const _SectionTitle(title: 'طريقة الدفع'),
-            const SizedBox(height: 12),
-            _PaymentMethodCard(
-              method: 'cash_on_delivery',
-              title: 'الدفع عند الاستلام',
-              subtitle: 'ادفع نقداً عند استلام طلبك',
-              icon: Icons.money_rounded,
-              selected: _selectedMethod == 'cash_on_delivery',
-              onTap: () => setState(() => _selectedMethod = 'cash_on_delivery'),
-            ),
-            const SizedBox(height: 12),
-            _PaymentMethodCard(
-              method: 'online',
-              title: 'الدفع الإلكتروني',
-              subtitle: 'ادفع الآن بطريقة آمنة عبر الإنترنت',
-              icon: Icons.credit_card_rounded,
-              selected: _selectedMethod == 'online',
-              onTap: () => setState(() => _selectedMethod = 'online'),
-            ),
-            const SizedBox(height: 36),
-
-            // ── Confirm Button ──────────────────────────────────────────
-            // Obx wraps only the button so it reacts to isCheckingOut
-            Obx(
-              () => SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: controller.isCheckingOut.value ? null : _onConfirm,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.green,
-                    disabledBackgroundColor: AppColors.green.withValues(
-                      alpha: 0.5,
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  child: controller.isCheckingOut.value
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2.5,
-                          ),
-                        )
-                      : const Text(
-                          'تأكيد الطلب',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  Future<void> _openMapPicker() async {
+    final result = await Get.to<MapPickerResult>(() => const MapPickerPage());
+    if (result != null) {
+      setState(() {
+        _latitude = result.latitude;
+        _longitude = result.longitude;
+        _locationName = result.locationName;
+      });
+    }
   }
 
   Future<void> _onConfirm() async {
-    final success = await controller.checkout(paymentMethod: _selectedMethod);
-    if (success && mounted) {
-      _showSuccessDialog();
-    }
+    if (_latitude == null || _longitude == null) return;
+    final success = await controller.checkout(
+      paymentMethod: _selectedMethod,
+      latitude: _latitude!,
+      longitude: _longitude!,
+    );
+    if (success && mounted) _showSuccessDialog();
   }
 
   void _showSuccessDialog() {
@@ -133,9 +62,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
               size: 72,
             ),
             const SizedBox(height: 16),
-            const Text(
-              'تم تأكيد طلبك!',
-              style: TextStyle(
+            Text(
+              'order_confirmed'.tr,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -144,7 +73,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
             const SizedBox(height: 10),
             if (orderNumber.isNotEmpty)
               Text(
-                'رقم الطلب: $orderNumber',
+                '${'order_number'.tr}: $orderNumber',
                 style: const TextStyle(
                   color: AppColors.green,
                   fontSize: 14,
@@ -154,15 +83,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
             if (shopName.isNotEmpty) ...[
               const SizedBox(height: 6),
               Text(
-               "اسم المركز:$shopName",
+                '${'center_name'.tr}: $shopName',
                 style: const TextStyle(color: Colors.white60, fontSize: 13),
               ),
             ],
             const SizedBox(height: 8),
             Text(
               _selectedMethod == 'cash_on_delivery'
-                  ? 'سيتم التواصل معك لتأكيد موعد التسليم.\nالدفع عند الاستلام.'
-                  : 'تمت معالجة دفعتك الإلكترونية بنجاح.',
+                  ? 'checkout_confirm_cod'.tr
+                  : 'checkout_confirm_pas'.tr,
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.white60, fontSize: 13),
             ),
@@ -174,9 +103,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                Get.back(); // close dialog
-                Get.back(); // back to cart
-                Get.back(); // back to store
+                Get.back();
+                Get.back();
+                Get.back();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.green,
@@ -184,16 +113,120 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text('حسناً', style: TextStyle(color: Colors.white)),
+              child: Text('ok'.tr, style: const TextStyle(color: Colors.white)),
             ),
           ),
         ],
       ),
     );
   }
-}
 
-// ── Section Title ─────────────────────────────────────────────────────────────
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.darkBlue,
+      appBar: AppBar(
+        backgroundColor: AppColors.blue,
+        title: Text(
+          'checkout'.tr,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Order Summary ──────────────────────────────────────
+            _SectionTitle(title: 'order_summary'.tr),
+            const SizedBox(height: 12),
+            _OrderSummaryCard(controller: controller),
+            const SizedBox(height: 28),
+
+            // ── Location ───────────────────────────────────────────
+            _SectionTitle(title: 'delivery_location'.tr),
+            const SizedBox(height: 12),
+            _LocationCard(
+              locationName: _locationName,
+              isSelected: _latitude != null,
+              onTap: _openMapPicker,
+            ),
+            const SizedBox(height: 28),
+
+            // ── Payment Method ─────────────────────────────────────
+            _SectionTitle(title: 'payment_method'.tr),
+            const SizedBox(height: 12),
+            _PaymentMethodCard(
+              method: 'cash_on_delivery',
+              title: 'payment_cash_on_delivery'.tr,
+              subtitle: 'payment_cod_sub'.tr,
+              icon: Icons.money_rounded,
+              selected: _selectedMethod == 'cash_on_delivery',
+              onTap: () => setState(() => _selectedMethod = 'cash_on_delivery'),
+            ),
+            const SizedBox(height: 12),
+            _PaymentMethodCard(
+              method: 'pay_after_service',
+              title: 'payment_pay_after_service'.tr,
+              subtitle: 'payment_pas_sub'.tr,
+              icon: Icons.credit_card_rounded,
+              selected: _selectedMethod == 'pay_after_service',
+              onTap: () =>
+                  setState(() => _selectedMethod = 'pay_after_service'),
+            ),
+            const SizedBox(height: 36),
+
+            // ── Confirm Button ─────────────────────────────────────
+            Obx(
+              () => SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed:
+                      (_latitude == null || controller.isCheckingOut.value)
+                      ? null
+                      : _onConfirm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.green,
+                    disabledBackgroundColor: AppColors.green.withValues(
+                      alpha: 0.5,
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: controller.isCheckingOut.value
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                      : Text(
+                          _latitude == null
+                              ? 'select_delivery_location_first'.tr
+                              : 'place_order'.tr,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _SectionTitle extends StatelessWidget {
   final String title;
@@ -212,7 +245,97 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
-// ── Order Summary Card ────────────────────────────────────────────────────────
+class _LocationCard extends StatelessWidget {
+  final String? locationName;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _LocationCard({
+    required this.locationName,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.blue,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.green.withValues(alpha: 0.4)
+                : Colors.white24,
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? AppColors.green.withValues(alpha: 0.15)
+                    : Colors.white10,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                isSelected
+                    ? Icons.location_on_rounded
+                    : Icons.add_location_alt_rounded,
+                color: isSelected ? AppColors.green : Colors.white54,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    isSelected
+                        ? 'location_selected'.tr
+                        : 'set_delivery_location'.tr,
+                    style: TextStyle(
+                      color: isSelected ? Colors.white : Colors.white70,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  if (isSelected &&
+                      locationName != null &&
+                      locationName!.isNotEmpty) ...[
+                    const SizedBox(height: 3),
+                    Text(
+                      locationName!,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.55),
+                        fontSize: 12,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Icon(
+              isSelected
+                  ? Icons.edit_location_alt_rounded
+                  : Icons.arrow_forward_ios_rounded,
+              color: isSelected ? AppColors.green : Colors.white38,
+              size: isSelected ? 22 : 16,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _OrderSummaryCard extends StatelessWidget {
   final StoreController controller;
@@ -228,7 +351,6 @@ class _OrderSummaryCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Items list — static snapshot, no reactive needed here
           ...controller.cartItems.map(
             (item) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 6),
@@ -247,7 +369,7 @@ class _OrderSummaryCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    '${item.quantity} × ${item.accessory.price.toStringAsFixed(2)} SP',
+                    '${item.quantity} × ${item.accessory.price.toStringAsFixed(2)} ${'currency'.tr}',
                     style: const TextStyle(color: Colors.white70, fontSize: 13),
                   ),
                 ],
@@ -255,21 +377,20 @@ class _OrderSummaryCard extends StatelessWidget {
             ),
           ),
           const Divider(color: Colors.white12, height: 24),
-          // Total — reactive
           Obx(
             () => Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'الإجمالي',
-                  style: TextStyle(
+                Text(
+                  'total'.tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  '${controller.cartTotal.toStringAsFixed(2)} SP',
+                  '${controller.cartTotal.toStringAsFixed(2)} ${'currency'.tr}',
                   style: const TextStyle(
                     color: AppColors.green,
                     fontSize: 18,
@@ -284,8 +405,6 @@ class _OrderSummaryCard extends StatelessWidget {
     );
   }
 }
-
-// ── Payment Method Card ───────────────────────────────────────────────────────
 
 class _PaymentMethodCard extends StatelessWidget {
   final String method;
@@ -323,7 +442,6 @@ class _PaymentMethodCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Icon box
             Container(
               width: 48,
               height: 48,
@@ -340,7 +458,6 @@ class _PaymentMethodCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 14),
-            // Labels
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -364,7 +481,6 @@ class _PaymentMethodCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            // Radio circle
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               width: 22,

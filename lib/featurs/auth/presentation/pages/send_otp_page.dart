@@ -25,7 +25,6 @@ class SendOtpPage extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-
             colors: [AppColors.blue, AppColors.darkBlue],
           ),
         ),
@@ -43,28 +42,25 @@ class SendOtpPage extends StatelessWidget {
 
                   const SizedBox(height: AppSizes.space90),
 
-                  const Text(
-                    "Verify Phone Number",
-                    style: AppTextStyles.authTitle,
-                  ),
+                  Text('verify_phone'.tr, style: AppTextStyles.authTitle),
 
                   const SizedBox(height: AppSizes.space50),
 
-                  const Text(
-                    "Enter your phone number to receive OTP",
+                  Text(
+                    'enter_phone'.tr,
                     style: AppTextStyles.body,
                     textAlign: TextAlign.center,
                   ),
 
                   const SizedBox(height: AppSizes.space90),
 
-                  CustomTextField(
-                    keyboardType: TextInputType.phone,
-                    hint: "Phone Number ex:+963 999999999",
-
-                    icon: Icons.phone_outlined,
-
-                    controller: controller.phoneController,
+                  Obx(
+                    () => CustomTextField(
+                      keyboardType: TextInputType.phone,
+                      hint: 'phone_hint'.tr,
+                      icon: Icons.phone_outlined,
+                      controller: controller.phoneController,
+                    ),
                   ),
 
                   const SizedBox(height: AppSizes.space70),
@@ -72,9 +68,8 @@ class SendOtpPage extends StatelessWidget {
                   Obx(() {
                     return AuthButton(
                       title: controller.isLoading.value
-                          ? "Loading..."
-                          : "Send OTP",
-
+                          ? 'loading'.tr
+                          : 'send_otp'.tr,
                       onPressed: () {
                         controller.sendOtp();
                       },

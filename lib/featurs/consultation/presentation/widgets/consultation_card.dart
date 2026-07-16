@@ -29,14 +29,14 @@ class ConsultationCard extends StatelessWidget {
         ),
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
-        child: const Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.delete_outline, color: Colors.white, size: 26),
-            SizedBox(height: 4),
+            const Icon(Icons.delete_outline, color: Colors.white, size: 26),
+            const SizedBox(height: 4),
             Text(
-              'Delete',
-              style: TextStyle(
+              'delete'.tr,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
@@ -84,7 +84,7 @@ class ConsultationCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 6),
-                    // زر حذف صريح (بجانب السهم)
+                    // زر حذف صريح
                     GestureDetector(
                       onTap: () async {
                         final confirmed = await _confirmDelete(context);
@@ -190,8 +190,8 @@ class ConsultationCard extends StatelessWidget {
                       const SizedBox(width: 8),
                       Text(
                         isAi
-                            ? 'Awaiting AI response…'
-                            : 'Awaiting technician reply…',
+                            ? 'awaiting_ai_response'.tr
+                            : 'awaiting_technician_response'.tr,
                         style: const TextStyle(
                           color: AppColors.grey,
                           fontSize: 12,
@@ -215,20 +215,23 @@ class ConsultationCard extends StatelessWidget {
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.blue,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text(
-          'Delete Consultation',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: Text(
+          'delete_consultation'.tr,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        content: const Text(
-          'Are you sure you want to delete this consultation?',
-          style: TextStyle(color: AppColors.grey),
+        content: Text(
+          'delete_consultation_confirm'.tr,
+          style: const TextStyle(color: AppColors.grey),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: AppColors.grey),
+            child: Text(
+              'cancel'.tr,
+              style: const TextStyle(color: AppColors.grey),
             ),
           ),
           ElevatedButton(
@@ -239,7 +242,10 @@ class ConsultationCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text('Delete', style: TextStyle(color: Colors.white)),
+            child: Text(
+              'delete'.tr,
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -294,7 +300,9 @@ class _TypeChip extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Text(
-            isAi ? 'AI' : 'Technician',
+            isAi
+                ? 'consultation_type_ai'.tr
+                : 'consultation_type_technician'.tr,
             style: TextStyle(
               color: color,
               fontSize: 11,
@@ -314,20 +322,20 @@ class _StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color color;
-    String label;
+    String labelKey;
     switch (status) {
       case 'ai_answered':
       case 'answered':
         color = AppColors.green;
-        label = 'Answered';
+        labelKey = 'consultation_status_answered';
         break;
       case 'pending':
         color = Colors.orange;
-        label = 'Pending';
+        labelKey = 'consultation_status_pending';
         break;
       default:
         color = AppColors.grey;
-        label = status;
+        labelKey = status;
     }
 
     return Container(
@@ -338,7 +346,7 @@ class _StatusChip extends StatelessWidget {
         border: Border.all(color: color.withValues(alpha: 0.6)),
       ),
       child: Text(
-        label,
+        labelKey.tr,
         style: TextStyle(
           color: color,
           fontSize: 11,

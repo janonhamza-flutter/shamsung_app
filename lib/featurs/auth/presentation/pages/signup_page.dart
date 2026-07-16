@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shamsoung/core/validators/app_validator.dart';
 
-import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_sizes.dart';
@@ -15,25 +14,22 @@ class SignupPage extends StatelessWidget {
   SignupPage({super.key});
 
   final SignupController controller = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         width: double.infinity,
-
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-
             colors: [AppColors.blue, AppColors.darkBlue],
           ),
         ),
-
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSizes.padding),
-
             child: SingleChildScrollView(
               child: Form(
                 key: controller.formKey,
@@ -41,195 +37,135 @@ class SignupPage extends StatelessWidget {
                   children: [
                     const SizedBox(height: AppSizes.space30),
 
-                    /// ======================
-                    /// LOGO
-                    /// ======================
+                    // ── Logo ──────────────────────────────────────────────
                     Image.asset(AppAssets.logo, width: 120),
-
                     const SizedBox(height: AppSizes.space15),
 
-                    /// TITLE
-                    Text(AppStrings.signUp, style: AppTextStyles.authTitle),
-
+                    // ── Title ─────────────────────────────────────────────
+                    Text('sign_up'.tr, style: AppTextStyles.authTitle),
                     const SizedBox(height: AppSizes.space45),
 
-                    /// ======================
-                    /// FULL NAME
-                    /// ======================
+                    // ── First Name ────────────────────────────────────────
                     CustomTextField(
-                      hint: AppStrings.first_name,
-
+                      hint: 'first_name'.tr,
                       icon: Icons.person_outline,
-
                       controller: controller.firstNameController,
                       validator: AppValidator.validateName,
                     ),
-
                     const SizedBox(height: AppSizes.space20),
 
-                    /// ======================
-                    ///
-                    /// ======================
+                    // ── Last Name ─────────────────────────────────────────
                     CustomTextField(
-                      hint: AppStrings.last_name,
-
+                      hint: 'last_name'.tr,
                       icon: Icons.person_outline,
-
                       controller: controller.lastNameController,
                       validator: AppValidator.validateName,
                     ),
-
                     const SizedBox(height: AppSizes.space20),
 
-                    /// ======================
-                    /// Phone
-                    /// ======================
+                    // ── Phone ─────────────────────────────────────────────
                     CustomTextField(
-                      hint: AppStrings.mobile,
-
+                      hint: 'mobile'.tr,
                       icon: Icons.phone_outlined,
-
                       controller: controller.phoneController,
                       validator: AppValidator.validateMobile,
                       keyboardType: TextInputType.phone,
                     ),
-
                     const SizedBox(height: AppSizes.space20),
 
-                    /// ======================
-                    /// EMAIL
-                    /// ======================
+                    // ── Email ─────────────────────────────────────────────
                     CustomTextField(
-                      hint: AppStrings.email,
-
+                      hint: 'email'.tr,
                       icon: Icons.email_outlined,
-
                       controller: controller.emailController,
                       validator: AppValidator.validateEmail,
                       keyboardType: TextInputType.emailAddress,
-
                       suffixIcon: const Icon(
                         Icons.email_outlined,
                         color: AppColors.grey,
                         size: 30,
                       ),
                     ),
-
                     const SizedBox(height: AppSizes.space20),
 
-                    /// ======================
-                    /// PASSWORD
-                    /// ======================
-                    Obx(() {
-                      return CustomTextField(
-                        hint: AppStrings.password,
-
+                    // ── Password ──────────────────────────────────────────
+                    // obscureText.value is Rx — Obx is correct here
+                    Obx(
+                      () => CustomTextField(
+                        hint: 'password'.tr,
                         icon: Icons.lock_outline,
-
                         controller: controller.passwordController,
-
                         obscureText: controller.obscureText.value,
                         validator: AppValidator.validatePassword,
-
                         suffixIcon: IconButton(
-                          onPressed: () {
-                            controller.togglePasswordVisibility();
-                          },
-
+                          onPressed: controller.togglePasswordVisibility,
                           icon: Icon(
                             controller.obscureText.value
                                 ? Icons.visibility_off
                                 : Icons.visibility,
-
                             color: AppColors.grey,
                             size: 30,
                           ),
                         ),
-                      );
-                    }),
-
+                      ),
+                    ),
                     const SizedBox(height: AppSizes.space20),
 
-                    Obx(() {
-                      return CustomTextField(
-                        hint: AppStrings.password_confirmation,
-
+                    // ── Confirm Password ──────────────────────────────────
+                    Obx(
+                      () => CustomTextField(
+                        hint: 'password_confirmation'.tr,
                         icon: Icons.lock_outline,
-
                         controller: controller.confirmPasswordController,
-
                         obscureText: controller.obscureText.value,
                         validator: AppValidator.validatePassword,
-
                         suffixIcon: IconButton(
-                          onPressed: () {
-                            controller.togglePasswordVisibility();
-                          },
-
+                          onPressed: controller.togglePasswordVisibility,
                           icon: Icon(
                             controller.obscureText.value
                                 ? Icons.visibility_off
                                 : Icons.visibility,
-
                             color: AppColors.grey,
                             size: 30,
                           ),
                         ),
-                      );
-                    }),
-
+                      ),
+                    ),
                     const SizedBox(height: AppSizes.space20),
 
-                    /// =====================
-                    /// birthdate
-                    /// =====================
+                    // ── Birth Date ────────────────────────────────────────
                     CustomTextField(
-                      hint: "Birth Date Ex: 2002-01-03",
+                      hint: 'birth_date_hint'.tr,
                       controller: controller.birthdateController,
                       icon: Icons.date_range,
                     ),
-
                     const SizedBox(height: AppSizes.space55),
 
-                    /// ======================
-                    /// SIGN UP BUTTON
-                    /// ======================
+                    // ── Sign Up Button ────────────────────────────────────
                     AuthButton(
-                      title: AppStrings.signUp,
-
-                      onPressed: () {
-                        controller.signUp();
-                      },
+                      title: 'sign_up'.tr,
+                      onPressed: () => controller.signUp(),
                     ),
-
                     const SizedBox(height: AppSizes.space70),
 
-                    /// ======================
-                    /// LOGIN
-                    /// ======================
+                    // ── Already have account ──────────────────────────────
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-
                       children: [
                         Text(
-                          AppStrings.alreadyHaveAccount,
-
+                          'already_have_account'.tr,
                           style: AppTextStyles.body,
                         ),
-
                         GestureDetector(
-                          onTap: () {
-                            //   Get.offNamed(AppRoutes.login);
-                          },
-
-                          child: const Text(
-                            AppStrings.login,
-
+                          onTap: () {},
+                          child: Text(
+                            'login'.tr,
                             style: AppTextStyles.buttonText,
                           ),
                         ),
                       ],
                     ),
+                    const SizedBox(height: AppSizes.space30),
                   ],
                 ),
               ),

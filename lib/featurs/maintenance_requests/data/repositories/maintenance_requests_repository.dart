@@ -21,10 +21,17 @@ class MaintenanceRequestsRepository {
     required int id,
     required List<int> selectedParts,
     required String paymentMethod,
+    required double latitude,
+    required double longitude,
   }) async {
     return await dioService.postData(
       endpoint: "/maintenance-requests/$id/approve",
-      data: {"selected_parts": selectedParts, "payment_method": paymentMethod},
+      data: {
+        "selected_parts": selectedParts,
+        "payment_method": paymentMethod,
+        "latitude": latitude,
+        "longitude": longitude,
+      },
     );
   }
 

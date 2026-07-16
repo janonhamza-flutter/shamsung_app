@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../../../../core/theme/app_colors.dart';
 
 /// Shared status color / label / icon helpers used across
@@ -13,6 +14,8 @@ class RequestStatusHelpers {
       case 'in_progress':
       case 'repairing':
         return Colors.blueAccent;
+      case 'under_inspection':
+        return const Color(0xFF29B6F6); // light blue
       case 'completed':
       case 'done':
       case 'approved':
@@ -30,23 +33,25 @@ class RequestStatusHelpers {
   static String label(String status) {
     switch (status.toLowerCase()) {
       case 'pending':
-        return 'Pending';
+        return 'status_pending'.tr;
       case 'in_progress':
-        return 'In Progress';
+        return 'status_in_progress'.tr;
       case 'repairing':
-        return 'Repairing';
+        return 'status_repairing'.tr;
+      case 'under_inspection':
+        return 'status_under_inspection'.tr;
       case 'completed':
-        return 'Completed';
+        return 'status_completed'.tr;
       case 'done':
-        return 'Done';
+        return 'status_done'.tr;
       case 'approved':
-        return 'Approved';
+        return 'status_approved'.tr;
       case 'rejected':
-        return 'Rejected';
+        return 'status_rejected'.tr;
       case 'cancelled':
-        return 'Cancelled';
+        return 'status_cancelled'.tr;
       case 'waiting_customer_approval':
-        return 'Awaiting Approval';
+        return 'status_awaiting_approval'.tr;
       default:
         return status.replaceAll('_', ' ');
     }
@@ -54,9 +59,12 @@ class RequestStatusHelpers {
 
   static String detailLabel(String status) {
     if (status.toLowerCase() == 'waiting_customer_approval') {
-      return 'Awaiting Your Approval';
+      return 'status_awaiting_your_approval'.tr;
     }
-    if (status.toLowerCase() == 'pending') return 'Pending Review';
+    if (status.toLowerCase() == 'pending') return 'status_pending_review'.tr;
+    if (status.toLowerCase() == 'under_inspection') {
+      return 'status_under_inspection_detail'.tr;
+    }
     return label(status);
   }
 
@@ -67,6 +75,8 @@ class RequestStatusHelpers {
       case 'in_progress':
       case 'repairing':
         return Icons.build_rounded;
+      case 'under_inspection':
+        return Icons.search_rounded;
       case 'completed':
       case 'done':
       case 'approved':

@@ -30,10 +30,10 @@ class SendOtpController extends GetxController {
     }
   }
 
-  // @override
-  // void onClose() {
-  //   // phoneController.dispose();
+   @override
+   void onClose() {
+     // phoneController.dispose();
 
-  //   // super.onClose();
-  // }
+     // super.onClose();
+   }
 }

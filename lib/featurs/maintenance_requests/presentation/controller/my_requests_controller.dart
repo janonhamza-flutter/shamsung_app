@@ -19,6 +19,19 @@ class MyRequestsController extends GetxController {
     super.onInit();
   }
 
+  void deleteRequest(int id) {
+    requests.removeWhere((r) => r.id == id);
+    Get.snackbar(
+      'Deleted',
+      'Request has been removed',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+      margin: const EdgeInsets.all(16),
+      duration: const Duration(seconds: 2),
+    );
+  }
+
   Future<void> getRequests() async {
     try {
       isLoading.value = true;

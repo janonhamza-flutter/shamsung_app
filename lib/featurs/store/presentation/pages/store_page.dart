@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shamsoung/core/services/storage_service.dart';
 
 import '../../../../../core/route/app_routes.dart';
 import '../../../../../core/theme/app_colors.dart';
-import '../../../home/presentation/widgets/bottom_nav_bar.dart';
+import '../../../../../core/widgets/lottie_loading.dart';
 import '../controllers/store_controller.dart';
 import '../widgets/accessory_card.dart';
 import '../widgets/store_search_bar.dart';
@@ -16,24 +15,30 @@ class StorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final args = Get.arguments;
+    if (args is Map) {
+      controller.applyShopFilter(
+        shopId: args['shopId'] as int?,
+        shopName: args['shopName'] as String?,
+      );
+    } else {
+      controller.applyShopFilter();
+    }
+
     return Scaffold(
       backgroundColor: AppColors.darkBlue,
-      bottomNavigationBar: const BottomNavBar(currentIndex: 2),
-
-      // ── AppBar ────────────────────────────────────────────────────────
       appBar: AppBar(
         backgroundColor: AppColors.blue,
         automaticallyImplyLeading: false,
-        title: const Text(
-          'المتجر',
-          style: TextStyle(
+        title: Text(
+          'store'.tr,
+          style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
         actions: [
-          // Cart icon with badge
           Obx(() {
             final count = controller.cartCount;
             return Stack(
@@ -71,12 +76,10 @@ class StorePage extends StatelessWidget {
           const SizedBox(width: 4),
         ],
       ),
-
-      // ── Body ──────────────────────────────────────────────────────────
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header banner
+          // ── Header banner ──────────────────────────────────────────
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
@@ -90,9 +93,9 @@ class StorePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'إكسسوارات سامسونج',
-                  style: TextStyle(
+                Text(
+                  'store_header_title'.tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -100,14 +103,66 @@ class StorePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'منتجات أصلية بأفضل الأسعار',
+                  'store_header_sub'.tr,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 13,
                   ),
                 ),
+                // Branch filter banner
+                Obx(() {
+                  if (controller.filterShopId.value == null) {
+                    return const SizedBox.shrink();
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.green.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: AppColors.green.withValues(alpha: 0.35),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.location_on_rounded,
+                            color: AppColors.green,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              '${'store_showing_from'.tr}: ${controller.filterShopName.value}',
+                              style: const TextStyle(
+                                color: AppColors.green,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              controller.filterShopId.value = null;
+                              controller.filterShopName.value = '';
+                            },
+                            child: const Icon(
+                              Icons.close_rounded,
+                              color: AppColors.green,
+                              size: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
                 const SizedBox(height: 14),
-                // Search bar
                 StoreSearchBar(onChanged: controller.updateSearch),
               ],
             ),
@@ -115,13 +170,13 @@ class StorePage extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // Products section label
+          // ── Products count label ───────────────────────────────────
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Obx(() {
               final count = controller.filteredAccessories.length;
               return Text(
-                'المنتجات ($count)',
+                '${'products'.tr} ($count)',
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -133,17 +188,13 @@ class StorePage extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // Content
+          // ── Content ────────────────────────────────────────────────
           Expanded(
             child: Obx(() {
-              // Loading
               if (controller.isLoading.value) {
-                return const Center(
-                  child: CircularProgressIndicator(color: AppColors.green),
-                );
+                return LottieLoading(label: 'loading_products'.tr);
               }
 
-              // Error
               if (controller.errorMessage.value.isNotEmpty &&
                   controller.accessories.isEmpty) {
                 return _ErrorView(
@@ -152,12 +203,10 @@ class StorePage extends StatelessWidget {
                 );
               }
 
-              // Empty
               if (controller.filteredAccessories.isEmpty) {
                 return const _EmptyView();
               }
 
-              // Grid
               return RefreshIndicator(
                 color: AppColors.green,
                 backgroundColor: AppColors.blue,
@@ -172,8 +221,6 @@ class StorePage extends StatelessWidget {
                   ),
                   itemCount: controller.filteredAccessories.length,
                   itemBuilder: (context, index) {
-                    final StorageService _storage = StorageService();
-                    print("==================${_storage.getToken()}");
                     final item = controller.filteredAccessories[index];
                     return Obx(
                       () => AccessoryCard(
@@ -197,7 +244,6 @@ class StorePage extends StatelessWidget {
   }
 }
 
-// ── Error Widget ─────────────────────────────────────────────────────────────
 class _ErrorView extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
@@ -233,9 +279,9 @@ class _ErrorView extends StatelessWidget {
                 ),
               ),
               icon: const Icon(Icons.refresh, color: Colors.white),
-              label: const Text(
-                'إعادة المحاولة',
-                style: TextStyle(color: Colors.white),
+              label: Text(
+                'retry'.tr,
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           ],
@@ -245,21 +291,24 @@ class _ErrorView extends StatelessWidget {
   }
 }
 
-// ── Empty Widget ──────────────────────────────────────────────────────────────
 class _EmptyView extends StatelessWidget {
   const _EmptyView();
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.inventory_2_outlined, color: Colors.white38, size: 64),
-          SizedBox(height: 16),
+          const Icon(
+            Icons.inventory_2_outlined,
+            color: Colors.white38,
+            size: 64,
+          ),
+          const SizedBox(height: 16),
           Text(
-            'لا توجد منتجات متاحة',
-            style: TextStyle(color: Colors.white54, fontSize: 16),
+            'no_products'.tr,
+            style: const TextStyle(color: Colors.white54, fontSize: 16),
           ),
         ],
       ),

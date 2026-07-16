@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/constants/app_strings.dart';
-
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_sizes.dart';
@@ -45,7 +43,7 @@ class SplashPage extends StatelessWidget {
                           const SizedBox(height: 25),
 
                           const Text(
-                            AppStrings.appName,
+                            'SHAMSOUNG',
                             style: AppTextStyles.splashTitle,
                           ),
                         ],

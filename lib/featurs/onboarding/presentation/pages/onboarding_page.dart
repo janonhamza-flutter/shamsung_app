@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_sizes.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../controller/onboarding_controller.dart';
 import '../widgets/onboarding_button.dart';
@@ -21,21 +20,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   int currentIndex = 0;
 
-  final List<Map<String, String>> pages = [
+  List<Map<String, String>> get pages => [
     {
       "image": AppAssets.ob1,
-      "title": AppStrings.onboardingTitle1,
-      "subtitle": AppStrings.onboardingSubtitle1,
+      "title": 'onboarding_title_1'.tr,
+      "subtitle": 'onboarding_subtitle_1'.tr,
     },
     {
       "image": AppAssets.ob2,
-      "title": AppStrings.onboardingTitle2,
-      "subtitle": AppStrings.onboardingSubtitle2,
+      "title": 'onboarding_title_2'.tr,
+      "subtitle": 'onboarding_subtitle_2'.tr,
     },
     {
       "image": AppAssets.ob3,
-      "title": AppStrings.onboardingTitle3,
-      "subtitle": AppStrings.onboardingSubtitle3,
+      "title": 'onboarding_title_3'.tr,
+      "subtitle": 'onboarding_subtitle_3'.tr,
     },
   ];
 
@@ -151,9 +150,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 ),
 
                 child: OnboardingButton(
-                  title: currentIndex == 2
-                      ? AppStrings.getStarted
-                      : AppStrings.next,
+                  title: currentIndex == 2 ? 'get_started'.tr : 'next'.tr,
 
                   onPressed: () {
                     if (currentIndex < 2) {
@@ -162,9 +159,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         curve: Curves.easeInOut,
                       );
                     } else {
-                      //Get.offAllNamed('/sendOtp');
-                      print("GET STARTED PRESSED");
-
                       controller.finishOnboarding();
                     }
                   },

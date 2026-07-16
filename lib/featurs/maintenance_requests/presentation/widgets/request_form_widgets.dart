@@ -44,22 +44,22 @@ class RequestFormHeaderBanner extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Submit a Repair Request",
-                  style: TextStyle(
+                  'submit_repair_request'.tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  "Our technicians will review your request and provide an estimate",
-                  style: TextStyle(color: Colors.white70, fontSize: 13),
+                  'submit_repair_request_sub'.tr,
+                  style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],
             ),
@@ -150,8 +150,55 @@ class RequestFormShopDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Container(
+    return Obx(() {
+      if (controller.shopPreselected.value) {
+        return _SelectedShopBadge(name: controller.selectedShopName.value);
+      }
+
+      if (controller.isLoadingShops.value) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.blue,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white12),
+          ),
+          child: Row(
+            children: [
+              const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(
+                  color: AppColors.green,
+                  strokeWidth: 2,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'loading_shops'.tr,
+                style: const TextStyle(color: Colors.white54, fontSize: 14),
+              ),
+            ],
+          ),
+        );
+      }
+
+      if (controller.shops.isEmpty) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.blue,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+          ),
+          child: Text(
+            'no_shops_available'.tr,
+            style: const TextStyle(color: Colors.white54, fontSize: 14),
+          ),
+        );
+      }
+
+      return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           color: AppColors.blue,
@@ -167,16 +214,22 @@ class RequestFormShopDropdown extends StatelessWidget {
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<int>(
-            value: controller.selectedShopId.value,
+            value: controller.selectedShopId.value == -1
+                ? null
+                : controller.selectedShopId.value,
             isExpanded: true,
             dropdownColor: AppColors.blue,
             iconEnabledColor: AppColors.green,
             style: const TextStyle(color: Colors.white, fontSize: 15),
             icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 26),
+            hint: Text(
+              'select_a_shop'.tr,
+              style: const TextStyle(color: Colors.white54),
+            ),
             items: controller.shops
                 .map(
                   (shop) => DropdownMenuItem<int>(
-                    value: shop["id"] as int,
+                    value: shop.id,
                     child: Row(
                       children: [
                         const Icon(
@@ -185,7 +238,12 @@ class RequestFormShopDropdown extends StatelessWidget {
                           size: 20,
                         ),
                         const SizedBox(width: 10),
-                        Text(shop["name"] as String),
+                        Expanded(
+                          child: Text(
+                            shop.name,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -194,10 +252,97 @@ class RequestFormShopDropdown extends StatelessWidget {
             onChanged: (value) {
               if (value != null) {
                 controller.selectedShopId.value = value;
+                final shop = controller.shops.firstWhereOrNull(
+                  (s) => s.id == value,
+                );
+                if (shop != null) {
+                  controller.selectedShopName.value = shop.name;
+                }
               }
             },
           ),
         ),
+      );
+    });
+  }
+}
+
+/// Badge shown when shop is preselected from nearest shop page.
+class _SelectedShopBadge extends StatelessWidget {
+  final String name;
+  const _SelectedShopBadge({required this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: AppColors.blue,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.green.withValues(alpha: 0.4)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: AppColors.green.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(
+              Icons.location_on_rounded,
+              color: AppColors.green,
+              size: 18,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'selected_branch'.tr,
+                  style: const TextStyle(
+                    color: Colors.white54,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  name,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppColors.green.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              'nearest'.tr,
+              style: const TextStyle(
+                color: AppColors.green,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -236,14 +381,18 @@ class RequestFormSubmitButton extends StatelessWidget {
                     strokeWidth: 2.5,
                   ),
                 )
-              : const Row(
+              : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.send_rounded, color: Colors.white, size: 20),
-                    SizedBox(width: 10),
+                    const Icon(
+                      Icons.send_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 10),
                     Text(
-                      "Submit Request",
-                      style: TextStyle(
+                      'submit_request'.tr,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

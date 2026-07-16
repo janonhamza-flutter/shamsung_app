@@ -22,7 +22,6 @@ class _ConsultationChatPageState extends State<ConsultationChatPage> {
   void initState() {
     super.initState();
     ctrl = Get.find<ConsultationController>();
-    // نُنفّذ فوراً قبل أي build — يضمن أن activeMessages فارغ عند new chat
     if (widget.initialConsultation != null) {
       ctrl.openConsultation(widget.initialConsultation!);
     } else {
@@ -42,7 +41,7 @@ class _ConsultationChatPageState extends State<ConsultationChatPage> {
         title: Obx(() {
           final c = ctrl.activeConsultation.value;
           if (c == null) {
-            return const Text('New Consultation', style: _titleStyle);
+            return Text('new_consultation'.tr, style: _titleStyle);
           }
           return Row(
             mainAxisSize: MainAxisSize.min,
@@ -53,7 +52,10 @@ class _ConsultationChatPageState extends State<ConsultationChatPage> {
                 size: 20,
               ),
               const SizedBox(width: 8),
-              Text(c.isAi ? 'AI Assistant' : 'Technician', style: _titleStyle),
+              Text(
+                c.isAi ? 'ai_assistant'.tr : 'technician'.tr,
+                style: _titleStyle,
+              ),
             ],
           );
         }),
@@ -65,7 +67,6 @@ class _ConsultationChatPageState extends State<ConsultationChatPage> {
             Get.back();
           },
         ),
-        // actions فارغة
         actions: const [],
       ),
 
@@ -92,7 +93,6 @@ class _ConsultationChatPageState extends State<ConsultationChatPage> {
               final c = ctrl.activeConsultation.value;
               final msgs = ctrl.activeMessages;
 
-              // لم يُرسل بعد
               if (c == null && msgs.isEmpty) return const _EmptyChat();
 
               return ListView.builder(
@@ -160,19 +160,19 @@ class _EmptyChat extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Ask your question below',
-              style: TextStyle(
+            Text(
+              'ask_question_below'.tr,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Choose AI for instant answers\nor Technician for expert help',
+            Text(
+              'choose_type_hint'.tr,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppColors.grey,
                 fontSize: 13,
                 height: 1.5,
@@ -269,7 +269,7 @@ class _ReplyBubble extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    isAi ? 'AI Assistant' : 'Technician',
+                    isAi ? 'ai_assistant'.tr : 'technician'.tr,
                     style: TextStyle(
                       color: accent,
                       fontSize: 11,
@@ -348,11 +348,11 @@ class _PendingBubble extends StatelessWidget {
                         _Dot(delay: 400),
                       ],
                     )
-                  // تقني → رسالة انتظار نصية
-                  : const Text(
-                      'في انتظار الرد من التقني\nشكراً لاستخدام هذه الخدمة 🙏',
+                  // تقني → رسالة انتظار
+                  : Text(
+                      'awaiting_technician_reply'.tr,
                       textDirection: TextDirection.rtl,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: AppColors.grey,
                         fontSize: 13,
                         height: 1.6,
@@ -429,7 +429,6 @@ class _ChatInputBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context);
     final keyboardHeight = mq.viewInsets.bottom;
-    // systemNavBar = ارتفاع شريط أزرار الهاتف السفلي (gesture bar / nav buttons)
     final systemNavBar = mq.padding.bottom;
     return Container(
       color: AppColors.blue,
@@ -437,8 +436,6 @@ class _ChatInputBar extends StatelessWidget {
         left: 12,
         right: 12,
         top: 10,
-        // عندما تكون لوحة المفاتيح مفتوحة نكتفي بـ 10
-        // عندما تكون مغلقة نضيف ارتفاع الـ nav bar + هامش إضافي 8
         bottom: keyboardHeight > 0 ? 10 : systemNavBar + 8,
       ),
       child: Row(
@@ -460,7 +457,7 @@ class _ChatInputBar extends StatelessWidget {
                 textDirection: TextDirection.rtl,
                 style: const TextStyle(color: Colors.white, fontSize: 15),
                 decoration: InputDecoration(
-                  hintText: 'Write your message…',
+                  hintText: 'write_message_hint'.tr,
                   hintStyle: TextStyle(
                     color: AppColors.grey.withValues(alpha: 0.7),
                     fontSize: 14,

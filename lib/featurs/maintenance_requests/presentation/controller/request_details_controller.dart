@@ -24,10 +24,12 @@ class RequestDetailsController extends GetxController {
   final isApproving = false.obs;
   final selectedPartIds = <int>{}.obs;
   final selectedPaymentMethod = "cash_on_delivery".obs;
+  double? approveLatitude;
+  double? approveLongitude;
 
-  final List<Map<String, String>> paymentMethods = [
-    {"value": "cash_on_delivery", "label": "Cash on Delivery"},
-    {"value": "online", "label": "Online Payment"},
+  List<Map<String, String>> get paymentMethods => [
+    {"value": "cash_on_delivery", "label": 'payment_cash_on_delivery'.tr},
+    {"value": "pay_after_service", "label": 'payment_pay_after_service'.tr},
   ];
 
   // ── State: reject ─────────────────────────────────────────────────────────
@@ -147,6 +149,11 @@ class RequestDetailsController extends GetxController {
       return;
     }
 
+    if (approveLatitude == null || approveLongitude == null) {
+      AppSnackbar.error("Please select a pickup location from the map.");
+      return;
+    }
+
     try {
       isApproving.value = true;
 
@@ -154,6 +161,8 @@ class RequestDetailsController extends GetxController {
         id: requestId,
         selectedParts: selectedPartIds.toList(),
         paymentMethod: selectedPaymentMethod.value,
+        latitude: approveLatitude!,
+        longitude: approveLongitude!,
       );
 
       debugPrint("▶ APPROVE STATUS = ${response.statusCode}");
