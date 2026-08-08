@@ -42,8 +42,17 @@ class DioService {
   }
 
   /// GET
-  Future<Response> getData(String endpoint) async {
-    return await _buildDio().get(endpoint);
+  Future<Response> getData(
+    String endpoint, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    debugPrint(
+      'GET $endpoint | queryParameters: ${queryParameters ?? {}} | token: ${_storage.getToken().isNotEmpty ? 'present' : 'missing'}',
+    );
+    return await _buildDio().get(
+      endpoint,
+      queryParameters: queryParameters,
+    );
   }
 
   /// POST

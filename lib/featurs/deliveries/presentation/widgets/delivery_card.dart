@@ -86,7 +86,27 @@ class DeliveryCard extends StatelessWidget {
         RegExp(r'(\.\d{3})\d+'),
         (m) => m.group(1)!,
       );
-      final dt = DateTime.parse(cleaned).toLocal();
+      final dt = DateTime.parse(cleaned).toUtc();
+      final date =
+          '${dt.year}/${dt.month.toString().padLeft(2, '0')}/${dt.day.toString().padLeft(2, '0')}';
+      final time =
+          '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+      return '$date  $time';
+    } catch (_) {
+      return raw
+          .replaceAll('T', '  ')
+          .replaceAll('Z', '')
+          .replaceAllMapped(RegExp(r'\.\d+'), (_) => '');
+    }
+  }
+
+  String _formatCreatedAt(String raw) {
+    try {
+      final cleaned = raw.trim().replaceAllMapped(
+        RegExp(r'(\.\d{3})\d+'),
+        (m) => m.group(1)!,
+      );
+      final dt = DateTime.parse(cleaned).toUtc().add(const Duration(hours: 3));
       final date =
           '${dt.year}/${dt.month.toString().padLeft(2, '0')}/${dt.day.toString().padLeft(2, '0')}';
       final time =
@@ -226,11 +246,32 @@ class DeliveryCard extends StatelessWidget {
               icon: Icons.person_pin_circle_rounded,
               label: 'delivery_worker'.tr,
               value:
-                  (delivery.deliveryWorker != null &&
-                      delivery.deliveryWorker!.name.isNotEmpty)
-                  ? delivery.deliveryWorker!.name
+                  delivery.deliveryWorker != null &&
+                      delivery.deliveryWorker!.fullName.isNotEmpty
+                  ? delivery.deliveryWorker!.fullName
                   : 'not_assigned_yet'.tr,
             ),
+
+            if (delivery.paymentMethod.isNotEmpty)
+              _InfoRow(
+                icon: Icons.payments_rounded,
+                label: 'payment_method'.tr,
+                value: delivery.paymentMethod.replaceAll('_', ' '),
+              ),
+
+            if ((delivery.address ?? '').isNotEmpty)
+              _InfoRow(
+                icon: Icons.location_on_rounded,
+                label: 'address'.tr,
+                value: delivery.address!,
+              ),
+
+            if ((delivery.notes ?? '').isNotEmpty)
+              _InfoRow(
+                icon: Icons.note_alt_rounded,
+                label: 'notes'.tr,
+                value: delivery.notes!,
+              ),
 
             _InfoRow(
               icon: Icons.schedule_rounded,
@@ -246,8 +287,14 @@ class DeliveryCard extends StatelessWidget {
             _InfoRow(
               icon: Icons.calendar_today_rounded,
               label: 'created_at'.tr,
-              value: _formatDate(delivery.createdAt),
+              value: _formatCreatedAt(delivery.createdAt),
             ),
+            if ((delivery.confirmationCode ?? '').isNotEmpty)
+              _InfoRow(
+                icon: Icons.verified_rounded,
+                label: 'confirmation_code'.tr,
+                value: delivery.confirmationCode!,
+              ),
           ],
         ),
       ),

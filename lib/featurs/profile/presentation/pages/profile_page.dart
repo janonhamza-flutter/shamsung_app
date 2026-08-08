@@ -7,6 +7,8 @@ import '../../../../../core/services/storage_service.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/widgets/exit_scope.dart';
 import '../../../../../core/widgets/lottie_loading.dart';
+import '../../../notifications/presentation/controller/notification_controller.dart';
+import '../../../store/presentation/controllers/store_controller.dart';
 import '../controller/profile_controller.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -162,6 +164,7 @@ class ProfilePage extends StatelessWidget {
                   Get.back();
                   storage.saveLanguage('en');
                   Get.updateLocale(const Locale('en', 'US'));
+                  _refreshLangDependentData('en');
                 },
               ),
               const SizedBox(height: 12),
@@ -175,6 +178,7 @@ class ProfilePage extends StatelessWidget {
                   Get.back();
                   storage.saveLanguage('ar');
                   Get.updateLocale(const Locale('ar', 'SA'));
+                  _refreshLangDependentData('ar');
                 },
               ),
             ],
@@ -182,6 +186,17 @@ class ProfilePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// إعادة جلب البيانات التي تعتمد على اللغة بعد تغييرها
+  /// [lang] هي اللغة الجديدة المختارة — تُمرَّر مباشرةً لتجنب race condition مع Get.locale
+  void _refreshLangDependentData(String lang) {
+    if (Get.isRegistered<NotificationController>()) {
+      Get.find<NotificationController>().fetchNotifications(lang: lang);
+    }
+    if (Get.isRegistered<StoreController>()) {
+      Get.find<StoreController>().fetchAccessories(lang: lang);
+    }
   }
 }
 

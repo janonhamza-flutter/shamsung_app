@@ -32,30 +32,7 @@ class MyDeliveriesPage extends StatelessWidget {
               fontSize: 20,
             ),
           ),
-          actions: [
-            Obx(
-              () => controller.isLoading.value
-                  ? const Padding(
-                      padding: EdgeInsets.all(14),
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      ),
-                    )
-                  : IconButton(
-                      icon: const Icon(
-                        Icons.refresh_rounded,
-                        color: Colors.white,
-                      ),
-                      onPressed: controller.fetchMyDeliveries,
-                      tooltip: 'refresh'.tr,
-                    ),
-            ),
-          ],
+          actions: const [],
         ),
 
         // ── Body ───────────────────────────────────────────────────────────────

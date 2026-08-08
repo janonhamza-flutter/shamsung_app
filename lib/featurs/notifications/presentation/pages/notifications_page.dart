@@ -6,10 +6,29 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/lottie_loading.dart';
 import '../controller/notification_controller.dart';
 
-class NotificationsPage extends StatelessWidget {
-  NotificationsPage({super.key});
+class NotificationsPage extends StatefulWidget {
+  const NotificationsPage({super.key});
 
+  @override
+  State<NotificationsPage> createState() => _NotificationsPageState();
+}
+
+class _NotificationsPageState extends State<NotificationsPage> {
   final NotificationController controller = Get.find<NotificationController>();
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('🏷 NotificationsPage.initState called');
+    // جلب الإشعارات عند كل فتح للصفحة لضمان عرض اللغة الصحيحة
+    controller.fetchNotifications();
+  }
+
+  @override
+  void dispose() {
+    debugPrint('🏷 NotificationsPage.dispose called');
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,25 +42,6 @@ class NotificationsPage extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          Obx(
-            () => controller.isLoading.value
-                ? const Padding(
-                    padding: EdgeInsets.all(14),
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    ),
-                  )
-                : IconButton(
-                    icon: const Icon(Icons.refresh_rounded),
-                    onPressed: controller.fetchNotifications,
-                    tooltip: 'refresh'.tr,
-                  ),
-          ),
           TextButton(
             onPressed: controller.markAllAsRead,
             child: Text(
@@ -108,6 +108,9 @@ class NotificationsPage extends StatelessWidget {
             separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final item = controller.notifications[index];
+              debugPrint(
+                '📝 Notification widget [$index] id=${item.id} title="${item.title}" body="${item.body}"',
+              );
               return InkWell(
                 onTap: () => controller.markAsRead(item.id),
                 borderRadius: BorderRadius.circular(16),

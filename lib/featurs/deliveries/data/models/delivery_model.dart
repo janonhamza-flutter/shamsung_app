@@ -2,25 +2,55 @@
 library;
 
 class DeliveryWorkerModel {
-  final String name;
+  final int id;
+  final String firstName;
+  final String lastName;
 
-  DeliveryWorkerModel({required this.name});
+  DeliveryWorkerModel({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+  });
+
+  String get fullName {
+    final parts = [
+      firstName,
+      lastName,
+    ].where((value) => value.isNotEmpty).toList();
+    return parts.join(' ').trim();
+  }
 
   factory DeliveryWorkerModel.fromJson(Map<String, dynamic> json) {
-    return DeliveryWorkerModel(name: json['name']?.toString() ?? '');
+    final firstName = json['first_name']?.toString() ?? '';
+    final lastName = json['last_name']?.toString() ?? '';
+    final fallbackName = json['name']?.toString() ?? '';
+
+    return DeliveryWorkerModel(
+      id: int.tryParse(json['id']?.toString() ?? '') ?? 0,
+      firstName: firstName.isNotEmpty
+          ? firstName
+          : (fallbackName.isNotEmpty ? fallbackName : ''),
+      lastName: lastName,
+    );
   }
 }
 
 class DeliveryShopModel {
   final int id;
   final String name;
+  final String address;
 
-  DeliveryShopModel({required this.id, required this.name});
+  DeliveryShopModel({
+    required this.id,
+    required this.name,
+    required this.address,
+  });
 
   factory DeliveryShopModel.fromJson(Map<String, dynamic> json) {
     return DeliveryShopModel(
-      id: json['id'] ?? 0,
+      id: int.tryParse(json['id']?.toString() ?? '') ?? 0,
       name: json['name']?.toString() ?? '',
+      address: json['address']?.toString() ?? '',
     );
   }
 }
@@ -30,8 +60,13 @@ class DeliveryModel {
   final String type;
   final String status;
   final String? estimatedTime;
+  final String paymentMethod;
+  final int? orderId;
+  final String? address;
+  final String? notes;
   final DeliveryWorkerModel? deliveryWorker;
   final DeliveryShopModel? shop;
+  final String? confirmationCode;
   final String createdAt;
 
   DeliveryModel({
@@ -39,9 +74,14 @@ class DeliveryModel {
     required this.type,
     required this.status,
     this.estimatedTime,
+    required this.paymentMethod,
+    this.orderId,
+    this.address,
+    this.notes,
     this.deliveryWorker,
     this.shop,
     required this.createdAt,
+    this.confirmationCode,
   });
 
   factory DeliveryModel.fromJson(Map<String, dynamic> json) {
@@ -59,14 +99,21 @@ class DeliveryModel {
     final shopMap = safeMap(json['shop']);
 
     return DeliveryModel(
-      id: json['id'] ?? 0,
+      id: int.tryParse(json['id']?.toString() ?? '') ?? 0,
       type: json['type']?.toString() ?? '',
       status: json['status']?.toString() ?? '',
       estimatedTime: json['estimated_time']?.toString(),
+      paymentMethod: json['payment_method']?.toString() ?? '',
+      orderId: int.tryParse(json['order_id']?.toString() ?? ''),
+      address: json['address']?.toString(),
+      notes: json['notes']?.toString(),
       deliveryWorker: workerMap != null
           ? DeliveryWorkerModel.fromJson(workerMap)
           : null,
       shop: shopMap != null ? DeliveryShopModel.fromJson(shopMap) : null,
+      confirmationCode:
+          json['confirmation_code']?.toString() ??
+          json['confirmation']?.toString(),
       createdAt: json['created_at']?.toString() ?? '',
     );
   }

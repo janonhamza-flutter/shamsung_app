@@ -44,33 +44,23 @@ class ProfileController extends GetxController {
 
   Future<void> logout() async {
     try {
-      isLoading.value = true;
       await repository.logout();
-
       storage.clearData();
-
       AppSnackbar.success("Logged out successfully");
       Get.offAllNamed(AppRoutes.sendOtp);
     } catch (e) {
       AppSnackbar.error("Logout failed");
-    } finally {
-      isLoading.value = false;
     }
   }
 
   Future<void> deleteAccount() async {
     try {
-      isLoading.value = true;
       await repository.deleteAccount();
-
       storage.clearData();
-
       AppSnackbar.success("Account deleted successfully");
       Get.offAllNamed(AppRoutes.sendOtp);
     } catch (e) {
       AppSnackbar.error("Delete account failed");
-    } finally {
-      isLoading.value = false;
     }
   }
 }

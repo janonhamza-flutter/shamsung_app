@@ -22,18 +22,17 @@ class SendOtpController extends GetxController {
 
       AppSnackbar.success(response.data["message"]);
 
+      isLoading.value = false;
       Get.toNamed(AppRoutes.otp, arguments: phoneController.text);
     } catch (e) {
-      AppSnackbar.error("Failed to send OTP");
-    } finally {
       isLoading.value = false;
+      AppSnackbar.error("Failed to send OTP");
     }
   }
 
-   @override
-   void onClose() {
-     // phoneController.dispose();
-
-     // super.onClose();
-   }
+  @override
+  void onClose() {
+    phoneController.dispose();
+    super.onClose();
+  }
 }

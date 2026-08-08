@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 
+import '../../featurs/notifications/data/models/notification_item.dart';
 import '../../featurs/notifications/presentation/controller/notification_controller.dart';
 import 'storage_service.dart';
 
@@ -97,7 +98,7 @@ class NotificationService {
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
     );
-  //  const iosSettings = DarwinInitializationSettings();
+    //  const iosSettings = DarwinInitializationSettings();
     const initializationSettings = InitializationSettings(
       android: androidSettings,
       //iOS: iosSettings,
@@ -126,14 +127,17 @@ class NotificationService {
   static Future<void> _handleForegroundMessage(RemoteMessage message) async {
     _ensureNotificationController().addRemoteNotification(message);
 
-    // Only show a banner if the message carries a notification payload
+    // Use the localized notification text if the message provides it.
+    final notificationItem = NotificationItem.fromRemoteMessage(message);
     final notification = message.notification;
-    if (notification == null) return;
+    if (notification == null && notificationItem.title.isEmpty && notificationItem.body.isEmpty) {
+      return;
+    }
 
     await flutterLocalNotificationsPlugin.show(
       id: message.hashCode,
-      title: notification.title ?? 'New notification',
-      body: notification.body ?? '',
+      title: notificationItem.title,
+      body: notificationItem.body,
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'default_channel',

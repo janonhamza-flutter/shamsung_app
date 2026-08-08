@@ -34,6 +34,9 @@ class OtpController extends GetxController {
         code: codeController.text,
       );
 
+      AppSnackbar.success("OTP verified successfully");
+      isLoading.value = false;
+
       /// NEW USER
       if (otpResponse.isNewUser) {
         Get.offNamed(AppRoutes.signup, arguments: phone);
@@ -56,12 +59,9 @@ class OtpController extends GetxController {
 
         Get.offAllNamed(AppRoutes.home);
       }
-
-      AppSnackbar.success("OTP verified successfully");
     } catch (e) {
-      AppSnackbar.error("Invalid or expired OTP");
-    } finally {
       isLoading.value = false;
+      AppSnackbar.error("Invalid or expired OTP");
     }
   }
 
@@ -79,8 +79,7 @@ class OtpController extends GetxController {
 
   @override
   void onClose() {
-    // codeController.dispose();
-
-    // super.onClose();
+    codeController.dispose();
+    super.onClose();
   }
 }

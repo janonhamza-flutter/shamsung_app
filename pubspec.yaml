@@ -101,16 +101,16 @@ flutter:
   # see https://flutter.dev/to/font-from-package
 
 flutter_native_splash:
-  color: "#0A2957"
+  color: "#FFFFFF"
   image: assets/images/app_splash.png
-  color_dark: "#0A2957"
+  color_dark: "#FFFFFF"
   image_dark: assets/images/app_splash.png
   android_12:
-    color: "#0A2957"
+    color: "#FFFFFF"
     image: assets/images/app_splash.png
-    color_dark: "#0A2957"
+    color_dark: "#FFFFFF"
     image_dark: assets/images/app_splash.png
-  web: false
+#   web: false
 
 flutter_icons:
   android: true

@@ -78,11 +78,11 @@ class StoreController extends GetxController {
   }
 
   // ── Fetch Accessories ────────────────────────────────────────────────────
-  Future<void> fetchAccessories() async {
+  Future<void> fetchAccessories({String? lang}) async {
     isLoading.value = true;
     errorMessage.value = '';
     try {
-      final result = await _repository.getAllAccessories();
+      final result = await _repository.getAllAccessories(lang: lang);
       accessories.assignAll(result);
     } catch (e) {
       errorMessage.value = e.toString().replaceFirst('Exception: ', '');
@@ -93,13 +93,28 @@ class StoreController extends GetxController {
   }
 
   // ── Fetch Accessory Details ───────────────────────────────────────────
+  /// يبحث عن المنتج مباشرةً من القائمة المحفوظة (التي جُلبت مع lang)
+  /// بدلاً من استدعاء GET /accessories/{id} الذي لا يدعم الترجمة.
   Future<void> fetchAccessoryDetails(int id, {AccessoryModel? initial}) async {
+    // عرض البيانات الأولية فوراً (من بطاقة المتجر)
     selectedAccessory.value = initial;
     isLoadingDetails.value = true;
     detailsError.value = '';
     try {
-      final result = await _repository.getAccessoryDetails(id);
-      selectedAccessory.value = result;
+      // أولاً: ابحث في القائمة المحملة مسبقاً
+      final cached = accessories.firstWhereOrNull((a) => a.id == id);
+      if (cached != null) {
+        selectedAccessory.value = cached;
+        return;
+      }
+      // إذا لم تكن القائمة محملة بعد، اجلبها ثم ابحث
+      await fetchAccessories();
+      final fromFresh = accessories.firstWhereOrNull((a) => a.id == id);
+      if (fromFresh != null) {
+        selectedAccessory.value = fromFresh;
+      } else {
+        detailsError.value = 'المنتج غير موجود.';
+      }
     } catch (e) {
       detailsError.value = e.toString().replaceFirst('Exception: ', '');
       AppSnackbar.error(detailsError.value);

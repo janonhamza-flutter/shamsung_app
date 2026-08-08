@@ -26,31 +26,7 @@ class MyOrdersPage extends StatelessWidget {
           ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          // Pull-to-refresh button
-          Obx(
-            () => controller.isLoading.value
-                ? const Padding(
-                    padding: EdgeInsets.all(14),
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    ),
-                  )
-                : IconButton(
-                    icon: const Icon(
-                      Icons.refresh_rounded,
-                      color: Colors.white,
-                    ),
-                    onPressed: controller.fetchMyOrders,
-                    tooltip: 'refresh'.tr,
-                  ),
-          ),
-        ],
+        actions: const [],
       ),
       body: Obx(() {
         // ── Loading state ────────────────────────────────────────────────

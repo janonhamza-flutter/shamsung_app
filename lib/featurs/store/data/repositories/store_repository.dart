@@ -1,17 +1,24 @@
 import 'package:dio/dio.dart';
 
 import '../../../../core/services/dio_service.dart';
+import '../../../../core/services/storage_service.dart';
 import '../models/accessory_model.dart';
 import '../models/cart_item_model.dart';
 import '../models/checkout_model.dart';
 
 class StoreRepository {
   final DioService _dioService = DioService();
+  final StorageService _storage = StorageService();
 
   // ── GET /accessories ──────────────────────────────────────────────────────
-  Future<List<AccessoryModel>> getAllAccessories() async {
+  Future<List<AccessoryModel>> getAllAccessories({String? lang}) async {
     try {
-      final Response response = await _dioService.getData('/accessories');
+      // StorageService هو المصدر الموثوق للغة — لا يعتمد على Get.locale
+      final String effectiveLang = lang ?? _storage.getLanguage();
+      final Response response = await _dioService.getData(
+        '/accessories',
+        queryParameters: {'lang': effectiveLang},
+      );
       if (response.statusCode == 200) {
         final raw = response.data;
         if (raw is Map) {

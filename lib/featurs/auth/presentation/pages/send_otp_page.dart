@@ -54,13 +54,11 @@ class SendOtpPage extends StatelessWidget {
 
                   const SizedBox(height: AppSizes.space90),
 
-                  Obx(
-                    () => CustomTextField(
-                      keyboardType: TextInputType.phone,
-                      hint: 'phone_hint'.tr,
-                      icon: Icons.phone_outlined,
-                      controller: controller.phoneController,
-                    ),
+                  CustomTextField(
+                    keyboardType: TextInputType.phone,
+                    hint: 'phone_hint'.tr,
+                    icon: Icons.phone_outlined,
+                    controller: controller.phoneController,
                   ),
 
                   const SizedBox(height: AppSizes.space70),
