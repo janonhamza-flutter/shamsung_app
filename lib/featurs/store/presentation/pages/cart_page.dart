@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/route/app_routes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/widgets/lottie_loading.dart';
 import '../controllers/store_controller.dart';
 import '../widgets/cart_item_tile.dart';
@@ -28,17 +28,17 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.blue,
+        backgroundColor: context.colors.primary,
         title: Text(
           'cart'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textOnPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: context.colors.textOnPrimary),
       ),
       body: Obx(() {
         // ── Loading ─────────────────────────────────────────────────
@@ -55,30 +55,36 @@ class _CartPageState extends State<CartPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.wifi_off_rounded,
-                    color: Colors.white38,
+                    color: context.colors.textSecondary,
                     size: 64,
                   ),
                   const SizedBox(height: 16),
                   Text(
                     controller.cartError.value,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.white60, fontSize: 15),
+                    style: TextStyle(
+                      color: context.colors.textSecondary,
+                      fontSize: 15,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton.icon(
                     onPressed: controller.fetchCart,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.green,
+                      backgroundColor: context.colors.accent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    icon: const Icon(Icons.refresh, color: Colors.white),
+                    icon: Icon(
+                      Icons.refresh,
+                      color: context.colors.textOnPrimary,
+                    ),
                     label: Text(
                       'retry'.tr,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: context.colors.textOnPrimary),
                     ),
                   ),
                 ],
@@ -96,15 +102,15 @@ class _CartPageState extends State<CartPage> {
         return Column(
           children: [
             if (controller.isLoadingCart.value)
-              const LinearProgressIndicator(
-                color: AppColors.green,
-                backgroundColor: AppColors.blue,
+              LinearProgressIndicator(
+                color: context.colors.accent,
+                backgroundColor: context.colors.primary,
               ),
 
             Expanded(
               child: RefreshIndicator(
-                color: AppColors.green,
-                backgroundColor: AppColors.blue,
+                color: context.colors.accent,
+                backgroundColor: context.colors.surface,
                 onRefresh: controller.fetchCart,
                 child: ListView.builder(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -135,9 +141,9 @@ class _CartPageState extends State<CartPage> {
               top: false,
               child: Container(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-                decoration: const BoxDecoration(
-                  color: AppColors.blue,
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: context.colors.surface,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(24),
                     topRight: Radius.circular(24),
                   ),
@@ -150,15 +156,15 @@ class _CartPageState extends State<CartPage> {
                         Text(
                           'items_count'.tr,
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.7),
+                            color: context.colors.textSecondary,
                             fontSize: 14,
                           ),
                         ),
                         Obx(
                           () => Text(
                             '${controller.cartCount} ${'pieces'.tr}',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: context.colors.textPrimary,
                               fontSize: 14,
                             ),
                           ),
@@ -166,15 +172,15 @@ class _CartPageState extends State<CartPage> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    const Divider(color: Colors.white12),
+                    Divider(color: context.colors.divider),
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           'total'.tr,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: context.colors.textPrimary,
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
                           ),
@@ -182,8 +188,8 @@ class _CartPageState extends State<CartPage> {
                         Obx(
                           () => Text(
                             '${controller.cartTotal.toStringAsFixed(2)} ${'currency'.tr}',
-                            style: const TextStyle(
-                              color: AppColors.green,
+                            style: TextStyle(
+                              color: context.colors.accent,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
@@ -197,7 +203,7 @@ class _CartPageState extends State<CartPage> {
                       child: ElevatedButton(
                         onPressed: () => Get.toNamed(AppRoutes.checkout),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.green,
+                          backgroundColor: context.colors.accent,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
@@ -205,8 +211,8 @@ class _CartPageState extends State<CartPage> {
                         ),
                         child: Text(
                           'place_order'.tr,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: context.colors.textOnPrimary,
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
                           ),
@@ -231,16 +237,16 @@ class _EmptyCartView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
+          Icon(
             Icons.shopping_cart_outlined,
-            color: Colors.white24,
+            color: context.colors.textDisabled,
             size: 80,
           ),
           const SizedBox(height: 20),
           Text(
             'cart_empty'.tr,
-            style: const TextStyle(
-              color: Colors.white60,
+            style: TextStyle(
+              color: context.colors.textSecondary,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -248,22 +254,25 @@ class _EmptyCartView extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'cart_empty_sub'.tr,
-            style: const TextStyle(color: Colors.white38, fontSize: 14),
+            style: TextStyle(color: context.colors.textDisabled, fontSize: 14),
           ),
           const SizedBox(height: 28),
           ElevatedButton.icon(
             onPressed: () => Get.back(),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.green,
+              backgroundColor: context.colors.accent,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            icon: const Icon(Icons.storefront_outlined, color: Colors.white),
+            icon: Icon(
+              Icons.storefront_outlined,
+              color: context.colors.textOnPrimary,
+            ),
             label: Text(
               'browse_store'.tr,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: context.colors.textOnPrimary),
             ),
           ),
         ],

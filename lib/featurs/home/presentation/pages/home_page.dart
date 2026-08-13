@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/route/app_routes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/widgets/exit_scope.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/home_header.dart';
@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return ExitScope(
       child: Scaffold(
-        backgroundColor: AppColors.darkBlue,
+        backgroundColor: context.colors.background,
         bottomNavigationBar: const BottomNavBar(currentIndex: 0),
         body: SafeArea(
           child: Padding(
@@ -63,14 +63,38 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       label,
-      style: const TextStyle(
-        color: Colors.white,
+      style: TextStyle(
+        color: context.colors.textPrimary,
         fontSize: 17,
         fontWeight: FontWeight.bold,
         letterSpacing: 0.3,
       ),
     );
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Shared "premium glow" shadow — a soft, color-tinted shadow in the card's own
+// hue (for lift/integration against the page background) layered under a
+// neutral ambient shadow (for grounding). Benefits both themes, but matters
+// most in Light Mode where a plain neutral shadow reads as flat/weak against
+// the pale background.
+// ─────────────────────────────────────────────────────────────────────────────
+
+List<BoxShadow> _glowShadow(BuildContext context, Color glowColor) {
+  return [
+    BoxShadow(
+      color: glowColor.withValues(alpha: context.colors.isDark ? 0.28 : 0.22),
+      blurRadius: 22,
+      offset: const Offset(0, 10),
+      spreadRadius: -6,
+    ),
+    BoxShadow(
+      color: context.colors.shadow,
+      blurRadius: 10,
+      offset: const Offset(0, 3),
+    ),
+  ];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -96,6 +120,7 @@ class _PromoCarouselState extends State<_PromoCarousel> {
       headlineKey: 'promo_headline_official',
       bodyKey: 'promo_body_official',
       accent: const Color(0xFF16C75B),
+      lightAccent: const Color(0xFF0E8A45),
       gradientStart: const Color(0xFF0A2F6B),
       gradientEnd: const Color(0xFF0D3D8A),
     ),
@@ -105,6 +130,7 @@ class _PromoCarouselState extends State<_PromoCarousel> {
       headlineKey: 'promo_headline_fast',
       bodyKey: 'promo_body_fast',
       accent: const Color(0xFFFFC107),
+      lightAccent: const Color(0xFFB4650A),
       gradientStart: const Color(0xFF1A237E),
       gradientEnd: const Color(0xFF283593),
     ),
@@ -113,9 +139,10 @@ class _PromoCarouselState extends State<_PromoCarousel> {
       tagKey: 'promo_tag_ai',
       headlineKey: 'promo_headline_ai',
       bodyKey: 'promo_body_ai',
-      accent: const Color(0xFFCE93D8),
-      gradientStart: const Color(0xFF4A148C),
-      gradientEnd: const Color(0xFF6A1B9A),
+      accent: const Color(0xFFC7B9FF),
+      lightAccent: const Color(0xFF4338CA),
+      gradientStart: const Color(0xFF322E81),
+      gradientEnd: const Color(0xFF4F46E5),
     ),
     _PromoSlide(
       icon: Icons.location_on_rounded,
@@ -123,6 +150,7 @@ class _PromoCarouselState extends State<_PromoCarousel> {
       headlineKey: 'promo_headline_near',
       bodyKey: 'promo_body_near',
       accent: const Color(0xFF4FC3F7),
+      lightAccent: const Color(0xFF0277BD),
       gradientStart: const Color(0xFF01579B),
       gradientEnd: const Color(0xFF0277BD),
     ),
@@ -132,8 +160,9 @@ class _PromoCarouselState extends State<_PromoCarousel> {
       headlineKey: 'promo_headline_shop',
       bodyKey: 'promo_body_shop',
       accent: const Color(0xFFFFB74D),
-      gradientStart: const Color(0xFF4E342E),
-      gradientEnd: const Color(0xFF6D4C41),
+      lightAccent: const Color(0xFF0B6B4F),
+      gradientStart: const Color(0xFF0B4F3A),
+      gradientEnd: const Color(0xFF10715A),
     ),
   ];
 
@@ -178,13 +207,18 @@ class _PromoCarouselState extends State<_PromoCarousel> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(slides.length, (i) {
             final active = i == _currentPage;
+            final current = slides[_currentPage];
             return AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               margin: const EdgeInsets.symmetric(horizontal: 3),
               width: active ? 22 : 7,
               height: 7,
               decoration: BoxDecoration(
-                color: active ? slides[_currentPage].accent : Colors.white24,
+                color: active
+                    ? (context.colors.isDark
+                          ? current.accent
+                          : current.lightAccent)
+                    : context.colors.textDisabled,
                 borderRadius: BorderRadius.circular(4),
               ),
             );
@@ -200,7 +234,16 @@ class _PromoSlide {
   final String tagKey;
   final String headlineKey;
   final String bodyKey;
+
+  /// Accent used in Dark Mode, where the card itself is a saturated dark
+  /// gradient — needs to be light/bright to read against it.
   final Color accent;
+
+  /// Accent used in Light Mode, where the card is a near-white tinted
+  /// surface — needs to be deep/saturated enough to read against white.
+  final Color lightAccent;
+
+  /// Full gradient fill, Dark Mode only.
   final Color gradientStart;
   final Color gradientEnd;
 
@@ -210,6 +253,7 @@ class _PromoSlide {
     required this.headlineKey,
     required this.bodyKey,
     required this.accent,
+    required this.lightAccent,
     required this.gradientStart,
     required this.gradientEnd,
   });
@@ -221,23 +265,38 @@ class _PromoSlideCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.colors.isDark;
+    // Dark Mode: the original full saturated gradient card, unchanged.
+    // Light Mode: a near-white surface carrying the slide's brand color via
+    // its border/tag/icon instead of a full dark gradient fill — a solid
+    // dark card here would look like Dark Mode content pasted onto a light
+    // page rather than a native part of the Light Mode UI.
+    final accent = isDark ? slide.accent : slide.lightAccent;
+    final surface = context.colors.surface;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2),
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [slide.gradientStart, slide.gradientEnd],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        gradient: isDark
+            ? LinearGradient(
+                colors: [slide.gradientStart, slide.gradientEnd],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : LinearGradient(
+                colors: [
+                  Color.lerp(surface, slide.lightAccent, 0.05)!,
+                  Color.lerp(surface, slide.lightAccent, 0.13)!,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
         borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.25),
-            blurRadius: 14,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        border: isDark
+            ? null
+            : Border.all(color: accent.withValues(alpha: 0.22)),
+        boxShadow: _glowShadow(context, isDark ? slide.gradientEnd : accent),
       ),
       child: Row(
         children: [
@@ -254,16 +313,14 @@ class _PromoSlideCard extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: slide.accent.withValues(alpha: 0.18),
+                    color: accent.withValues(alpha: 0.16),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: slide.accent.withValues(alpha: 0.4),
-                    ),
+                    border: Border.all(color: accent.withValues(alpha: 0.4)),
                   ),
                   child: Text(
                     slide.tagKey.tr,
                     style: TextStyle(
-                      color: slide.accent,
+                      color: accent,
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.5,
@@ -273,8 +330,10 @@ class _PromoSlideCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text(
                   slide.headlineKey.tr,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: isDark
+                        ? context.colors.textOnPrimary
+                        : context.colors.textPrimary,
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                     height: 1.3,
@@ -284,7 +343,9 @@ class _PromoSlideCard extends StatelessWidget {
                 Text(
                   slide.bodyKey.tr,
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.65),
+                    color: isDark
+                        ? context.colors.textOnPrimary.withValues(alpha: 0.65)
+                        : context.colors.textSecondary,
                     fontSize: 11,
                     height: 1.5,
                   ),
@@ -298,14 +359,14 @@ class _PromoSlideCard extends StatelessWidget {
             width: 68,
             height: 68,
             decoration: BoxDecoration(
-              color: slide.accent.withValues(alpha: 0.15),
+              color: accent.withValues(alpha: isDark ? 0.15 : 0.13),
               shape: BoxShape.circle,
               border: Border.all(
-                color: slide.accent.withValues(alpha: 0.3),
+                color: accent.withValues(alpha: 0.3),
                 width: 1.5,
               ),
             ),
-            child: Icon(slide.icon, color: slide.accent, size: 32),
+            child: Icon(slide.icon, color: accent, size: 32),
           ),
         ],
       ),
@@ -331,11 +392,12 @@ class _QuickActionsGrid extends StatelessWidget {
                   icon: Icons.build_rounded,
                   titleKey: 'action_request_repair',
                   subtitleKey: 'action_request_repair_sub',
-                  gradient: const LinearGradient(
-                    colors: [AppColors.green, Color(0xFF0FA84A)],
+                  gradient: LinearGradient(
+                    colors: [context.colors.accent, const Color(0xFF0FA84A)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
+                  glowColor: context.colors.accent,
                   onTap: () => Get.toNamed(AppRoutes.createRequest),
                 ),
               ),
@@ -351,6 +413,7 @@ class _QuickActionsGrid extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
+                  glowColor: const Color(0xFF1565C0),
                   onTap: () => Get.toNamed(AppRoutes.nearestShop),
                 ),
               ),
@@ -368,10 +431,11 @@ class _QuickActionsGrid extends StatelessWidget {
                   titleKey: 'action_ask_ai',
                   subtitleKey: 'action_ask_ai_sub',
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF7B1FA2), Color(0xFF4A148C)],
+                    colors: [Color(0xFF322E81), Color(0xFF4F46E5)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
+                  glowColor: const Color(0xFF4338CA),
                   onTap: () => Get.toNamed(AppRoutes.consultations),
                 ),
               ),
@@ -382,11 +446,12 @@ class _QuickActionsGrid extends StatelessWidget {
                   icon: Icons.storefront_rounded,
                   titleKey: 'action_browse_store',
                   subtitleKey: 'action_browse_store_sub',
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF0A2F6B), Color(0xFF0D3D8A)],
+                  gradient: LinearGradient(
+                    colors: [context.colors.primary, context.colors.primaryDark],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
+                  glowColor: context.colors.primary,
                   onTap: () => Get.toNamed(AppRoutes.store),
                 ),
               ),
@@ -402,7 +467,14 @@ class _ActionCard extends StatelessWidget {
   final IconData icon;
   final String titleKey;
   final String subtitleKey;
+
+  /// Full gradient fill, Dark Mode only.
   final Gradient gradient;
+
+  /// The card's identity color — used as the Light Mode surface tint /
+  /// icon / border / shadow tint, and as the Dark Mode shadow tint.
+  final Color glowColor;
+
   final VoidCallback onTap;
 
   const _ActionCard({
@@ -410,25 +482,39 @@ class _ActionCard extends StatelessWidget {
     required this.titleKey,
     required this.subtitleKey,
     required this.gradient,
+    required this.glowColor,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.colors.isDark;
+    final surface = context.colors.surface;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          gradient: gradient,
+          // Dark Mode: the original full saturated gradient tile, unchanged.
+          // Light Mode: a near-white tinted surface — a solid saturated
+          // gradient here would look identical to Dark Mode content sitting
+          // on top of a light page, not a native part of it.
+          gradient: isDark
+              ? gradient
+              : LinearGradient(
+                  colors: [
+                    Color.lerp(surface, glowColor, 0.05)!,
+                    Color.lerp(surface, glowColor, 0.13)!,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.22),
-              blurRadius: 12,
-              offset: const Offset(0, 5),
-            ),
-          ],
+          border: isDark
+              ? null
+              : Border.all(color: glowColor.withValues(alpha: 0.22)),
+          boxShadow: _glowShadow(context, glowColor),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,18 +523,26 @@ class _ActionCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.15),
+                color: isDark
+                    ? context.colors.textOnPrimary.withValues(alpha: 0.15)
+                    : glowColor.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, color: Colors.white, size: 22),
+              child: Icon(
+                icon,
+                color: isDark ? context.colors.textOnPrimary : glowColor,
+                size: 22,
+              ),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   titleKey.tr,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: isDark
+                        ? context.colors.textOnPrimary
+                        : context.colors.textPrimary,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     height: 1.25,
@@ -458,7 +552,9 @@ class _ActionCard extends StatelessWidget {
                 Text(
                   subtitleKey.tr,
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.65),
+                    color: isDark
+                        ? context.colors.textOnPrimary.withValues(alpha: 0.65)
+                        : context.colors.textSecondary,
                     fontSize: 11,
                   ),
                 ),

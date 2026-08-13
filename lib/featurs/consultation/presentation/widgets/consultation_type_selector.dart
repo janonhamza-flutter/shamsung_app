@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../controller/consultation_controller.dart';
+
+/// Returns [darkColor] unchanged in Dark Mode; in Light Mode returns
+/// [lightColor], a deepened variant tuned for legibility on light surfaces.
+/// Used to distinguish "AI" vs "technician" — a decorative pairing that
+/// doesn't map onto the semantic palette fields.
+Color _typeAccent(BuildContext context, bool isAi) {
+  if (isAi) {
+    return context.colors.isDark
+        ? Colors.purpleAccent
+        : const Color(0xFF7B1FA2);
+  }
+  return context.colors.isDark ? Colors.blueAccent : const Color(0xFF1565C0);
+}
 
 /// Toggle selector between AI and Technician consultation types.
 class ConsultationTypeSelector extends StatelessWidget {
@@ -18,7 +31,7 @@ class ConsultationTypeSelector extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: AppColors.blue,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(14),
         ),
         child: Row(
@@ -27,14 +40,14 @@ class ConsultationTypeSelector extends StatelessWidget {
               label: 'ask_ai'.tr,
               icon: Icons.smart_toy_outlined,
               isSelected: selected == 'ai',
-              accentColor: Colors.purpleAccent,
+              accentColor: _typeAccent(context, true),
               onTap: () => controller.selectType('ai'),
             ),
             _Tab(
               label: 'ask_technician'.tr,
               icon: Icons.engineering_outlined,
               isSelected: selected == 'technician',
-              accentColor: Colors.blueAccent,
+              accentColor: _typeAccent(context, false),
               onTap: () => controller.selectType('technician'),
             ),
           ],
@@ -82,13 +95,13 @@ class _Tab extends StatelessWidget {
               Icon(
                 icon,
                 size: 18,
-                color: isSelected ? accentColor : AppColors.grey,
+                color: isSelected ? accentColor : context.colors.textSecondary,
               ),
               const SizedBox(width: 6),
               Text(
                 label,
                 style: TextStyle(
-                  color: isSelected ? accentColor : AppColors.grey,
+                  color: isSelected ? accentColor : context.colors.textSecondary,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   fontSize: 13,
                 ),

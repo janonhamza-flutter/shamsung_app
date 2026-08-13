@@ -1,32 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 
 /// Shared status color / label / icon helpers used across
 /// MyRequestsPage and RequestDetailsPage.
 class RequestStatusHelpers {
   RequestStatusHelpers._();
 
-  static Color color(String status) {
+  static Color color(BuildContext context, String status) {
+    final colors = context.colors;
     switch (status.toLowerCase()) {
       case 'pending':
-        return Colors.orange;
+        return colors.warning;
       case 'in_progress':
       case 'repairing':
-        return Colors.blueAccent;
+        return colors.info;
       case 'under_inspection':
-        return const Color(0xFF29B6F6); // light blue
+        return colors.info;
       case 'completed':
       case 'done':
       case 'approved':
-        return AppColors.green;
+        return colors.success;
       case 'rejected':
       case 'cancelled':
-        return Colors.redAccent;
+        return colors.error;
       case 'waiting_customer_approval':
-        return Colors.amber;
+        return colors.warning;
       default:
-        return Colors.white54;
+        return colors.textSecondary;
     }
   }
 

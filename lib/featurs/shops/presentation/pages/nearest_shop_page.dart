@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/route/app_routes.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../data/models/shop_model.dart';
 import '../controllers/nearest_shop_controller.dart';
 
@@ -14,18 +14,21 @@ class NearestShopPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.darkBlue,
+        backgroundColor: context.colors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: context.colors.textPrimary,
+          ),
           onPressed: () => Get.back(),
         ),
         title: Text(
           'nearest_shops_title'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textPrimary,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
@@ -39,8 +42,8 @@ class NearestShopPage extends StatelessWidget {
               icon: Icon(
                 Icons.refresh_rounded,
                 color: controller.isLoading.value
-                    ? Colors.white24
-                    : AppColors.green,
+                    ? context.colors.textDisabled
+                    : context.colors.accent,
               ),
               tooltip: 'refresh'.tr,
             ),
@@ -100,16 +103,16 @@ class _LoadingState extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              color: AppColors.green.withValues(alpha: 0.1),
+              color: context.colors.accent.withValues(alpha: 0.1),
               shape: BoxShape.circle,
               border: Border.all(
-                color: AppColors.green.withValues(alpha: 0.3),
+                color: context.colors.accent.withValues(alpha: 0.3),
                 width: 1.5,
               ),
             ),
-            child: const Center(
+            child: Center(
               child: CircularProgressIndicator(
-                color: AppColors.green,
+                color: context.colors.accent,
                 strokeWidth: 2.5,
               ),
             ),
@@ -117,8 +120,8 @@ class _LoadingState extends StatelessWidget {
           const SizedBox(height: 20),
           Text(
             'detecting_location'.tr,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: context.colors.textPrimary,
               fontSize: 15,
               fontWeight: FontWeight.w600,
             ),
@@ -127,7 +130,7 @@ class _LoadingState extends StatelessWidget {
           Text(
             'finding_nearest_shops'.tr,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.5),
+              color: context.colors.textSecondary,
               fontSize: 13,
             ),
           ),
@@ -153,16 +156,16 @@ class _ErrorState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.location_off_rounded,
-              color: Colors.white24,
+              color: context.colors.textDisabled,
               size: 64,
             ),
             const SizedBox(height: 16),
             Text(
               'could_not_get_location'.tr,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.colors.textPrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -172,7 +175,7 @@ class _ErrorState extends StatelessWidget {
             Text(
               'enable_location_services'.tr,
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.5),
+                color: context.colors.textSecondary,
                 fontSize: 13,
                 height: 1.5,
               ),
@@ -182,7 +185,7 @@ class _ErrorState extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.green,
+                backgroundColor: context.colors.accent,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 28,
                   vertical: 14,
@@ -191,11 +194,14 @@ class _ErrorState extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                 ),
               ),
-              icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+              icon: Icon(
+                Icons.refresh_rounded,
+                color: context.colors.textOnPrimary,
+              ),
               label: Text(
                 'try_again'.tr,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: context.colors.textOnPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -223,16 +229,16 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.store_mall_directory_outlined,
-              color: Colors.white24,
+              color: context.colors.textDisabled,
               size: 64,
             ),
             const SizedBox(height: 16),
             Text(
               'no_shops_found_nearby'.tr,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.colors.textPrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -241,7 +247,7 @@ class _EmptyState extends StatelessWidget {
             Text(
               'no_shops_near_location'.tr,
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.5),
+                color: context.colors.textSecondary,
                 fontSize: 13,
                 height: 1.5,
               ),
@@ -251,7 +257,7 @@ class _EmptyState extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.green,
+                backgroundColor: context.colors.accent,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 28,
                   vertical: 14,
@@ -260,11 +266,14 @@ class _EmptyState extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                 ),
               ),
-              icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+              icon: Icon(
+                Icons.refresh_rounded,
+                color: context.colors.textOnPrimary,
+              ),
               label: Text(
                 'refresh'.tr,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: context.colors.textOnPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -288,12 +297,16 @@ class _ResultsHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(Icons.location_on_rounded, color: AppColors.green, size: 18),
+        Icon(
+          Icons.location_on_rounded,
+          color: context.colors.accent,
+          size: 18,
+        ),
         const SizedBox(width: 6),
         Text(
           '$count ${count == 1 ? 'shops_found_near_you'.tr : 'shops_found_near_you_plural'.tr}',
-          style: const TextStyle(
-            color: Colors.white70,
+          style: TextStyle(
+            color: context.colors.textSecondary,
             fontSize: 13,
             fontWeight: FontWeight.w500,
           ),
@@ -322,15 +335,17 @@ class _ShopCard extends StatelessWidget {
       opacity: closed ? 0.55 : 1.0,
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.blue,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(20),
           // حد رمادي للصالات المغلقة بدل الشكل العادي
-          border: closed ? Border.all(color: Colors.white12, width: 1) : null,
+          border: closed
+              ? Border.all(color: context.colors.border, width: 1)
+              : null,
           boxShadow: closed
               ? null
               : [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.18),
+                    color: context.colors.shadow,
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -348,9 +363,9 @@ class _ShopCard extends StatelessWidget {
                 children: [
                   // الصورة أو placeholder
                   if (shop.imageUrl != null)
-                    _buildImage(shop.imageUrl!, closed)
+                    _buildImage(context, shop.imageUrl!, closed)
                   else
-                    _imagePlaceholder(closed),
+                    _imagePlaceholder(context, closed),
 
                   // ── Distance badge — أعلى اليسار ──────────────
                   if (distanceLabel != null)
@@ -363,22 +378,24 @@ class _ShopCard extends StatelessWidget {
                           vertical: 5,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.65),
+                          // ثابت داكن فوق الصورة لضمان وضوح النص بغض النظر
+                          // عن الثيم — شارة فوق صورة وليست سطحاً في الصفحة
+                          color: context.colors.overlay,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.near_me_rounded,
-                              color: AppColors.green,
+                              color: context.colors.accent,
                               size: 12,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               distanceLabel!,
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: context.colors.textOnPrimary,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -398,9 +415,11 @@ class _ShopCard extends StatelessWidget {
                         vertical: 5,
                       ),
                       decoration: BoxDecoration(
+                        // شارة فوق صورة — الأحمر/الأخضر الدلاليان يبقيان
+                        // كما هما فوق الصورة بغض النظر عن الثيم
                         color: closed
-                            ? Colors.black.withValues(alpha: 0.65)
-                            : AppColors.green.withValues(alpha: 0.85),
+                            ? context.colors.overlay
+                            : context.colors.success.withValues(alpha: 0.85),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
@@ -410,14 +429,14 @@ class _ShopCard extends StatelessWidget {
                             closed
                                 ? Icons.lock_outline_rounded
                                 : Icons.check_circle_outline_rounded,
-                            color: Colors.white,
+                            color: context.colors.textOnPrimary,
                             size: 11,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             closed ? 'shop_closed'.tr : 'shop_open'.tr,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: context.colors.textOnPrimary,
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
                             ),
@@ -444,7 +463,9 @@ class _ShopCard extends StatelessWidget {
                         child: Text(
                           shop.name,
                           style: TextStyle(
-                            color: closed ? Colors.white54 : Colors.white,
+                            color: closed
+                                ? context.colors.textDisabled
+                                : context.colors.textPrimary,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -462,7 +483,9 @@ class _ShopCard extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.location_on_outlined,
-                        color: closed ? Colors.white24 : Colors.white54,
+                        color: closed
+                            ? context.colors.textDisabled
+                            : context.colors.textSecondary,
                         size: 15,
                       ),
                       const SizedBox(width: 4),
@@ -470,7 +493,9 @@ class _ShopCard extends StatelessWidget {
                         child: Text(
                           shop.address,
                           style: TextStyle(
-                            color: closed ? Colors.white38 : Colors.white60,
+                            color: closed
+                                ? context.colors.textDisabled
+                                : context.colors.textSecondary,
                             fontSize: 13,
                           ),
                         ),
@@ -484,14 +509,18 @@ class _ShopCard extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.phone_outlined,
-                        color: closed ? Colors.white24 : Colors.white54,
+                        color: closed
+                            ? context.colors.textDisabled
+                            : context.colors.textSecondary,
                         size: 15,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         shop.phone,
                         style: TextStyle(
-                          color: closed ? Colors.white38 : Colors.white60,
+                          color: closed
+                              ? context.colors.textDisabled
+                              : context.colors.textSecondary,
                           fontSize: 13,
                         ),
                       ),
@@ -507,7 +536,7 @@ class _ShopCard extends StatelessWidget {
                           child: _ActionButton(
                             icon: Icons.build_rounded,
                             label: 'request_repair'.tr,
-                            color: AppColors.green,
+                            color: context.colors.accent,
                             onTap: () => Get.toNamed(
                               AppRoutes.createRequest,
                               arguments: {
@@ -544,15 +573,15 @@ class _ShopCard extends StatelessWidget {
                         horizontal: 14,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.05),
+                        color: context.colors.surfaceVariant,
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.white12),
+                        border: Border.all(color: context.colors.border),
                       ),
                       child: Text(
                         'branch_unavailable'.tr,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white38,
+                        style: TextStyle(
+                          color: context.colors.textDisabled,
                           fontSize: 12,
                           fontStyle: FontStyle.italic,
                         ),
@@ -568,7 +597,7 @@ class _ShopCard extends StatelessWidget {
     );
   }
 
-  Widget _buildImage(String url, bool closed) {
+  Widget _buildImage(BuildContext context, String url, bool closed) {
     final img = Image.network(
       url,
       height: 150,
@@ -578,16 +607,16 @@ class _ShopCard extends StatelessWidget {
         if (progress == null) return child;
         return Container(
           height: 150,
-          color: const Color(0xFF0D3D8A),
-          child: const Center(
+          color: context.colors.surfaceVariant,
+          child: Center(
             child: CircularProgressIndicator(
-              color: AppColors.green,
+              color: context.colors.accent,
               strokeWidth: 2,
             ),
           ),
         );
       },
-      errorBuilder: (_, __, ___) => _imagePlaceholder(closed),
+      errorBuilder: (_, __, ___) => _imagePlaceholder(context, closed),
     );
 
     // grayscale فقط للصالات المغلقة
@@ -621,14 +650,14 @@ class _ShopCard extends StatelessWidget {
     return img;
   }
 
-  Widget _imagePlaceholder(bool closed) {
+  Widget _imagePlaceholder(BuildContext context, bool closed) {
     return Container(
       height: 150,
       width: double.infinity,
-      color: closed ? const Color(0xFF1A1A2E) : const Color(0xFF0D3D8A),
+      color: context.colors.surfaceVariant,
       child: Icon(
         Icons.store_mall_directory_outlined,
-        color: closed ? Colors.white12 : Colors.white24,
+        color: context.colors.textDisabled,
         size: 52,
       ),
     );
@@ -647,7 +676,9 @@ class _StarRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final starColor = muted ? Colors.white24 : Colors.amber;
+    // Amber stays fixed in both themes — a universal "rating star" color
+    // that reads clearly on light and dark surfaces alike.
+    final starColor = muted ? context.colors.textDisabled : Colors.amber;
     final full = rating.floor();
     final hasHalf = (rating - full) >= 0.5;
 
@@ -675,7 +706,9 @@ class _StarRating extends StatelessWidget {
         Text(
           rating.toStringAsFixed(1),
           style: TextStyle(
-            color: muted ? Colors.white24 : Colors.white70,
+            color: muted
+                ? context.colors.textDisabled
+                : context.colors.textSecondary,
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
@@ -712,11 +745,11 @@ class _ActionButton extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
       ),
-      icon: Icon(icon, color: Colors.white, size: 18),
+      icon: Icon(icon, color: context.colors.textOnPrimary, size: 18),
       label: Text(
         label,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: context.colors.textOnPrimary,
           fontWeight: FontWeight.bold,
           fontSize: 13,
         ),

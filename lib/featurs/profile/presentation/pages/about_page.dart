@@ -2,28 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constants/app_assets.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
+
+/// Returns [darkColor] unchanged in Dark Mode; in Light Mode returns
+/// [lightColor], a deepened variant tuned for legibility on light surfaces.
+/// Used for one-off decorative feature accents that don't map onto a
+/// semantic palette field (see profile_page.dart for the same pattern).
+Color _accent(BuildContext context, Color darkColor, Color lightColor) {
+  return context.colors.isDark ? darkColor : lightColor;
+}
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // AppBar and hero header are kept as fixed brand-navy chrome in both
+    // themes (same judgment call as profile_page.dart's _ProfileHeader) —
+    // the content cards below adapt fully to Light/Dark Mode.
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.darkBlue,
+        backgroundColor: context.colors.primary,
         elevation: 0,
         centerTitle: true,
         title: Text(
           'about_app_title'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textOnPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back_ios_rounded,
+            color: context.colors.textOnPrimary,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -33,9 +47,9 @@ class AboutPage extends StatelessWidget {
             // ── Hero Header ──────────────────────────────────────
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.blue, AppColors.darkBlue],
+                  colors: [context.colors.primary, context.colors.primaryDark],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
@@ -48,10 +62,10 @@ class AboutPage extends StatelessWidget {
                     height: 110,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.green.withValues(alpha: 0.1),
+                      color: context.colors.accent.withValues(alpha: 0.1),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.green.withValues(alpha: 0.25),
+                          color: context.colors.accent.withValues(alpha: 0.25),
                           blurRadius: 30,
                           spreadRadius: 5,
                         ),
@@ -64,8 +78,8 @@ class AboutPage extends StatelessWidget {
 
                   Text(
                     'app_name'.tr,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: context.colors.textOnPrimary,
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.5,
@@ -79,16 +93,16 @@ class AboutPage extends StatelessWidget {
                       vertical: 5,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.green.withValues(alpha: 0.15),
+                      color: context.colors.accent.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: AppColors.green.withValues(alpha: 0.4),
+                        color: context.colors.accent.withValues(alpha: 0.4),
                       ),
                     ),
                     child: Text(
                       '${'version'.tr} 1.0.0',
-                      style: const TextStyle(
-                        color: AppColors.green,
+                      style: TextStyle(
+                        color: context.colors.accent,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
@@ -112,13 +126,13 @@ class AboutPage extends StatelessWidget {
                         _CardTitle(
                           icon: Icons.info_rounded,
                           label: 'about_shamsung_label'.tr,
-                          accent: AppColors.green,
+                          accent: context.colors.accent,
                         ),
                         const SizedBox(height: 12),
                         Text(
                           'about_shamsung_desc'.tr,
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.75),
+                            color: context.colors.textSecondary,
                             fontSize: 14,
                             height: 1.7,
                           ),
@@ -137,30 +151,34 @@ class AboutPage extends StatelessWidget {
                         _CardTitle(
                           icon: Icons.star_rounded,
                           label: 'key_features'.tr,
-                          accent: const Color(0xFFFFB74D),
+                          accent: context.colors.warning,
                         ),
                         const SizedBox(height: 14),
                         _FeatureRow(
                           icon: Icons.build_rounded,
-                          accent: AppColors.green,
+                          accent: context.colors.accent,
                           label: 'feature_maintenance'.tr,
                           desc: 'feature_maintenance_desc'.tr,
                         ),
                         _FeatureRow(
                           icon: Icons.storefront_rounded,
-                          accent: const Color(0xFFFFB74D),
+                          accent: context.colors.warning,
                           label: 'feature_store'.tr,
                           desc: 'feature_store_desc'.tr,
                         ),
                         _FeatureRow(
                           icon: Icons.chat_bubble_rounded,
-                          accent: const Color(0xFFCE93D8),
+                          accent: _accent(
+                            context,
+                            const Color(0xFFCE93D8),
+                            const Color(0xFF7B1FA2),
+                          ),
                           label: 'feature_ai'.tr,
                           desc: 'feature_ai_desc'.tr,
                         ),
                         _FeatureRow(
                           icon: Icons.location_on_rounded,
-                          accent: const Color(0xFF4FC3F7),
+                          accent: context.colors.info,
                           label: 'feature_nearest'.tr,
                           desc: 'feature_nearest_desc'.tr,
                           isLast: true,
@@ -179,7 +197,7 @@ class AboutPage extends StatelessWidget {
                         _CardTitle(
                           icon: Icons.code_rounded,
                           label: 'app_info'.tr,
-                          accent: const Color(0xFF4FC3F7),
+                          accent: context.colors.info,
                         ),
                         const SizedBox(height: 12),
                         _DetailRow(
@@ -210,7 +228,7 @@ class AboutPage extends StatelessWidget {
                         child: Text(
                           'app_footer'.tr,
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.3),
+                            color: context.colors.textDisabled,
                             fontSize: 12,
                           ),
                         ),
@@ -241,11 +259,14 @@ class _InfoCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(18),
+        border: context.colors.isDark
+            ? null
+            : Border.all(color: context.colors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.18),
+            color: context.colors.shadow,
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -282,8 +303,8 @@ class _CardTitle extends StatelessWidget {
         const SizedBox(width: 10),
         Text(
           label,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textPrimary,
             fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
@@ -330,8 +351,8 @@ class _FeatureRow extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: context.colors.textPrimary,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
@@ -340,7 +361,7 @@ class _FeatureRow extends StatelessWidget {
                   Text(
                     desc,
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.5),
+                      color: context.colors.textSecondary,
                       fontSize: 12,
                     ),
                   ),
@@ -349,8 +370,7 @@ class _FeatureRow extends StatelessWidget {
             ),
           ],
         ),
-        if (!isLast)
-          Divider(height: 20, color: Colors.white.withValues(alpha: 0.07)),
+        if (!isLast) Divider(height: 20, color: context.colors.divider),
       ],
     );
   }
@@ -377,22 +397,21 @@ class _DetailRow extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.5),
+                color: context.colors.textSecondary,
                 fontSize: 13,
               ),
             ),
             Text(
               value,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.colors.textPrimary,
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
             ),
           ],
         ),
-        if (!isLast)
-          Divider(height: 16, color: Colors.white.withValues(alpha: 0.07)),
+        if (!isLast) Divider(height: 16, color: context.colors.divider),
       ],
     );
   }

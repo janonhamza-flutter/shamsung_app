@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../controller/create_request_controller.dart';
 
 /// Header banner shown at top of CreateRequestPage.
+///
+/// Kept as a fixed brand-navy gradient in both themes (like the profile
+/// page's hero header) rather than turned into a plain surface card —
+/// otherwise its gradient collapses to a flat white-on-white block in Light
+/// Mode, losing the intended "welcome" hero treatment.
 class RequestFormHeaderBanner extends StatelessWidget {
   const RequestFormHeaderBanner({super.key});
 
@@ -15,15 +20,15 @@ class RequestFormHeaderBanner extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.blue, Color(0xFF0D3D8A)],
+        gradient: LinearGradient(
+          colors: [context.colors.primary, context.colors.primaryDark],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(AppSizes.radius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
+            color: context.colors.shadow,
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -34,12 +39,12 @@ class RequestFormHeaderBanner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.green.withValues(alpha: 0.2),
+              color: context.colors.accent.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.build_circle_outlined,
-              color: AppColors.green,
+              color: context.colors.accent,
               size: 32,
             ),
           ),
@@ -50,8 +55,8 @@ class RequestFormHeaderBanner extends StatelessWidget {
               children: [
                 Text(
                   'submit_repair_request'.tr,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: context.colors.textOnPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -59,7 +64,10 @@ class RequestFormHeaderBanner extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   'submit_repair_request_sub'.tr,
-                  style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  style: TextStyle(
+                    color: context.colors.textOnPrimary.withValues(alpha: 0.7),
+                    fontSize: 13,
+                  ),
                 ),
               ],
             ),
@@ -91,11 +99,11 @@ class RequestFormTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
+            color: context.colors.shadow,
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -104,15 +112,15 @@ class RequestFormTextField extends StatelessWidget {
       child: TextField(
         controller: controller,
         maxLines: maxLines,
-        style: const TextStyle(color: Colors.white, fontSize: 15),
+        style: TextStyle(color: context.colors.textPrimary, fontSize: 15),
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
-          labelStyle: const TextStyle(color: Colors.white60, fontSize: 14),
-          hintStyle: const TextStyle(color: Colors.white30, fontSize: 14),
+          labelStyle: TextStyle(color: context.colors.textSecondary, fontSize: 14),
+          hintStyle: TextStyle(color: context.colors.textDisabled, fontSize: 14),
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 16, right: 8),
-            child: Icon(icon, color: AppColors.green, size: 22),
+            child: Icon(icon, color: context.colors.accent, size: 22),
           ),
           prefixIconConstraints: const BoxConstraints(
             minWidth: 50,
@@ -124,18 +132,18 @@ class RequestFormTextField extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: Colors.white12),
+            borderSide: BorderSide(color: context.colors.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: AppColors.green, width: 1.5),
+            borderSide: BorderSide(color: context.colors.accent, width: 1.5),
           ),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,
             vertical: 16,
           ),
           filled: true,
-          fillColor: AppColors.blue,
+          fillColor: context.colors.surfaceVariant,
         ),
       ),
     );
@@ -159,24 +167,24 @@ class RequestFormShopDropdown extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.blue,
+            color: context.colors.surfaceVariant,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white12),
+            border: Border.all(color: context.colors.border),
           ),
           child: Row(
             children: [
-              const SizedBox(
+              SizedBox(
                 width: 18,
                 height: 18,
                 child: CircularProgressIndicator(
-                  color: AppColors.green,
+                  color: context.colors.accent,
                   strokeWidth: 2,
                 ),
               ),
               const SizedBox(width: 12),
               Text(
                 'loading_shops'.tr,
-                style: const TextStyle(color: Colors.white54, fontSize: 14),
+                style: TextStyle(color: context.colors.textSecondary, fontSize: 14),
               ),
             ],
           ),
@@ -187,13 +195,13 @@ class RequestFormShopDropdown extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.blue,
+            color: context.colors.surfaceVariant,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+            border: Border.all(color: context.colors.error.withValues(alpha: 0.3)),
           ),
           child: Text(
             'no_shops_available'.tr,
-            style: const TextStyle(color: Colors.white54, fontSize: 14),
+            style: TextStyle(color: context.colors.textSecondary, fontSize: 14),
           ),
         );
       }
@@ -201,12 +209,12 @@ class RequestFormShopDropdown extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          color: AppColors.blue,
+          color: context.colors.surfaceVariant,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white12),
+          border: Border.all(color: context.colors.border),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
+              color: context.colors.shadow,
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -218,13 +226,13 @@ class RequestFormShopDropdown extends StatelessWidget {
                 ? null
                 : controller.selectedShopId.value,
             isExpanded: true,
-            dropdownColor: AppColors.blue,
-            iconEnabledColor: AppColors.green,
-            style: const TextStyle(color: Colors.white, fontSize: 15),
+            dropdownColor: context.colors.surfaceVariant,
+            iconEnabledColor: context.colors.accent,
+            style: TextStyle(color: context.colors.textPrimary, fontSize: 15),
             icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 26),
             hint: Text(
               'select_a_shop'.tr,
-              style: const TextStyle(color: Colors.white54),
+              style: TextStyle(color: context.colors.textSecondary),
             ),
             items: controller.shops
                 .map(
@@ -232,9 +240,9 @@ class RequestFormShopDropdown extends StatelessWidget {
                     value: shop.id,
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.store_outlined,
-                          color: AppColors.green,
+                          color: context.colors.accent,
                           size: 20,
                         ),
                         const SizedBox(width: 10),
@@ -277,12 +285,12 @@ class _SelectedShopBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.green.withValues(alpha: 0.4)),
+        border: Border.all(color: context.colors.accent.withValues(alpha: 0.4)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
+            color: context.colors.shadow,
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -293,12 +301,12 @@ class _SelectedShopBadge extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: AppColors.green.withValues(alpha: 0.15),
+              color: context.colors.accent.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.location_on_rounded,
-              color: AppColors.green,
+              color: context.colors.accent,
               size: 18,
             ),
           ),
@@ -309,8 +317,8 @@ class _SelectedShopBadge extends StatelessWidget {
               children: [
                 Text(
                   'selected_branch'.tr,
-                  style: const TextStyle(
-                    color: Colors.white54,
+                  style: TextStyle(
+                    color: context.colors.textSecondary,
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
@@ -318,8 +326,8 @@ class _SelectedShopBadge extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   name,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: context.colors.textPrimary,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
@@ -330,13 +338,13 @@ class _SelectedShopBadge extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.green.withValues(alpha: 0.12),
+              color: context.colors.accent.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               'nearest'.tr,
-              style: const TextStyle(
-                color: AppColors.green,
+              style: TextStyle(
+                color: context.colors.accent,
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
               ),
@@ -365,35 +373,35 @@ class RequestFormSubmitButton extends StatelessWidget {
               ? null
               : controller.createRequest,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.green,
-            disabledBackgroundColor: AppColors.green.withValues(alpha: 0.4),
+            backgroundColor: context.colors.accent,
+            disabledBackgroundColor: context.colors.accent.withValues(alpha: 0.4),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppSizes.radius),
             ),
             elevation: 4,
           ),
           child: controller.isLoading.value
-              ? const SizedBox(
+              ? SizedBox(
                   width: 24,
                   height: 24,
                   child: CircularProgressIndicator(
-                    color: Colors.white,
+                    color: context.colors.textOnPrimary,
                     strokeWidth: 2.5,
                   ),
                 )
               : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.send_rounded,
-                      color: Colors.white,
+                      color: context.colors.textOnPrimary,
                       size: 20,
                     ),
                     const SizedBox(width: 10),
                     Text(
                       'submit_request'.tr,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: context.colors.textOnPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),

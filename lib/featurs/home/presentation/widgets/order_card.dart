@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
-import '../../../../../core/theme/app_colors.dart';
-import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/app_palette.dart';
 
 class OrderCard extends StatelessWidget {
   final String phoneName;
@@ -28,7 +27,7 @@ class OrderCard extends StatelessWidget {
       padding: const EdgeInsets.all(15),
 
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surface,
 
         borderRadius: BorderRadius.circular(AppSizes.radius),
       ),
@@ -41,12 +40,16 @@ class OrderCard extends StatelessWidget {
             height: 70,
 
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.colors.surfaceVariant,
 
               borderRadius: BorderRadius.circular(15),
             ),
 
-            child: const Icon(Icons.phone_iphone, size: 35),
+            child: Icon(
+              Icons.phone_iphone,
+              size: 35,
+              color: context.colors.textPrimary,
+            ),
           ),
 
           const SizedBox(width: 15),
@@ -57,11 +60,23 @@ class OrderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
-                Text(phoneName, style: AppTextStyles.body),
+                Text(
+                  phoneName,
+                  style: TextStyle(
+                    color: context.colors.textPrimary,
+                    fontSize: 18,
+                  ),
+                ),
 
                 const SizedBox(height: 5),
 
-                Text(repairType, style: AppTextStyles.body),
+                Text(
+                  repairType,
+                  style: TextStyle(
+                    color: context.colors.textSecondary,
+                    fontSize: 18,
+                  ),
+                ),
               ],
             ),
           ),
@@ -71,7 +86,7 @@ class OrderCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
 
             decoration: BoxDecoration(
-              color: _getStatusColor(),
+              color: _getStatusColor(context),
 
               borderRadius: BorderRadius.circular(20),
             ),
@@ -79,8 +94,8 @@ class OrderCard extends StatelessWidget {
             child: Text(
               status,
 
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.colors.textOnPrimary,
 
                 fontWeight: FontWeight.bold,
               ),
@@ -95,19 +110,19 @@ class OrderCard extends StatelessWidget {
   /// STATUS COLOR
   /// =========================
 
-  Color _getStatusColor() {
+  Color _getStatusColor(BuildContext context) {
     switch (status) {
       case "Completed":
-        return Colors.green;
+        return context.colors.success;
 
       case "Pending":
-        return Colors.orange;
+        return context.colors.warning;
 
       case "Repairing":
-        return Colors.blue;
+        return context.colors.info;
 
       default:
-        return Colors.grey;
+        return context.colors.textDisabled;
     }
   }
 }

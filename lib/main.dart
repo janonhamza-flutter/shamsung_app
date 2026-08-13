@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shamsoung/core/services/notification_service.dart';
 import 'package:shamsoung/core/services/storage_service.dart';
+import 'package:shamsoung/core/theme/app_theme.dart';
+import 'package:shamsoung/core/theme/theme_controller.dart';
 import 'package:shamsoung/core/translations/app_translations.dart';
 
 import 'core/route/app_pages.dart';
@@ -25,6 +27,9 @@ void main() async {
   final locale = savedLanguage == 'ar'
       ? const Locale('ar', 'SA')
       : const Locale('en', 'US');
+
+  // Registered before runApp so it's available to every screen from frame one.
+  Get.put(ThemeController(storage: storage));
 
   // Native splash stays briefly, then loading screen takes over
   Future.delayed(const Duration(milliseconds: 800), () {
@@ -48,25 +53,34 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: initialRoute,
-      getPages: AppPages.pages,
+    final themeController = Get.find<ThemeController>();
 
-      // ── Translations ──────────────────────────────────────────
-      translations: AppTranslations(),
-      locale: locale,
-      fallbackLocale: const Locale('en', 'US'),
+    return Obx(
+      () => GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        initialRoute: initialRoute,
+        getPages: AppPages.pages,
 
-      // ── RTL / LTR support ─────────────────────────────────────
-      builder: (context, child) {
-        return Directionality(
-          textDirection: Get.locale?.languageCode == 'ar'
-              ? TextDirection.rtl
-              : TextDirection.ltr,
-          child: child!,
-        );
-      },
+        // ── Theme ────────────────────────────────────────────────
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        themeMode: themeController.themeMode.value,
+
+        // ── Translations ──────────────────────────────────────────
+        translations: AppTranslations(),
+        locale: locale,
+        fallbackLocale: const Locale('en', 'US'),
+
+        // ── RTL / LTR support ─────────────────────────────────────
+        builder: (context, child) {
+          return Directionality(
+            textDirection: Get.locale?.languageCode == 'ar'
+                ? TextDirection.rtl
+                : TextDirection.ltr,
+            child: child!,
+          );
+        },
+      ),
     );
   }
 }

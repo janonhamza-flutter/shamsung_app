@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../controller/request_details_controller.dart';
 
 /// Dialog for rejecting a maintenance request.
@@ -28,11 +28,11 @@ class RejectDialogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
         side: BorderSide(
-          color: Colors.redAccent.withValues(alpha: 0.3),
+          color: context.colors.error.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -46,7 +46,7 @@ class RejectDialogWidget extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               'quick_reasons'.tr,
-              style: const TextStyle(color: Colors.white54, fontSize: 12),
+              style: TextStyle(color: context.colors.textSecondary, fontSize: 12),
             ),
             const SizedBox(height: 8),
             _PresetChips(
@@ -72,12 +72,12 @@ class _DialogHeader extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.redAccent.withValues(alpha: 0.12),
+            color: context.colors.error.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.cancel_outlined,
-            color: Colors.redAccent,
+            color: context.colors.error,
             size: 22,
           ),
         ),
@@ -88,15 +88,15 @@ class _DialogHeader extends StatelessWidget {
             children: [
               Text(
                 'reject_request'.tr,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: context.colors.textPrimary,
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
                 'reject_request_sub'.tr,
-                style: const TextStyle(color: Colors.white54, fontSize: 12),
+                style: TextStyle(color: context.colors.textSecondary, fontSize: 12),
               ),
             ],
           ),
@@ -128,15 +128,15 @@ class _PresetChips extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.redAccent.withValues(alpha: 0.08),
+                  color: context.colors.error.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: Colors.redAccent.withValues(alpha: 0.3),
+                    color: context.colors.error.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Text(
                   p,
-                  style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                  style: TextStyle(color: context.colors.error, fontSize: 12),
                 ),
               ),
             ),
@@ -154,17 +154,17 @@ class _ReasonTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
+        border: Border.all(color: context.colors.error.withValues(alpha: 0.3)),
       ),
       child: TextField(
         controller: controller,
         maxLines: 3,
-        style: const TextStyle(color: Colors.white, fontSize: 14),
+        style: TextStyle(color: context.colors.textPrimary, fontSize: 14),
         decoration: InputDecoration(
           hintText: 'write_own_reason'.tr,
-          hintStyle: const TextStyle(color: Colors.white30, fontSize: 14),
+          hintStyle: TextStyle(color: context.colors.textDisabled, fontSize: 14),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.all(14),
         ),
@@ -186,7 +186,7 @@ class _ActionButtons extends StatelessWidget {
             onPressed: () => Get.back(),
             child: Text(
               'cancel'.tr,
-              style: const TextStyle(color: Colors.white54),
+              style: TextStyle(color: context.colors.textSecondary),
             ),
           ),
         ),
@@ -199,8 +199,8 @@ class _ActionButtons extends StatelessWidget {
                   ? null
                   : controller.rejectRequest,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.redAccent,
-                disabledBackgroundColor: Colors.redAccent.withValues(
+                backgroundColor: context.colors.error,
+                disabledBackgroundColor: context.colors.error.withValues(
                   alpha: 0.4,
                 ),
                 shape: RoundedRectangleBorder(
@@ -208,18 +208,18 @@ class _ActionButtons extends StatelessWidget {
                 ),
               ),
               child: controller.isRejecting.value
-                  ? const SizedBox(
+                  ? SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
-                        color: Colors.white,
+                        color: context.colors.textOnPrimary,
                         strokeWidth: 2,
                       ),
                     )
                   : Text(
                       'confirm_reject'.tr,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: context.colors.textOnPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

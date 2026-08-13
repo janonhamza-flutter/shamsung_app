@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/route/app_routes.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/widgets/exit_scope.dart';
 import '../../../home/presentation/widgets/bottom_nav_bar.dart';
 import '../controller/my_requests_controller.dart';
@@ -19,46 +19,46 @@ class MyRequestsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExitScope(
       child: Scaffold(
-        backgroundColor: AppColors.darkBlue,
+        backgroundColor: context.colors.background,
         bottomNavigationBar: const BottomNavBar(currentIndex: 1),
         floatingActionButton: FloatingActionButton.extended(
-          backgroundColor: AppColors.green,
+          backgroundColor: context.colors.accent,
           onPressed: () => Get.toNamed(AppRoutes.createRequest),
-          icon: const Icon(Icons.add_rounded, color: Colors.white),
+          icon: Icon(Icons.add_rounded, color: context.colors.textOnPrimary),
           label: Text(
             'new_request'.tr,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: context.colors.textOnPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
         appBar: AppBar(
-          backgroundColor: AppColors.darkBlue,
+          backgroundColor: context.colors.background,
           elevation: 0,
           automaticallyImplyLeading: false,
           title: Text(
             'my_requests'.tr,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: context.colors.textPrimary,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
         body: Obx(() {
-          if (controller.isLoading.value) return _buildLoadingState();
+          if (controller.isLoading.value) return _buildLoadingState(context);
           if (controller.errorMessage.value.isNotEmpty) {
-            return _buildErrorState(controller.errorMessage.value);
+            return _buildErrorState(context, controller.errorMessage.value);
           }
-          if (controller.requests.isEmpty) return _buildEmptyState();
-          return _buildRequestsList();
+          if (controller.requests.isEmpty) return _buildEmptyState(context);
+          return _buildRequestsList(context);
         }),
       ),
     );
   }
 
-  Widget _buildLoadingState() {
+  Widget _buildLoadingState(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -71,51 +71,54 @@ class MyRequestsPage extends StatelessWidget {
             repeat: true,
             delegates: LottieDelegates(
               values: [
-                ValueDelegate.color(const ['**'], value: AppColors.green),
+                ValueDelegate.color(
+                  const ['**'],
+                  value: context.colors.accent,
+                ),
               ],
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'loading_requests'.tr,
-            style: const TextStyle(color: Colors.white54, fontSize: 14),
+            style: TextStyle(color: context.colors.textSecondary, fontSize: 14),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildErrorState(String message) {
+  Widget _buildErrorState(BuildContext context, String message) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.padding),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.cloud_off_rounded,
-              color: Colors.white24,
+              color: context.colors.textDisabled,
               size: 72,
             ),
             const SizedBox(height: 16),
             Text(
               message,
-              style: const TextStyle(color: Colors.white54, fontSize: 15),
+              style: TextStyle(color: context.colors.textSecondary, fontSize: 15),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: controller.getRequests,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.green,
+                backgroundColor: context.colors.accent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              icon: const Icon(Icons.refresh, color: Colors.white),
+              icon: Icon(Icons.refresh, color: context.colors.textOnPrimary),
               label: Text(
                 'retry'.tr,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: context.colors.textOnPrimary),
               ),
             ),
           ],
@@ -124,7 +127,7 @@ class MyRequestsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.padding),
@@ -134,27 +137,27 @@ class MyRequestsPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(28),
               decoration: BoxDecoration(
-                color: AppColors.blue,
+                color: context.colors.surface,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
+                    color: context.colors.shadow,
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),
                 ],
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.build_circle_outlined,
-                color: AppColors.green,
+                color: context.colors.accent,
                 size: 64,
               ),
             ),
             const SizedBox(height: 24),
             Text(
               'no_requests_yet'.tr,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.colors.textPrimary,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -162,14 +165,14 @@ class MyRequestsPage extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'no_requests_hint'.tr,
-              style: const TextStyle(color: Colors.white54, fontSize: 14),
+              style: TextStyle(color: context.colors.textSecondary, fontSize: 14),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
             ElevatedButton.icon(
               onPressed: () => Get.toNamed(AppRoutes.createRequest),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.green,
+                backgroundColor: context.colors.accent,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 28,
                   vertical: 14,
@@ -178,11 +181,11 @@ class MyRequestsPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              icon: const Icon(Icons.add_rounded, color: Colors.white),
+              icon: Icon(Icons.add_rounded, color: context.colors.textOnPrimary),
               label: Text(
                 'create_request'.tr,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: context.colors.textOnPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -193,10 +196,10 @@ class MyRequestsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRequestsList() {
+  Widget _buildRequestsList(BuildContext context) {
     return RefreshIndicator(
-      color: AppColors.green,
-      backgroundColor: AppColors.blue,
+      color: context.colors.accent,
+      backgroundColor: context.colors.surface,
       onRefresh: controller.getRequests,
       child: ListView.builder(
         padding: const EdgeInsets.fromLTRB(

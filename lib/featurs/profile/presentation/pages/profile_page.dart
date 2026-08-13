@@ -4,23 +4,33 @@ import 'package:shamsoung/featurs/home/presentation/widgets/bottom_nav_bar.dart'
 
 import '../../../../../core/route/app_routes.dart';
 import '../../../../../core/services/storage_service.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
+import '../../../../../core/theme/theme_controller.dart';
 import '../../../../../core/widgets/exit_scope.dart';
 import '../../../../../core/widgets/lottie_loading.dart';
 import '../../../notifications/presentation/controller/notification_controller.dart';
 import '../../../store/presentation/controllers/store_controller.dart';
 import '../controller/profile_controller.dart';
 
+/// Returns [darkColor] unchanged in Dark Mode; in Light Mode returns
+/// [lightColor], a deepened variant tuned for legibility on light surfaces.
+/// Used for the menu's decorative per-category icon accents, which aren't
+/// status colors and so don't map onto the semantic palette fields.
+Color _accent(BuildContext context, Color darkColor, Color lightColor) {
+  return context.colors.isDark ? darkColor : lightColor;
+}
+
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
 
   final ProfileController controller = Get.find();
+  final ThemeController themeController = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return ExitScope(
       child: Scaffold(
-        backgroundColor: AppColors.darkBlue,
+        backgroundColor: context.colors.background,
         bottomNavigationBar: const BottomNavBar(currentIndex: 3),
         body: SingleChildScrollView(
           child: Column(
@@ -51,13 +61,13 @@ class ProfilePage extends StatelessWidget {
                         _MenuItem(
                           icon: Icons.inventory_2_rounded,
                           label: 'my_orders'.tr,
-                          accent: AppColors.green,
+                          accent: context.colors.accent,
                           onTap: () => Get.toNamed(AppRoutes.myOrders),
                         ),
                         _MenuItem(
                           icon: Icons.notifications_rounded,
                           label: 'notifications'.tr,
-                          accent: const Color(0xFF4FC3F7),
+                          accent: context.colors.info,
                           onTap: () => Get.toNamed(AppRoutes.notifications),
                         ),
                       ],
@@ -68,15 +78,33 @@ class ProfilePage extends StatelessWidget {
                     // Preferences
                     _SectionLabel(label: 'preferences'.tr),
                     const SizedBox(height: 10),
-                    _MenuCard(
-                      items: [
-                        _MenuItem(
-                          icon: Icons.language_rounded,
-                          label: 'language'.tr,
-                          accent: const Color(0xFFFFB74D),
-                          onTap: () => _showLanguageDialog(),
-                        ),
-                      ],
+                    Obx(
+                      () => _MenuCard(
+                        items: [
+                          _MenuItem(
+                            icon: Icons.language_rounded,
+                            label: 'language'.tr,
+                            accent: _accent(
+                              context,
+                              const Color(0xFFFFB74D),
+                              const Color(0xFFB4650A),
+                            ),
+                            onTap: () => _showLanguageDialog(),
+                          ),
+                          _MenuItem(
+                            icon: themeController.isDarkMode
+                                ? Icons.dark_mode_rounded
+                                : Icons.light_mode_rounded,
+                            label: 'appearance'.tr,
+                            accent: _accent(
+                              context,
+                              const Color(0xFFB39DDB),
+                              const Color(0xFF6A4EE0),
+                            ),
+                            onTap: () => _showThemeDialog(),
+                          ),
+                        ],
+                      ),
                     ),
 
                     const SizedBox(height: 20),
@@ -89,7 +117,11 @@ class ProfilePage extends StatelessWidget {
                         _MenuItem(
                           icon: Icons.info_rounded,
                           label: 'about_app'.tr,
-                          accent: const Color(0xFF80DEEA),
+                          accent: _accent(
+                            context,
+                            const Color(0xFF80DEEA),
+                            const Color(0xFF0E7C86),
+                          ),
                           onTap: () => Get.toNamed(AppRoutes.about),
                         ),
                       ],
@@ -112,16 +144,20 @@ class ProfilePage extends StatelessWidget {
   void _showLanguageDialog() {
     final storage = StorageService();
     final currentLang = storage.getLanguage();
+    final ctx = Get.context!;
+    final accentColor = _accent(
+      ctx,
+      const Color(0xFFFFB74D),
+      const Color(0xFFB4650A),
+    );
 
     showDialog(
-      context: Get.context!,
-      builder: (_) => Dialog(
-        backgroundColor: AppColors.blue,
+      context: ctx,
+      builder: (dialogContext) => Dialog(
+        backgroundColor: dialogContext.colors.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
-            color: const Color(0xFFFFB74D).withValues(alpha: 0.3),
-          ),
+          side: BorderSide(color: accentColor.withValues(alpha: 0.3)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -133,22 +169,18 @@ class ProfilePage extends StatelessWidget {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFB74D).withValues(alpha: 0.15),
+                  color: accentColor.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.language_rounded,
-                  color: Color(0xFFFFB74D),
-                  size: 30,
-                ),
+                child: Icon(Icons.language_rounded, color: accentColor, size: 30),
               ),
               const SizedBox(height: 16),
 
               // Title
               Text(
                 'select_language'.tr,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: dialogContext.colors.textPrimary,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -156,10 +188,11 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(height: 20),
 
               // English option
-              _LanguageOption(
+              _OptionTile(
                 label: 'English',
-                flag: '🇬🇧',
+                leading: const Text('🇬🇧', style: TextStyle(fontSize: 22)),
                 isSelected: currentLang == 'en',
+                accentColor: accentColor,
                 onTap: () {
                   Get.back();
                   storage.saveLanguage('en');
@@ -170,10 +203,11 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(height: 12),
 
               // Arabic option
-              _LanguageOption(
+              _OptionTile(
                 label: 'العربية',
-                flag: '🇸🇦',
+                leading: const Text('🇸🇦', style: TextStyle(fontSize: 22)),
                 isSelected: currentLang == 'ar',
+                accentColor: accentColor,
                 onTap: () {
                   Get.back();
                   storage.saveLanguage('ar');
@@ -198,22 +232,126 @@ class ProfilePage extends StatelessWidget {
       Get.find<StoreController>().fetchAccessories(lang: lang);
     }
   }
+
+  void _showThemeDialog() {
+    final ctx = Get.context!;
+    final currentMode = themeController.themeMode.value;
+    final accentColor = _accent(
+      ctx,
+      const Color(0xFFB39DDB),
+      const Color(0xFF6A4EE0),
+    );
+
+    showDialog(
+      context: ctx,
+      builder: (dialogContext) => Dialog(
+        backgroundColor: dialogContext.colors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: accentColor.withValues(alpha: 0.3)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Icon
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: accentColor.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.dark_mode_rounded,
+                  color: accentColor,
+                  size: 30,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Title
+              Text(
+                'select_theme'.tr,
+                style: TextStyle(
+                  color: dialogContext.colors.textPrimary,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              _OptionTile(
+                label: 'theme_light'.tr,
+                leading: Icon(
+                  Icons.light_mode_rounded,
+                  color: accentColor,
+                  size: 22,
+                ),
+                isSelected: currentMode == ThemeMode.light,
+                accentColor: accentColor,
+                onTap: () {
+                  Get.back();
+                  themeController.setThemeMode(ThemeMode.light);
+                },
+              ),
+              const SizedBox(height: 12),
+
+              _OptionTile(
+                label: 'theme_dark'.tr,
+                leading: Icon(
+                  Icons.dark_mode_rounded,
+                  color: accentColor,
+                  size: 22,
+                ),
+                isSelected: currentMode == ThemeMode.dark,
+                accentColor: accentColor,
+                onTap: () {
+                  Get.back();
+                  themeController.setThemeMode(ThemeMode.dark);
+                },
+              ),
+              const SizedBox(height: 12),
+
+              _OptionTile(
+                label: 'theme_system'.tr,
+                leading: Icon(
+                  Icons.brightness_auto_rounded,
+                  color: accentColor,
+                  size: 22,
+                ),
+                isSelected: currentMode == ThemeMode.system,
+                accentColor: accentColor,
+                onTap: () {
+                  Get.back();
+                  themeController.setThemeMode(ThemeMode.system);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Language Option Tile
+// Generic selectable option row — used by the language & theme dialogs.
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _LanguageOption extends StatelessWidget {
+class _OptionTile extends StatelessWidget {
   final String label;
-  final String flag;
+  final Widget leading;
   final bool isSelected;
+  final Color accentColor;
   final VoidCallback onTap;
 
-  const _LanguageOption({
+  const _OptionTile({
     required this.label,
-    required this.flag,
+    required this.leading,
     required this.isSelected,
+    required this.accentColor,
     required this.onTap,
   });
 
@@ -226,35 +364,31 @@ class _LanguageOption extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0xFFFFB74D).withValues(alpha: 0.15)
-              : Colors.white.withValues(alpha: 0.05),
+              ? accentColor.withValues(alpha: 0.15)
+              : context.colors.surfaceVariant,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
-                ? const Color(0xFFFFB74D).withValues(alpha: 0.6)
-                : Colors.white.withValues(alpha: 0.1),
+                ? accentColor.withValues(alpha: 0.6)
+                : context.colors.border,
           ),
         ),
         child: Row(
           children: [
-            Text(flag, style: const TextStyle(fontSize: 22)),
+            leading,
             const SizedBox(width: 14),
             Expanded(
               child: Text(
                 label,
                 style: TextStyle(
-                  color: isSelected ? const Color(0xFFFFB74D) : Colors.white,
+                  color: isSelected ? accentColor : context.colors.textPrimary,
                   fontSize: 16,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
             ),
             if (isSelected)
-              const Icon(
-                Icons.check_circle_rounded,
-                color: Color(0xFFFFB74D),
-                size: 20,
-              ),
+              Icon(Icons.check_circle_rounded, color: accentColor, size: 20),
           ],
         ),
       ),
@@ -283,11 +417,13 @@ class _ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Kept as a fixed brand-navy banner in both themes — the header stays
+    // on-brand chrome while the content below it adapts to Light/Dark Mode.
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppColors.blue, AppColors.darkBlue],
+          colors: [context.colors.primary, context.colors.primaryDark],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -311,14 +447,19 @@ class _ProfileHeader extends StatelessWidget {
                       height: 90,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        gradient: const LinearGradient(
-                          colors: [AppColors.green, Color(0xFF0FA84A)],
+                        gradient: LinearGradient(
+                          colors: [
+                            context.colors.accent,
+                            const Color(0xFF0FA84A),
+                          ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.green.withValues(alpha: 0.35),
+                            color: context.colors.accent.withValues(
+                              alpha: 0.35,
+                            ),
                             blurRadius: 20,
                             offset: const Offset(0, 8),
                           ),
@@ -329,8 +470,8 @@ class _ProfileHeader extends StatelessWidget {
                           firstName.isNotEmpty
                               ? firstName[0].toUpperCase()
                               : '?',
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: context.colors.textOnPrimary,
                             fontSize: 38,
                             fontWeight: FontWeight.bold,
                           ),
@@ -342,8 +483,8 @@ class _ProfileHeader extends StatelessWidget {
                     // Name
                     Text(
                       '$firstName $lastName',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: context.colors.textOnPrimary,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.3,
@@ -355,7 +496,9 @@ class _ProfileHeader extends StatelessWidget {
                     Text(
                       email,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.6),
+                        color: context.colors.textOnPrimary.withValues(
+                          alpha: 0.6,
+                        ),
                         fontSize: 13,
                       ),
                     ),
@@ -388,19 +531,21 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.08),
+        color: context.colors.textOnPrimary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+        border: Border.all(
+          color: context.colors.textOnPrimary.withValues(alpha: 0.15),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: AppColors.green, size: 14),
+          Icon(icon, color: context.colors.accent, size: 14),
           const SizedBox(width: 6),
           Text(
             label,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.8),
+              color: context.colors.textOnPrimary.withValues(alpha: 0.8),
               fontSize: 12,
             ),
           ),
@@ -423,7 +568,7 @@ class _SectionLabel extends StatelessWidget {
     return Text(
       label,
       style: TextStyle(
-        color: Colors.white.withValues(alpha: 0.45),
+        color: context.colors.textSecondary,
         fontSize: 12,
         fontWeight: FontWeight.w600,
         letterSpacing: 1.2,
@@ -458,11 +603,14 @@ class _MenuCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(18),
+        border: context.colors.isDark
+            ? null
+            : Border.all(color: context.colors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.18),
+            color: context.colors.shadow,
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -502,8 +650,8 @@ class _MenuCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           item.label,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: context.colors.textPrimary,
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
                           ),
@@ -511,7 +659,7 @@ class _MenuCard extends StatelessWidget {
                       ),
                       Icon(
                         Icons.chevron_right_rounded,
-                        color: Colors.white.withValues(alpha: 0.3),
+                        color: context.colors.textDisabled,
                         size: 20,
                       ),
                     ],
@@ -519,11 +667,7 @@ class _MenuCard extends StatelessWidget {
                 ),
               ),
               if (i < items.length - 1)
-                Divider(
-                  height: 1,
-                  color: Colors.white.withValues(alpha: 0.07),
-                  indent: 68,
-                ),
+                Divider(height: 1, color: context.colors.divider, indent: 68),
             ],
           );
         }).toList(),
@@ -542,6 +686,13 @@ class _DangerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final warningColor = _accent(
+      context,
+      const Color(0xFFFF9800),
+      const Color(0xFFB25F00),
+    );
+    final errorColor = context.colors.error;
+
     return Column(
       children: [
         // Logout
@@ -549,13 +700,11 @@ class _DangerSection extends StatelessWidget {
           onTap: () {
             showDialog(
               context: Get.context!,
-              builder: (_) => Dialog(
-                backgroundColor: AppColors.blue,
+              builder: (dialogContext) => Dialog(
+                backgroundColor: dialogContext.colors.surface,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
-                  side: BorderSide(
-                    color: const Color(0xFFFF9800).withValues(alpha: 0.3),
-                  ),
+                  side: BorderSide(color: warningColor.withValues(alpha: 0.3)),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(24),
@@ -567,14 +716,12 @@ class _DangerSection extends StatelessWidget {
                         width: 64,
                         height: 64,
                         decoration: BoxDecoration(
-                          color: const Color(
-                            0xFFFF9800,
-                          ).withValues(alpha: 0.15),
+                          color: warningColor.withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.logout_rounded,
-                          color: Color(0xFFFF9800),
+                          color: warningColor,
                           size: 30,
                         ),
                       ),
@@ -583,8 +730,8 @@ class _DangerSection extends StatelessWidget {
                       // Title
                       Text(
                         'logout'.tr,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: dialogContext.colors.textPrimary,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -596,7 +743,7 @@ class _DangerSection extends StatelessWidget {
                         'logout_confirm'.tr,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.6),
+                          color: dialogContext.colors.textSecondary,
                           fontSize: 14,
                           height: 1.5,
                         ),
@@ -615,7 +762,7 @@ class _DangerSection extends StatelessWidget {
                                   vertical: 13,
                                 ),
                                 side: BorderSide(
-                                  color: Colors.white.withValues(alpha: 0.2),
+                                  color: dialogContext.colors.border,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -624,7 +771,7 @@ class _DangerSection extends StatelessWidget {
                               child: Text(
                                 'cancel'.tr,
                                 style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.7),
+                                  color: dialogContext.colors.textSecondary,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -640,7 +787,7 @@ class _DangerSection extends StatelessWidget {
                                 await controller.logout();
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFFF9800),
+                                backgroundColor: warningColor,
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 13,
                                 ),
@@ -651,8 +798,8 @@ class _DangerSection extends StatelessWidget {
                               ),
                               child: Text(
                                 'logout'.tr,
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                  color: dialogContext.colors.textOnPrimary,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -671,25 +818,19 @@ class _DangerSection extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 15),
             decoration: BoxDecoration(
-              color: const Color(0xFFFF9800).withValues(alpha: 0.1),
+              color: warningColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: const Color(0xFFFF9800).withValues(alpha: 0.3),
-              ),
+              border: Border.all(color: warningColor.withValues(alpha: 0.3)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.logout_rounded,
-                  color: Color(0xFFFF9800),
-                  size: 20,
-                ),
+                Icon(Icons.logout_rounded, color: warningColor, size: 20),
                 const SizedBox(width: 10),
                 Text(
                   'logout'.tr,
-                  style: const TextStyle(
-                    color: Color(0xFFFF9800),
+                  style: TextStyle(
+                    color: warningColor,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -706,11 +847,11 @@ class _DangerSection extends StatelessWidget {
           onTap: () {
             showDialog(
               context: Get.context!,
-              builder: (_) => Dialog(
-                backgroundColor: AppColors.blue,
+              builder: (dialogContext) => Dialog(
+                backgroundColor: dialogContext.colors.surface,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
-                  side: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
+                  side: BorderSide(color: errorColor.withValues(alpha: 0.3)),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(24),
@@ -722,12 +863,12 @@ class _DangerSection extends StatelessWidget {
                         width: 64,
                         height: 64,
                         decoration: BoxDecoration(
-                          color: Colors.red.withValues(alpha: 0.15),
+                          color: errorColor.withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.delete_forever_rounded,
-                          color: Colors.red,
+                          color: errorColor,
                           size: 30,
                         ),
                       ),
@@ -736,8 +877,8 @@ class _DangerSection extends StatelessWidget {
                       // Title
                       Text(
                         'delete_account'.tr,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: dialogContext.colors.textPrimary,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -749,7 +890,7 @@ class _DangerSection extends StatelessWidget {
                         'sure_delete'.tr,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.6),
+                          color: dialogContext.colors.textSecondary,
                           fontSize: 14,
                           height: 1.5,
                         ),
@@ -768,7 +909,7 @@ class _DangerSection extends StatelessWidget {
                                   vertical: 13,
                                 ),
                                 side: BorderSide(
-                                  color: Colors.white.withValues(alpha: 0.2),
+                                  color: dialogContext.colors.border,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -777,7 +918,7 @@ class _DangerSection extends StatelessWidget {
                               child: Text(
                                 'cancel_delete'.tr,
                                 style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.7),
+                                  color: dialogContext.colors.textSecondary,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -793,7 +934,7 @@ class _DangerSection extends StatelessWidget {
                                 await controller.deleteAccount();
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
+                                backgroundColor: errorColor,
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 13,
                                 ),
@@ -804,8 +945,8 @@ class _DangerSection extends StatelessWidget {
                               ),
                               child: Text(
                                 'confirm_delete'.tr,
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                  color: dialogContext.colors.textOnPrimary,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -824,23 +965,23 @@ class _DangerSection extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 15),
             decoration: BoxDecoration(
-              color: Colors.red.withValues(alpha: 0.08),
+              color: errorColor.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
+              border: Border.all(color: errorColor.withValues(alpha: 0.25)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.delete_forever_rounded,
-                  color: Colors.red,
+                  color: errorColor,
                   size: 20,
                 ),
                 const SizedBox(width: 10),
                 Text(
                   'delete_account'.tr,
-                  style: const TextStyle(
-                    color: Colors.red,
+                  style: TextStyle(
+                    color: errorColor,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),

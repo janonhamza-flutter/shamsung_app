@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/route/app_routes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/widgets/lottie_loading.dart';
 import '../controllers/store_controller.dart';
 import '../widgets/accessory_card.dart';
@@ -26,14 +26,14 @@ class StorePage extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.blue,
+        backgroundColor: context.colors.primary,
         automaticallyImplyLeading: false,
         title: Text(
           'store'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textOnPrimary,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
@@ -44,9 +44,9 @@ class StorePage extends StatelessWidget {
             return Stack(
               children: [
                 IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.shopping_cart_outlined,
-                    color: Colors.white,
+                    color: context.colors.textOnPrimary,
                   ),
                   onPressed: () => Get.toNamed(AppRoutes.cart),
                 ),
@@ -56,14 +56,14 @@ class StorePage extends StatelessWidget {
                     top: 6,
                     child: Container(
                       padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: AppColors.green,
+                      decoration: BoxDecoration(
+                        color: context.colors.accent,
                         shape: BoxShape.circle,
                       ),
                       child: Text(
                         count > 99 ? '99+' : '$count',
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: context.colors.textOnPrimary,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -83,9 +83,9 @@ class StorePage extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-            decoration: const BoxDecoration(
-              color: AppColors.blue,
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: context.colors.primary,
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(24),
                 bottomRight: Radius.circular(24),
               ),
@@ -95,8 +95,8 @@ class StorePage extends StatelessWidget {
               children: [
                 Text(
                   'store_header_title'.tr,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: context.colors.textOnPrimary,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -105,7 +105,7 @@ class StorePage extends StatelessWidget {
                 Text(
                   'store_header_sub'.tr,
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.7),
+                    color: context.colors.textOnPrimary.withValues(alpha: 0.7),
                     fontSize: 13,
                   ),
                 ),
@@ -122,25 +122,25 @@ class StorePage extends StatelessWidget {
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.green.withValues(alpha: 0.12),
+                        color: context.colors.accent.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: AppColors.green.withValues(alpha: 0.35),
+                          color: context.colors.accent.withValues(alpha: 0.35),
                         ),
                       ),
                       child: Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.location_on_rounded,
-                            color: AppColors.green,
+                            color: context.colors.accent,
                             size: 16,
                           ),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
                               '${'store_showing_from'.tr}: ${controller.filterShopName.value}',
-                              style: const TextStyle(
-                                color: AppColors.green,
+                              style: TextStyle(
+                                color: context.colors.accent,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -151,9 +151,9 @@ class StorePage extends StatelessWidget {
                               controller.filterShopId.value = null;
                               controller.filterShopName.value = '';
                             },
-                            child: const Icon(
+                            child: Icon(
                               Icons.close_rounded,
-                              color: AppColors.green,
+                              color: context.colors.accent,
                               size: 18,
                             ),
                           ),
@@ -177,8 +177,8 @@ class StorePage extends StatelessWidget {
               final count = controller.filteredAccessories.length;
               return Text(
                 '${'products'.tr} ($count)',
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: context.colors.textPrimary,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
@@ -208,8 +208,8 @@ class StorePage extends StatelessWidget {
               }
 
               return RefreshIndicator(
-                color: AppColors.green,
-                backgroundColor: AppColors.blue,
+                color: context.colors.accent,
+                backgroundColor: context.colors.surface,
                 onRefresh: controller.fetchAccessories,
                 child: GridView.builder(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
@@ -258,18 +258,22 @@ class _ErrorView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.wifi_off_rounded, color: Colors.white54, size: 64),
+            Icon(
+              Icons.wifi_off_rounded,
+              color: context.colors.textSecondary,
+              size: 64,
+            ),
             const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white70, fontSize: 15),
+              style: TextStyle(color: context.colors.textSecondary, fontSize: 15),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: onRetry,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.green,
+                backgroundColor: context.colors.accent,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 12,
@@ -278,10 +282,10 @@ class _ErrorView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              icon: const Icon(Icons.refresh, color: Colors.white),
+              icon: Icon(Icons.refresh, color: context.colors.textOnPrimary),
               label: Text(
                 'retry'.tr,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: context.colors.textOnPrimary),
               ),
             ),
           ],
@@ -300,15 +304,15 @@ class _EmptyView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
+          Icon(
             Icons.inventory_2_outlined,
-            color: Colors.white38,
+            color: context.colors.textDisabled,
             size: 64,
           ),
           const SizedBox(height: 16),
           Text(
             'no_products'.tr,
-            style: const TextStyle(color: Colors.white54, fontSize: 16),
+            style: TextStyle(color: context.colors.textSecondary, fontSize: 16),
           ),
         ],
       ),

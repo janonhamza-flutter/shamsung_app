@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shamsoung/core/route/app_routes.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/widgets/lottie_loading.dart';
 import '../controllers/orders_controller.dart';
 import '../widgets/order_card.dart';
@@ -15,17 +15,17 @@ class MyOrdersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.blue,
+        backgroundColor: context.colors.primary,
         title: Text(
           'my_orders'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textOnPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: context.colors.textOnPrimary),
         actions: const [],
       ),
       body: Obx(() {
@@ -50,8 +50,8 @@ class MyOrdersPage extends StatelessWidget {
 
         // ── Orders list ──────────────────────────────────────────────────
         return RefreshIndicator(
-          color: AppColors.green,
-          backgroundColor: AppColors.blue,
+          color: context.colors.accent,
+          backgroundColor: context.colors.surface,
           onRefresh: controller.fetchMyOrders,
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
@@ -81,23 +81,30 @@ class _ErrorView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.wifi_off_rounded, color: Colors.white38, size: 64),
+            Icon(
+              Icons.wifi_off_rounded,
+              color: context.colors.textSecondary,
+              size: 64,
+            ),
             const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white60, fontSize: 14),
+              style: TextStyle(color: context.colors.textSecondary, fontSize: 14),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: onRetry,
-              icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+              icon: Icon(
+                Icons.refresh_rounded,
+                color: context.colors.textOnPrimary,
+              ),
               label: Text(
                 'retry'.tr,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: context.colors.textOnPrimary),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.green,
+                backgroundColor: context.colors.accent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -129,16 +136,16 @@ class _EmptyView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.inventory_2_outlined,
-              color: Colors.white24,
+              color: context.colors.textDisabled,
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
               'no_orders_yet'.tr,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.colors.textPrimary,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -146,21 +153,21 @@ class _EmptyView extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'no_orders_hint'.tr,
-              style: const TextStyle(color: Colors.white54, fontSize: 14),
+              style: TextStyle(color: context.colors.textSecondary, fontSize: 14),
             ),
             const SizedBox(height: 28),
             ElevatedButton.icon(
               onPressed: onGoToStore,
-              icon: const Icon(
+              icon: Icon(
                 Icons.shopping_bag_outlined,
-                color: Colors.white,
+                color: context.colors.textOnPrimary,
               ),
               label: Text(
                 'browse_store'.tr,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: context.colors.textOnPrimary),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.green,
+                backgroundColor: context.colors.accent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

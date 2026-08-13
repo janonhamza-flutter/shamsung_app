@@ -381,6 +381,11 @@ class AppTranslations extends Translations {
     'arabic': 'Arabic',
     'language_changed': 'Language changed successfully',
     'select_language': 'Select Language',
+    'appearance': 'Appearance',
+    'select_theme': 'Select Theme',
+    'theme_light': 'Light',
+    'theme_dark': 'Dark',
+    'theme_system': 'System Default',
 
     // Nearest Shop Page
     'nearest_shops_title': 'Nearest Shops',
@@ -807,6 +812,11 @@ class AppTranslations extends Translations {
     'arabic': 'العربية',
     'language_changed': 'تم تغيير اللغة بنجاح',
     'select_language': 'اختر اللغة',
+    'appearance': 'المظهر',
+    'select_theme': 'اختر المظهر',
+    'theme_light': 'فاتح',
+    'theme_dark': 'داكن',
+    'theme_system': 'إعداد النظام',
 
     // Nearest Shop Page
     'nearest_shops_title': 'أقرب المتاجر',

@@ -5,8 +5,7 @@ import 'package:shamsoung/featurs/home/presentation/controller/home_controller.d
 import 'package:shamsoung/featurs/notifications/presentation/controller/notification_controller.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
-import '../../../../../core/theme/app_colors.dart';
-import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/app_palette.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({super.key});
@@ -33,14 +32,17 @@ class HomeHeader extends StatelessWidget {
           children: [
             Text(
               '${'hello'.tr}, ${controller.customerName}',
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.colors.textPrimary,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: AppSizes.space5),
-            Text('welcome_back'.tr, style: AppTextStyles.body),
+            Text(
+              'welcome_back'.tr,
+              style: TextStyle(color: context.colors.textSecondary, fontSize: 18),
+            ),
           ],
         ),
         GestureDetector(
@@ -49,15 +51,27 @@ class HomeHeader extends StatelessWidget {
             width: 55,
             height: 55,
             decoration: BoxDecoration(
-              color: AppColors.blue,
+              color: context.colors.surface,
               borderRadius: BorderRadius.circular(18),
+              border: context.colors.isDark
+                  ? null
+                  : Border.all(color: context.colors.border),
+              boxShadow: context.colors.isDark
+                  ? null
+                  : [
+                      BoxShadow(
+                        color: context.colors.shadow,
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
             ),
             child: Stack(
               children: [
-                const Center(
+                Center(
                   child: Icon(
                     Icons.notifications_none,
-                    color: Colors.white,
+                    color: context.colors.textPrimary,
                     size: 32,
                   ),
                 ),
@@ -69,8 +83,8 @@ class HomeHeader extends StatelessWidget {
                           child: Container(
                             width: 12,
                             height: 12,
-                            decoration: const BoxDecoration(
-                              color: Colors.red,
+                            decoration: BoxDecoration(
+                              color: context.colors.error,
                               shape: BoxShape.circle,
                             ),
                           ),

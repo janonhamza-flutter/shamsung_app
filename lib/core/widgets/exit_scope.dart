@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../theme/app_colors.dart';
-
 /// Wraps any root (bottom-nav) page with double-back-to-exit behaviour.
 ///
 /// First back press → shows a snackbar for [duration].
@@ -38,21 +36,14 @@ class _ExitScopeState extends State<ExitScope> {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
+          // Colors/shape come from AppTheme.snackBarTheme.
           SnackBar(
             content: Text(
               'press_back_exit'.tr,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
-            backgroundColor: AppColors.blue,
             duration: widget.duration,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
             margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
           ),
         );

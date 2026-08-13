@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 
 class StoreSearchBar extends StatelessWidget {
   final ValueChanged<String> onChanged;
@@ -13,21 +13,21 @@ class StoreSearchBar extends StatelessWidget {
     return Container(
       height: 46,
       decoration: BoxDecoration(
-        color: AppColors.darkBlue,
+        color: context.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(
         onChanged: onChanged,
-        style: const TextStyle(color: Colors.white, fontSize: 14),
+        style: TextStyle(color: context.colors.textPrimary, fontSize: 14),
         decoration: InputDecoration(
           hintText: 'search_product'.tr,
           hintStyle: TextStyle(
-            color: Colors.white.withValues(alpha: 0.4),
+            color: context.colors.textDisabled,
             fontSize: 14,
           ),
           prefixIcon: Icon(
             Icons.search,
-            color: Colors.white.withValues(alpha: 0.5),
+            color: context.colors.textSecondary,
             size: 20,
           ),
           border: InputBorder.none,

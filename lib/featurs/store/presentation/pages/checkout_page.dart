@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/widgets/map_picker_page.dart';
 import '../controllers/store_controller.dart';
 
@@ -49,23 +49,23 @@ class _CheckoutPageState extends State<CheckoutPage> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        backgroundColor: AppColors.blue,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: dialogContext.colors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 12),
-            const Icon(
+            Icon(
               Icons.check_circle_rounded,
-              color: AppColors.green,
+              color: dialogContext.colors.accent,
               size: 72,
             ),
             const SizedBox(height: 16),
             Text(
               'order_confirmed'.tr,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: dialogContext.colors.textPrimary,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -74,8 +74,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
             if (orderNumber.isNotEmpty)
               Text(
                 '${'order_number'.tr}: $orderNumber',
-                style: const TextStyle(
-                  color: AppColors.green,
+                style: TextStyle(
+                  color: dialogContext.colors.accent,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
@@ -84,7 +84,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
               const SizedBox(height: 6),
               Text(
                 '${'center_name'.tr}: $shopName',
-                style: const TextStyle(color: Colors.white60, fontSize: 13),
+                style: TextStyle(
+                  color: dialogContext.colors.textSecondary,
+                  fontSize: 13,
+                ),
               ),
             ],
             const SizedBox(height: 8),
@@ -93,7 +96,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   ? 'checkout_confirm_cod'.tr
                   : 'checkout_confirm_pas'.tr,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white60, fontSize: 13),
+              style: TextStyle(
+                color: dialogContext.colors.textSecondary,
+                fontSize: 13,
+              ),
             ),
             const SizedBox(height: 12),
           ],
@@ -108,12 +114,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 Get.back();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.green,
+                backgroundColor: dialogContext.colors.accent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: Text('ok'.tr, style: const TextStyle(color: Colors.white)),
+              child: Text(
+                'ok'.tr,
+                style: TextStyle(color: dialogContext.colors.textOnPrimary),
+              ),
             ),
           ),
         ],
@@ -124,17 +133,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.blue,
+        backgroundColor: context.colors.primary,
         title: Text(
           'checkout'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textOnPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: context.colors.textOnPrimary),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -190,8 +199,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       ? null
                       : _onConfirm,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.green,
-                    disabledBackgroundColor: AppColors.green.withValues(
+                    backgroundColor: context.colors.accent,
+                    disabledBackgroundColor: context.colors.accent.withValues(
                       alpha: 0.5,
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -200,11 +209,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     ),
                   ),
                   child: controller.isCheckingOut.value
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 22,
                           height: 22,
                           child: CircularProgressIndicator(
-                            color: Colors.white,
+                            color: context.colors.textOnPrimary,
                             strokeWidth: 2.5,
                           ),
                         )
@@ -212,8 +221,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           _latitude == null
                               ? 'select_delivery_location_first'.tr
                               : 'place_order'.tr,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: context.colors.textOnPrimary,
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
                           ),
@@ -236,8 +245,8 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: const TextStyle(
-        color: Colors.white,
+      style: TextStyle(
+        color: context.colors.textPrimary,
         fontSize: 16,
         fontWeight: FontWeight.bold,
       ),
@@ -263,12 +272,12 @@ class _LocationCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: AppColors.blue,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isSelected
-                ? AppColors.green.withValues(alpha: 0.4)
-                : Colors.white24,
+                ? context.colors.accent.withValues(alpha: 0.4)
+                : context.colors.border,
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -279,15 +288,17 @@ class _LocationCard extends StatelessWidget {
               height: 42,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.green.withValues(alpha: 0.15)
-                    : Colors.white10,
+                    ? context.colors.accent.withValues(alpha: 0.15)
+                    : context.colors.surfaceVariant,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 isSelected
                     ? Icons.location_on_rounded
                     : Icons.add_location_alt_rounded,
-                color: isSelected ? AppColors.green : Colors.white54,
+                color: isSelected
+                    ? context.colors.accent
+                    : context.colors.textSecondary,
                 size: 22,
               ),
             ),
@@ -301,7 +312,9 @@ class _LocationCard extends StatelessWidget {
                         ? 'location_selected'.tr
                         : 'set_delivery_location'.tr,
                     style: TextStyle(
-                      color: isSelected ? Colors.white : Colors.white70,
+                      color: isSelected
+                          ? context.colors.textPrimary
+                          : context.colors.textSecondary,
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
@@ -313,7 +326,7 @@ class _LocationCard extends StatelessWidget {
                     Text(
                       locationName!,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.55),
+                        color: context.colors.textSecondary,
                         fontSize: 12,
                       ),
                       maxLines: 2,
@@ -327,7 +340,9 @@ class _LocationCard extends StatelessWidget {
               isSelected
                   ? Icons.edit_location_alt_rounded
                   : Icons.arrow_forward_ios_rounded,
-              color: isSelected ? AppColors.green : Colors.white38,
+              color: isSelected
+                  ? context.colors.accent
+                  : context.colors.textDisabled,
               size: isSelected ? 22 : 16,
             ),
           ],
@@ -346,8 +361,11 @@ class _OrderSummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(16),
+        border: context.colors.isDark
+            ? null
+            : Border.all(color: context.colors.border),
       ),
       child: Column(
         children: [
@@ -360,8 +378,8 @@ class _OrderSummaryCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       item.accessory.name,
-                      style: const TextStyle(
-                        color: Colors.white70,
+                      style: TextStyle(
+                        color: context.colors.textSecondary,
                         fontSize: 13,
                       ),
                       overflow: TextOverflow.ellipsis,
@@ -370,29 +388,32 @@ class _OrderSummaryCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     '${item.quantity} × ${item.accessory.price.toStringAsFixed(2)} ${'currency'.tr}',
-                    style: const TextStyle(color: Colors.white70, fontSize: 13),
+                    style: TextStyle(
+                      color: context.colors.textSecondary,
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-          const Divider(color: Colors.white12, height: 24),
+          Divider(color: context.colors.divider, height: 24),
           Obx(
             () => Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'total'.tr,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: context.colors.textPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   '${controller.cartTotal.toStringAsFixed(2)} ${'currency'.tr}',
-                  style: const TextStyle(
-                    color: AppColors.green,
+                  style: TextStyle(
+                    color: context.colors.accent,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -432,10 +453,10 @@ class _PaymentMethodCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: selected
-              ? AppColors.green.withValues(alpha: 0.15)
-              : AppColors.blue,
+              ? context.colors.accent.withValues(alpha: 0.15)
+              : context.colors.surface,
           border: Border.all(
-            color: selected ? AppColors.green : Colors.white12,
+            color: selected ? context.colors.accent : context.colors.border,
             width: selected ? 1.8 : 1,
           ),
           borderRadius: BorderRadius.circular(14),
@@ -447,13 +468,15 @@ class _PaymentMethodCard extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 color: selected
-                    ? AppColors.green.withValues(alpha: 0.2)
-                    : Colors.white10,
+                    ? context.colors.accent.withValues(alpha: 0.2)
+                    : context.colors.surfaceVariant,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 icon,
-                color: selected ? AppColors.green : Colors.white54,
+                color: selected
+                    ? context.colors.accent
+                    : context.colors.textSecondary,
                 size: 26,
               ),
             ),
@@ -465,7 +488,9 @@ class _PaymentMethodCard extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      color: selected ? Colors.white : Colors.white70,
+                      color: selected
+                          ? context.colors.textPrimary
+                          : context.colors.textSecondary,
                       fontSize: 15,
                       fontWeight: selected
                           ? FontWeight.bold
@@ -475,7 +500,10 @@ class _PaymentMethodCard extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(
                     subtitle,
-                    style: const TextStyle(color: Colors.white38, fontSize: 12),
+                    style: TextStyle(
+                      color: context.colors.textDisabled,
+                      fontSize: 12,
+                    ),
                   ),
                 ],
               ),
@@ -488,13 +516,19 @@ class _PaymentMethodCard extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: selected ? AppColors.green : Colors.white30,
+                  color: selected
+                      ? context.colors.accent
+                      : context.colors.border,
                   width: 2,
                 ),
-                color: selected ? AppColors.green : Colors.transparent,
+                color: selected ? context.colors.accent : Colors.transparent,
               ),
               child: selected
-                  ? const Icon(Icons.check, color: Colors.white, size: 14)
+                  ? Icon(
+                      Icons.check,
+                      color: context.colors.textOnPrimary,
+                      size: 14,
+                    )
                   : null,
             ),
           ],

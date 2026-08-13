@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/route/app_routes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/widgets/lottie_loading.dart';
 import '../../data/models/accessory_model.dart';
 import '../controllers/store_controller.dart';
@@ -30,26 +30,26 @@ class _AccessoryDetailsPageState extends State<AccessoryDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.blue,
+        backgroundColor: context.colors.primary,
         title: Text(
           'product_details'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textOnPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: context.colors.textOnPrimary),
         actions: [
           Obx(() {
             final count = controller.cartCount;
             return Stack(
               children: [
                 IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.shopping_cart_outlined,
-                    color: Colors.white,
+                    color: context.colors.textOnPrimary,
                   ),
                   onPressed: () => Get.toNamed(AppRoutes.cart),
                 ),
@@ -59,14 +59,14 @@ class _AccessoryDetailsPageState extends State<AccessoryDetailsPage> {
                     top: 6,
                     child: Container(
                       padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: AppColors.green,
+                      decoration: BoxDecoration(
+                        color: context.colors.accent,
                         shape: BoxShape.circle,
                       ),
                       child: Text(
                         '$count',
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: context.colors.textOnPrimary,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -106,13 +106,13 @@ class _AccessoryDetailsPageState extends State<AccessoryDetailsPage> {
           children: [
             _DetailsContent(accessory: accessory, controller: controller),
             if (isLoading)
-              const Positioned(
+              Positioned(
                 top: 0,
                 left: 0,
                 right: 0,
                 child: LinearProgressIndicator(
-                  color: AppColors.green,
-                  backgroundColor: AppColors.blue,
+                  color: context.colors.accent,
+                  backgroundColor: context.colors.primary,
                 ),
               ),
           ],
@@ -140,14 +140,14 @@ class _DetailsContent extends StatelessWidget {
             Container(
               width: double.infinity,
               height: 280,
-              color: AppColors.blue,
+              color: context.colors.surface,
               child: accessory.imageUrl.isNotEmpty
                   ? CachedNetworkImage(
                       imageUrl: accessory.imageUrl,
                       fit: BoxFit.contain,
-                      placeholder: (_, __) => const Center(
+                      placeholder: (_, __) => Center(
                         child: CircularProgressIndicator(
-                          color: AppColors.green,
+                          color: context.colors.accent,
                         ),
                       ),
                       errorWidget: (_, __, ___) => const _PlaceholderImage(),
@@ -167,8 +167,8 @@ class _DetailsContent extends StatelessWidget {
                       Expanded(
                         child: Text(
                           accessory.name,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: context.colors.textPrimary,
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                           ),
@@ -181,16 +181,16 @@ class _DetailsContent extends StatelessWidget {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.green.withValues(alpha: 0.15),
+                          color: context.colors.accent.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: AppColors.green.withValues(alpha: 0.4),
+                            color: context.colors.accent.withValues(alpha: 0.4),
                           ),
                         ),
                         child: Text(
                           '${accessory.price.toStringAsFixed(2)} ${'currency'.tr}',
-                          style: const TextStyle(
-                            color: AppColors.green,
+                          style: TextStyle(
+                            color: context.colors.accent,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -206,8 +206,8 @@ class _DetailsContent extends StatelessWidget {
                   // ── Description ───────────────────────────────────
                   Text(
                     'description'.tr,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: context.colors.textPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -216,7 +216,7 @@ class _DetailsContent extends StatelessWidget {
                   Text(
                     accessory.description,
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.75),
+                      color: context.colors.textSecondary,
                       fontSize: 15,
                       height: 1.6,
                     ),
@@ -229,14 +229,17 @@ class _DetailsContent extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.blue,
+                        color: context.colors.surface,
                         borderRadius: BorderRadius.circular(14),
+                        border: context.colors.isDark
+                            ? null
+                            : Border.all(color: context.colors.border),
                       ),
                       child: Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.store_outlined,
-                            color: AppColors.green,
+                            color: context.colors.accent,
                             size: 22,
                           ),
                           const SizedBox(width: 12),
@@ -246,8 +249,8 @@ class _DetailsContent extends StatelessWidget {
                               children: [
                                 Text(
                                   accessory.shop!.name,
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: context.colors.textPrimary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
                                   ),
@@ -256,7 +259,7 @@ class _DetailsContent extends StatelessWidget {
                                 Text(
                                   accessory.shop!.address,
                                   style: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.6),
+                                    color: context.colors.textSecondary,
                                     fontSize: 13,
                                   ),
                                 ),
@@ -281,25 +284,25 @@ class _DetailsContent extends StatelessWidget {
                             : () => controller.addToCart(accessory),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: inCart
-                              ? AppColors.blue
-                              : AppColors.green,
+                              ? context.colors.surfaceVariant
+                              : context.colors.accent,
                           disabledBackgroundColor: isAdding
-                              ? AppColors.blue
-                              : Colors.grey.shade700,
+                              ? context.colors.surfaceVariant
+                              : context.colors.textDisabled,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                             side: inCart
-                                ? const BorderSide(color: AppColors.green)
+                                ? BorderSide(color: context.colors.accent)
                                 : BorderSide.none,
                           ),
                         ),
                         icon: isAdding
-                            ? const SizedBox(
+                            ? SizedBox(
                                 width: 20,
                                 height: 20,
                                 child: CircularProgressIndicator(
-                                  color: AppColors.green,
+                                  color: context.colors.accent,
                                   strokeWidth: 2,
                                 ),
                               )
@@ -307,7 +310,9 @@ class _DetailsContent extends StatelessWidget {
                                 inCart
                                     ? Icons.check_circle_outline
                                     : Icons.shopping_cart_outlined,
-                                color: inCart ? AppColors.green : Colors.white,
+                                color: inCart
+                                    ? context.colors.accent
+                                    : context.colors.textOnPrimary,
                               ),
                         label: Text(
                           accessory.stockQuantity == 0
@@ -318,7 +323,9 @@ class _DetailsContent extends StatelessWidget {
                               ? 'added_to_cart'.tr
                               : 'add_to_cart'.tr,
                           style: TextStyle(
-                            color: inCart ? AppColors.green : Colors.white,
+                            color: inCart
+                                ? context.colors.accent
+                                : context.colors.textOnPrimary,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -337,20 +344,20 @@ class _DetailsContent extends StatelessWidget {
                       child: OutlinedButton.icon(
                         onPressed: () => Get.toNamed(AppRoutes.cart),
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: AppColors.green),
+                          side: BorderSide(color: context.colors.accent),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
                         ),
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.shopping_bag_outlined,
-                          color: AppColors.green,
+                          color: context.colors.accent,
                         ),
                         label: Text(
                           '${'view_cart'.tr} (${controller.cartCount})',
-                          style: const TextStyle(
-                            color: AppColors.green,
+                          style: TextStyle(
+                            color: context.colors.accent,
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
@@ -384,18 +391,22 @@ class _ErrorView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, color: Colors.white38, size: 64),
+            Icon(
+              Icons.error_outline,
+              color: context.colors.textDisabled,
+              size: 64,
+            ),
             const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white60, fontSize: 15),
+              style: TextStyle(color: context.colors.textSecondary, fontSize: 15),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: onRetry,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.green,
+                backgroundColor: context.colors.accent,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 12,
@@ -404,10 +415,10 @@ class _ErrorView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              icon: const Icon(Icons.refresh, color: Colors.white),
+              icon: Icon(Icons.refresh, color: context.colors.textOnPrimary),
               label: Text(
                 'retry'.tr,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: context.colors.textOnPrimary),
               ),
             ),
           ],
@@ -422,10 +433,10 @@ class _PlaceholderImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Icon(
         Icons.image_not_supported_outlined,
-        color: Colors.white24,
+        color: context.colors.textDisabled,
         size: 80,
       ),
     );
@@ -439,32 +450,29 @@ class _StockBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool inStock = stockQuantity > 0;
+    final Color statusColor = inStock
+        ? context.colors.accent
+        : context.colors.error;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: inStock
-            ? AppColors.green.withValues(alpha: 0.12)
-            : Colors.red.withValues(alpha: 0.12),
+        color: statusColor.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: inStock
-              ? AppColors.green.withValues(alpha: 0.4)
-              : Colors.red.withValues(alpha: 0.4),
-        ),
+        border: Border.all(color: statusColor.withValues(alpha: 0.4)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             inStock ? Icons.check_circle_outline : Icons.cancel_outlined,
-            color: inStock ? AppColors.green : Colors.red,
+            color: statusColor,
             size: 16,
           ),
           const SizedBox(width: 6),
           Text(
             inStock ? '${'in_stock'.tr} ($stockQuantity)' : 'out_of_stock'.tr,
             style: TextStyle(
-              color: inStock ? AppColors.green : Colors.red,
+              color: statusColor,
               fontSize: 13,
               fontWeight: FontWeight.w500,
             ),

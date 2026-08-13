@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/widgets/map_picker_page.dart';
 import '../../data/models/maintenance_request_details_model.dart';
 import '../controller/request_details_controller.dart';
@@ -46,9 +46,9 @@ class _ApproveSheetWidgetState extends State<ApproveSheetWidget> {
       maxChildSize: 0.95,
       builder: (_, scrollController) {
         return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.darkBlue,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          decoration: BoxDecoration(
+            color: context.colors.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
             children: [
@@ -59,7 +59,7 @@ class _ApproveSheetWidgetState extends State<ApproveSheetWidget> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.white24,
+                    color: context.colors.border,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -75,12 +75,12 @@ class _ApproveSheetWidgetState extends State<ApproveSheetWidget> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppColors.green.withValues(alpha: 0.15),
+                        color: context.colors.accent.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.check_circle_outline_rounded,
-                        color: AppColors.green,
+                        color: context.colors.accent,
                         size: 22,
                       ),
                     ),
@@ -91,16 +91,16 @@ class _ApproveSheetWidgetState extends State<ApproveSheetWidget> {
                         children: [
                           Text(
                             'review_and_approve'.tr,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: context.colors.textPrimary,
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
                             'approve_sheet_sub'.tr,
-                            style: const TextStyle(
-                              color: Colors.white54,
+                            style: TextStyle(
+                              color: context.colors.textSecondary,
                               fontSize: 12,
                             ),
                           ),
@@ -110,7 +110,7 @@ class _ApproveSheetWidgetState extends State<ApproveSheetWidget> {
                   ],
                 ),
               ),
-              const Divider(color: Colors.white12, height: 1),
+              Divider(color: context.colors.divider, height: 1),
               // Body
               Expanded(
                 child: ListView(
@@ -160,8 +160,8 @@ class _PartsSection extends StatelessWidget {
       children: [
         Text(
           'select_parts'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textPrimary,
             fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
@@ -169,7 +169,7 @@ class _PartsSection extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           'required_parts_note'.tr,
-          style: const TextStyle(color: Colors.white38, fontSize: 12),
+          style: TextStyle(color: context.colors.textDisabled, fontSize: 12),
         ),
         const SizedBox(height: 12),
         ...parts.map((p) => _PartTile(controller: controller, part: p)),
@@ -192,13 +192,13 @@ class _PartTile extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.green.withValues(alpha: 0.08)
-              : AppColors.blue,
+              ? context.colors.accent.withValues(alpha: 0.08)
+              : context.colors.surfaceVariant,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isSelected
-                ? AppColors.green.withValues(alpha: 0.4)
-                : Colors.white12,
+                ? context.colors.accent.withValues(alpha: 0.4)
+                : context.colors.border,
             width: 1.2,
           ),
         ),
@@ -216,17 +216,25 @@ class _PartTile extends StatelessWidget {
                     width: 22,
                     height: 22,
                     decoration: BoxDecoration(
-                      color: isSelected ? AppColors.green : Colors.transparent,
+                      color: isSelected
+                          ? context.colors.accent
+                          : Colors.transparent,
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(
                         color: part.isRequired
-                            ? Colors.orange
-                            : (isSelected ? AppColors.green : Colors.white38),
+                            ? context.colors.warning
+                            : (isSelected
+                                  ? context.colors.accent
+                                  : context.colors.textDisabled),
                         width: 1.5,
                       ),
                     ),
                     child: isSelected
-                        ? const Icon(Icons.check, color: Colors.white, size: 14)
+                        ? Icon(
+                            Icons.check,
+                            color: context.colors.textOnPrimary,
+                            size: 14,
+                          )
                         : null,
                   ),
                   const SizedBox(width: 12),
@@ -242,8 +250,8 @@ class _PartTile extends StatelessWidget {
                                 part.name,
                                 style: TextStyle(
                                   color: isSelected
-                                      ? Colors.white
-                                      : Colors.white70,
+                                      ? context.colors.textPrimary
+                                      : context.colors.textSecondary,
                                   fontSize: 14,
                                   fontWeight: isSelected
                                       ? FontWeight.w600
@@ -258,16 +266,20 @@ class _PartTile extends StatelessWidget {
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.orange.withValues(alpha: 0.15),
+                                  color: context.colors.warning.withValues(
+                                    alpha: 0.15,
+                                  ),
                                   borderRadius: BorderRadius.circular(4),
                                   border: Border.all(
-                                    color: Colors.orange.withValues(alpha: 0.4),
+                                    color: context.colors.warning.withValues(
+                                      alpha: 0.4,
+                                    ),
                                   ),
                                 ),
                                 child: Text(
                                   'required'.tr,
-                                  style: const TextStyle(
-                                    color: Colors.orange,
+                                  style: TextStyle(
+                                    color: context.colors.warning,
                                     fontSize: 10,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -278,8 +290,8 @@ class _PartTile extends StatelessWidget {
                         const SizedBox(height: 2),
                         Text(
                           '${'qty'.tr}: ${part.quantity}  •  ${part.price} ${'currency'.tr}',
-                          style: const TextStyle(
-                            color: Colors.white38,
+                          style: TextStyle(
+                            color: context.colors.textDisabled,
                             fontSize: 12,
                           ),
                         ),
@@ -290,7 +302,9 @@ class _PartTile extends StatelessWidget {
                   Text(
                     '${part.total.toStringAsFixed(2)} ${'currency'.tr}',
                     style: TextStyle(
-                      color: isSelected ? AppColors.green : Colors.white38,
+                      color: isSelected
+                          ? context.colors.accent
+                          : context.colors.textDisabled,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
@@ -318,8 +332,8 @@ class _PaymentSection extends StatelessWidget {
       children: [
         Text(
           'payment_method'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textPrimary,
             fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
@@ -333,13 +347,13 @@ class _PaymentSection extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 10),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.green.withValues(alpha: 0.08)
-                    : AppColors.blue,
+                    ? context.colors.accent.withValues(alpha: 0.08)
+                    : context.colors.surfaceVariant,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                   color: isSelected
-                      ? AppColors.green.withValues(alpha: 0.4)
-                      : Colors.white12,
+                      ? context.colors.accent.withValues(alpha: 0.4)
+                      : context.colors.border,
                   width: 1.2,
                 ),
               ),
@@ -352,14 +366,16 @@ class _PaymentSection extends StatelessWidget {
                 title: Text(
                   method["label"]!,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.white70,
+                    color: isSelected
+                        ? context.colors.textPrimary
+                        : context.colors.textSecondary,
                     fontSize: 14,
                     fontWeight: isSelected
                         ? FontWeight.w600
                         : FontWeight.normal,
                   ),
                 ),
-                activeColor: AppColors.green,
+                activeColor: context.colors.accent,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 14,
                   vertical: 4,
@@ -389,25 +405,25 @@ class _TotalRow extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: AppColors.green.withValues(alpha: 0.1),
+          color: context.colors.accent.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.green.withValues(alpha: 0.3)),
+          border: Border.all(color: context.colors.accent.withValues(alpha: 0.3)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               'selected_total'.tr,
-              style: const TextStyle(
-                color: Colors.white70,
+              style: TextStyle(
+                color: context.colors.textSecondary,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
             ),
             Text(
               '${total.toStringAsFixed(2)} ${'currency'.tr}',
-              style: const TextStyle(
-                color: AppColors.green,
+              style: TextStyle(
+                color: context.colors.accent,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -439,8 +455,8 @@ class _ApproveLocationCard extends StatelessWidget {
       children: [
         Text(
           'pickup_location'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textPrimary,
             fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
@@ -451,12 +467,12 @@ class _ApproveLocationCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: AppColors.blue,
+              color: context.colors.surfaceVariant,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
                 color: isSelected
-                    ? AppColors.green.withValues(alpha: 0.4)
-                    : Colors.white24,
+                    ? context.colors.accent.withValues(alpha: 0.4)
+                    : context.colors.border,
                 width: isSelected ? 1.5 : 1,
               ),
             ),
@@ -467,15 +483,17 @@ class _ApproveLocationCard extends StatelessWidget {
                   height: 40,
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? AppColors.green.withValues(alpha: 0.15)
-                        : Colors.white10,
+                        ? context.colors.accent.withValues(alpha: 0.15)
+                        : context.colors.elevatedSurface,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
                     isSelected
                         ? Icons.location_on_rounded
                         : Icons.add_location_alt_rounded,
-                    color: isSelected ? AppColors.green : Colors.white54,
+                    color: isSelected
+                        ? context.colors.accent
+                        : context.colors.textSecondary,
                     size: 20,
                   ),
                 ),
@@ -489,7 +507,9 @@ class _ApproveLocationCard extends StatelessWidget {
                             ? 'location_selected'.tr
                             : 'set_pickup_location'.tr,
                         style: TextStyle(
-                          color: isSelected ? Colors.white : Colors.white70,
+                          color: isSelected
+                              ? context.colors.textPrimary
+                              : context.colors.textSecondary,
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                         ),
@@ -501,7 +521,7 @@ class _ApproveLocationCard extends StatelessWidget {
                         Text(
                           locationName!,
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.55),
+                            color: context.colors.textSecondary,
                             fontSize: 11,
                           ),
                           maxLines: 2,
@@ -515,7 +535,9 @@ class _ApproveLocationCard extends StatelessWidget {
                   isSelected
                       ? Icons.edit_location_alt_rounded
                       : Icons.arrow_forward_ios_rounded,
-                  color: isSelected ? AppColors.green : Colors.white38,
+                  color: isSelected
+                      ? context.colors.accent
+                      : context.colors.textDisabled,
                   size: isSelected ? 20 : 14,
                 ),
               ],
@@ -549,28 +571,28 @@ class _ConfirmButton extends StatelessWidget {
               ? null
               : controller.approveRequest,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.green,
-            disabledBackgroundColor: AppColors.green.withValues(alpha: 0.4),
+            backgroundColor: context.colors.accent,
+            disabledBackgroundColor: context.colors.accent.withValues(alpha: 0.4),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppSizes.radius),
             ),
             elevation: 4,
           ),
           child: controller.isApproving.value
-              ? const SizedBox(
+              ? SizedBox(
                   width: 24,
                   height: 24,
                   child: CircularProgressIndicator(
-                    color: Colors.white,
+                    color: context.colors.textOnPrimary,
                     strokeWidth: 2.5,
                   ),
                 )
               : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.check_circle_rounded,
-                      color: Colors.white,
+                      color: context.colors.textOnPrimary,
                       size: 20,
                     ),
                     const SizedBox(width: 10),
@@ -578,8 +600,8 @@ class _ConfirmButton extends StatelessWidget {
                       locationSelected
                           ? 'confirm_approval'.tr
                           : 'select_location_first'.tr,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: context.colors.textOnPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),

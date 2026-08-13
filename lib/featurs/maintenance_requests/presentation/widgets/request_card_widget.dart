@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
 import '../../../../../core/route/app_routes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../data/models/maintenance_request_model.dart';
 import '../controller/my_requests_controller.dart';
 import 'request_status_helpers.dart';
@@ -16,7 +16,7 @@ class RequestCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = RequestStatusHelpers.color(request.status);
+    final statusColor = RequestStatusHelpers.color(context, request.status);
 
     return InkWell(
       onTap: () async {
@@ -30,11 +30,11 @@ class RequestCardWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.blue,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppSizes.radius),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.18),
+              color: context.colors.shadow,
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -66,8 +66,8 @@ class RequestCardWidget extends StatelessWidget {
                 children: [
                   Text(
                     request.deviceModel,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: context.colors.textPrimary,
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
@@ -93,9 +93,9 @@ class RequestCardWidget extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Icon(
+                Icon(
                   Icons.chevron_right_rounded,
-                  color: Colors.white38,
+                  color: context.colors.textDisabled,
                   size: 22,
                 ),
                 const SizedBox(height: 12),
@@ -104,15 +104,15 @@ class RequestCardWidget extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: Colors.red.withValues(alpha: 0.12),
+                      color: context.colors.error.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: Colors.red.withValues(alpha: 0.3),
+                        color: context.colors.error.withValues(alpha: 0.3),
                       ),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.delete_outline_rounded,
-                      color: Colors.red,
+                      color: context.colors.error,
                       size: 18,
                     ),
                   ),
@@ -128,11 +128,13 @@ class RequestCardWidget extends StatelessWidget {
   void _showDeleteDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (_) => Dialog(
-        backgroundColor: AppColors.blue,
+      builder: (dialogContext) => Dialog(
+        backgroundColor: dialogContext.colors.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
+          side: BorderSide(
+            color: dialogContext.colors.error.withValues(alpha: 0.3),
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -143,20 +145,20 @@ class RequestCardWidget extends StatelessWidget {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha: 0.15),
+                  color: dialogContext.colors.error.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.delete_outline_rounded,
-                  color: Colors.red,
+                  color: dialogContext.colors.error,
                   size: 28,
                 ),
               ),
               const SizedBox(height: 16),
               Text(
                 'delete_request'.tr,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: dialogContext.colors.textPrimary,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -166,7 +168,7 @@ class RequestCardWidget extends StatelessWidget {
                 'delete_request_confirm'.tr,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.6),
+                  color: dialogContext.colors.textSecondary,
                   fontSize: 13,
                   height: 1.5,
                 ),
@@ -179,9 +181,7 @@ class RequestCardWidget extends StatelessWidget {
                       onPressed: () => Get.back(),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        side: BorderSide(
-                          color: Colors.white.withValues(alpha: 0.2),
-                        ),
+                        side: BorderSide(color: dialogContext.colors.border),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -189,7 +189,7 @@ class RequestCardWidget extends StatelessWidget {
                       child: Text(
                         'no'.tr,
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.7),
+                          color: dialogContext.colors.textSecondary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -205,7 +205,7 @@ class RequestCardWidget extends StatelessWidget {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                        backgroundColor: dialogContext.colors.error,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -214,8 +214,8 @@ class RequestCardWidget extends StatelessWidget {
                       ),
                       child: Text(
                         'delete'.tr,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: dialogContext.colors.textOnPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -240,12 +240,12 @@ class _InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, color: Colors.white38, size: 13),
+        Icon(icon, color: context.colors.textDisabled, size: 13),
         const SizedBox(width: 4),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(color: Colors.white54, fontSize: 12),
+            style: TextStyle(color: context.colors.textSecondary, fontSize: 12),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -261,7 +261,7 @@ class _StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = RequestStatusHelpers.color(status);
+    final color = RequestStatusHelpers.color(context, status);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(

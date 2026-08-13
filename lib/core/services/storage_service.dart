@@ -141,6 +141,20 @@ class StorageService {
   }
 
   // =========================
+  // THEME MODE
+  // =========================
+
+  void saveThemeMode(String mode) {
+    _box.write('themeMode', mode);
+  }
+
+  /// Returns saved theme mode ('light' | 'dark' | 'system'), defaults to 'dark'
+  /// to match the app's original, always-dark appearance for existing users.
+  String getThemeMode() {
+    return _box.read('themeMode') ?? 'dark';
+  }
+
+  // =========================
   // LOGIN CHECK
   // =========================
 

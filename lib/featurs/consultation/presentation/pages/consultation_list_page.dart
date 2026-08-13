@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
 import '../../../../../core/route/app_routes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/widgets/lottie_loading.dart';
 import '../controller/consultation_controller.dart';
 import '../widgets/consultation_card.dart';
@@ -16,25 +16,25 @@ class ConsultationListPage extends StatelessWidget {
     final controller = Get.find<ConsultationController>();
 
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.background,
 
       appBar: AppBar(
-        backgroundColor: AppColors.blue,
+        backgroundColor: context.colors.surface,
         title: Text(
           'my_consultations'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          icon: Icon(Icons.arrow_back_ios_new, color: context.colors.textPrimary),
           onPressed: () => Get.back(),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.white),
+            icon: Icon(Icons.refresh, color: context.colors.textPrimary),
             onPressed: controller.fetchConsultations,
           ),
         ],
@@ -43,12 +43,12 @@ class ConsultationListPage extends StatelessWidget {
       // ── FAB — new consultation ──
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Get.toNamed(AppRoutes.createConsultation),
-        backgroundColor: AppColors.green,
-        icon: const Icon(Icons.add, color: Colors.white),
+        backgroundColor: context.colors.accent,
+        icon: Icon(Icons.add, color: context.colors.textOnPrimary),
         label: Text(
           'new_consultation_fab'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textOnPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -66,8 +66,8 @@ class ConsultationListPage extends StatelessWidget {
         }
 
         return RefreshIndicator(
-          color: AppColors.green,
-          backgroundColor: AppColors.blue,
+          color: context.colors.accent,
+          backgroundColor: context.colors.surface,
           onRefresh: controller.fetchConsultations,
           child: Obx(
             () => ListView.builder(
@@ -100,24 +100,24 @@ class _EmptyState extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: AppColors.blue,
+              color: context.colors.surface,
               shape: BoxShape.circle,
               border: Border.all(
-                color: AppColors.green.withValues(alpha: 0.4),
+                color: context.colors.accent.withValues(alpha: 0.4),
                 width: 2,
               ),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.chat_bubble_outline,
               size: 52,
-              color: AppColors.green,
+              color: context.colors.accent,
             ),
           ),
           const SizedBox(height: 24),
           Text(
             'no_consultations_yet'.tr,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: context.colors.textPrimary,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -126,8 +126,8 @@ class _EmptyState extends StatelessWidget {
           Text(
             'no_consultations_hint'.tr,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.grey,
+            style: TextStyle(
+              color: context.colors.textSecondary,
               fontSize: 14,
               height: 1.5,
             ),
@@ -136,17 +136,17 @@ class _EmptyState extends StatelessWidget {
           ElevatedButton.icon(
             onPressed: onTap,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.green,
+              backgroundColor: context.colors.accent,
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            icon: const Icon(Icons.add, color: Colors.white),
+            icon: Icon(Icons.add, color: context.colors.textOnPrimary),
             label: Text(
               'start_consultation'.tr,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.colors.textOnPrimary,
                 fontWeight: FontWeight.bold,
                 fontSize: 15,
               ),

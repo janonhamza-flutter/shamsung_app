@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../data/models/accessory_model.dart';
 
 class AccessoryCard extends StatelessWidget {
@@ -27,8 +27,11 @@ class AccessoryCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.blue,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(16),
+          border: context.colors.isDark
+              ? null
+              : Border.all(color: context.colors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +62,7 @@ class AccessoryCard extends StatelessWidget {
                     Positioned.fill(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.5),
+                          color: context.colors.overlay,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(16),
                             topRight: Radius.circular(16),
@@ -68,8 +71,8 @@ class AccessoryCard extends StatelessWidget {
                         child: Center(
                           child: Text(
                             'out_of_stock'.tr,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: context.colors.textOnPrimary,
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
                             ),
@@ -91,8 +94,8 @@ class AccessoryCard extends StatelessWidget {
                     accessory.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: context.colors.textPrimary,
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
                     ),
@@ -103,8 +106,8 @@ class AccessoryCard extends StatelessWidget {
                     children: [
                       Text(
                         '${accessory.price.toStringAsFixed(2)} ${'currency'.tr}',
-                        style: const TextStyle(
-                          color: AppColors.green,
+                        style: TextStyle(
+                          color: context.colors.accent,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
@@ -117,15 +120,19 @@ class AccessoryCard extends StatelessWidget {
                           height: 30,
                           decoration: BoxDecoration(
                             color: outOfStock
-                                ? Colors.grey.withValues(alpha: 0.2)
-                                : AppColors.green.withValues(alpha: 0.15),
+                                ? context.colors.textDisabled.withValues(
+                                    alpha: 0.2,
+                                  )
+                                : context.colors.accent.withValues(
+                                    alpha: 0.15,
+                                  ),
                             shape: BoxShape.circle,
                           ),
                           child: isAdding
-                              ? const Padding(
-                                  padding: EdgeInsets.all(6),
+                              ? Padding(
+                                  padding: const EdgeInsets.all(6),
                                   child: CircularProgressIndicator(
-                                    color: AppColors.green,
+                                    color: context.colors.accent,
                                     strokeWidth: 2,
                                   ),
                                 )
@@ -133,8 +140,8 @@ class AccessoryCard extends StatelessWidget {
                                   Icons.add_shopping_cart_outlined,
                                   size: 18,
                                   color: outOfStock
-                                      ? Colors.grey
-                                      : AppColors.green,
+                                      ? context.colors.textDisabled
+                                      : context.colors.accent,
                                 ),
                         ),
                       ),
@@ -160,14 +167,18 @@ class _CardPlaceholder extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      color: AppColors.darkBlue,
+      color: context.colors.surfaceVariant,
       child: Center(
         child: loading
-            ? const CircularProgressIndicator(
-                color: AppColors.green,
+            ? CircularProgressIndicator(
+                color: context.colors.accent,
                 strokeWidth: 2,
               )
-            : const Icon(Icons.image_outlined, color: Colors.white24, size: 36),
+            : Icon(
+                Icons.image_outlined,
+                color: context.colors.textDisabled,
+                size: 36,
+              ),
       ),
     );
   }

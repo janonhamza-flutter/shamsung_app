@@ -2,9 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/route/app_routes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../data/models/consultation_model.dart';
 import '../controller/consultation_controller.dart';
+
+/// Returns [darkColor] unchanged in Dark Mode; in Light Mode returns
+/// [lightColor], a deepened variant tuned for legibility on light surfaces.
+/// Used to distinguish "AI" vs "technician" consultations — a decorative
+/// pairing that doesn't map onto the semantic palette fields.
+Color _typeAccent(BuildContext context, bool isAi) {
+  if (isAi) {
+    return context.colors.isDark
+        ? Colors.purpleAccent
+        : const Color(0xFF7B1FA2);
+  }
+  return context.colors.isDark ? Colors.blueAccent : const Color(0xFF1565C0);
+}
 
 class ConsultationCard extends StatelessWidget {
   final ConsultationModel consultation;
@@ -24,7 +37,7 @@ class ConsultationCard extends StatelessWidget {
       background: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: Colors.red.shade700,
+          color: context.colors.error,
           borderRadius: BorderRadius.circular(16),
         ),
         alignment: Alignment.centerRight,
@@ -32,12 +45,16 @@ class ConsultationCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.delete_outline, color: Colors.white, size: 26),
+            Icon(
+              Icons.delete_outline,
+              color: context.colors.textOnPrimary,
+              size: 26,
+            ),
             const SizedBox(height: 4),
             Text(
               'delete'.tr,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.colors.textOnPrimary,
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
               ),
@@ -57,10 +74,13 @@ class ConsultationCard extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
-            color: AppColors.blue,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: _statusColor(consultation.status).withValues(alpha: 0.5),
+              color: _statusColor(
+                context,
+                consultation.status,
+              ).withValues(alpha: 0.5),
               width: 1.5,
             ),
           ),
@@ -78,8 +98,8 @@ class ConsultationCard extends StatelessWidget {
                     const Spacer(),
                     Text(
                       _formatDate(consultation.createdAt),
-                      style: const TextStyle(
-                        color: AppColors.grey,
+                      style: TextStyle(
+                        color: context.colors.textSecondary,
                         fontSize: 11,
                       ),
                     ),
@@ -94,17 +114,17 @@ class ConsultationCard extends StatelessWidget {
                       },
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        child: const Icon(
+                        child: Icon(
                           Icons.delete_outline,
-                          color: Colors.redAccent,
+                          color: context.colors.error,
                           size: 18,
                         ),
                       ),
                     ),
                     const SizedBox(width: 2),
-                    const Icon(
+                    Icon(
                       Icons.chevron_right,
-                      color: AppColors.grey,
+                      color: context.colors.textDisabled,
                       size: 18,
                     ),
                   ],
@@ -116,9 +136,9 @@ class ConsultationCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.help_outline,
-                      color: AppColors.grey,
+                      color: context.colors.textSecondary,
                       size: 16,
                     ),
                     const SizedBox(width: 6),
@@ -127,8 +147,8 @@ class ConsultationCard extends StatelessWidget {
                         consultation.message,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: context.colors.textPrimary,
                           fontSize: 14,
                         ),
                       ),
@@ -143,10 +163,10 @@ class ConsultationCard extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: AppColors.green.withValues(alpha: 0.1),
+                      color: context.colors.success.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: AppColors.green.withValues(alpha: 0.35),
+                        color: context.colors.success.withValues(alpha: 0.35),
                       ),
                     ),
                     child: Row(
@@ -156,7 +176,7 @@ class ConsultationCard extends StatelessWidget {
                           isAi
                               ? Icons.smart_toy_outlined
                               : Icons.build_circle_outlined,
-                          color: AppColors.green,
+                          color: context.colors.success,
                           size: 15,
                         ),
                         const SizedBox(width: 8),
@@ -165,8 +185,8 @@ class ConsultationCard extends StatelessWidget {
                             consultation.reply!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: context.colors.textPrimary,
                               fontSize: 13,
                               height: 1.4,
                             ),
@@ -179,12 +199,12 @@ class ConsultationCard extends StatelessWidget {
                   const SizedBox(height: 10),
                   Row(
                     children: [
-                      const SizedBox(
+                      SizedBox(
                         width: 13,
                         height: 13,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: AppColors.grey,
+                          color: context.colors.textSecondary,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -192,8 +212,8 @@ class ConsultationCard extends StatelessWidget {
                         isAi
                             ? 'awaiting_ai_response'.tr
                             : 'awaiting_technician_response'.tr,
-                        style: const TextStyle(
-                          color: AppColors.grey,
+                        style: TextStyle(
+                          color: context.colors.textSecondary,
                           fontSize: 12,
                         ),
                       ),
@@ -212,39 +232,39 @@ class ConsultationCard extends StatelessWidget {
   Future<bool?> _confirmDelete(BuildContext context) {
     return showDialog<bool>(
       context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: AppColors.blue,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: dialogContext.colors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
           'delete_consultation'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: dialogContext.colors.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
         content: Text(
           'delete_consultation_confirm'.tr,
-          style: const TextStyle(color: AppColors.grey),
+          style: TextStyle(color: dialogContext.colors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             child: Text(
               'cancel'.tr,
-              style: const TextStyle(color: AppColors.grey),
+              style: TextStyle(color: dialogContext.colors.textSecondary),
             ),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red.shade700,
+              backgroundColor: dialogContext.colors.error,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
             child: Text(
               'delete'.tr,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: dialogContext.colors.textOnPrimary),
             ),
           ),
         ],
@@ -252,15 +272,15 @@ class ConsultationCard extends StatelessWidget {
     );
   }
 
-  Color _statusColor(String status) {
+  Color _statusColor(BuildContext context, String status) {
     switch (status) {
       case 'ai_answered':
       case 'answered':
-        return AppColors.green;
+        return context.colors.success;
       case 'pending':
-        return Colors.orange;
+        return context.colors.warning;
       default:
-        return AppColors.grey;
+        return context.colors.textSecondary;
     }
   }
 
@@ -282,7 +302,7 @@ class _TypeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isAi ? Colors.purpleAccent : Colors.blueAccent;
+    final color = _typeAccent(context, isAi);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
@@ -326,15 +346,15 @@ class _StatusChip extends StatelessWidget {
     switch (status) {
       case 'ai_answered':
       case 'answered':
-        color = AppColors.green;
+        color = context.colors.success;
         labelKey = 'consultation_status_answered';
         break;
       case 'pending':
-        color = Colors.orange;
+        color = context.colors.warning;
         labelKey = 'consultation_status_pending';
         break;
       default:
-        color = AppColors.grey;
+        color = context.colors.textSecondary;
         labelKey = status;
     }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/widgets/lottie_loading.dart';
 import '../controller/notification_controller.dart';
 
@@ -33,10 +33,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.darkBlue,
-        foregroundColor: Colors.white,
+        backgroundColor: context.colors.background,
+        foregroundColor: context.colors.textPrimary,
         title: Text(
           'notifications'.tr,
           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -46,7 +46,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
             onPressed: controller.markAllAsRead,
             child: Text(
               'mark_all_read'.tr,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: context.colors.textPrimary),
             ),
           ),
         ],
@@ -71,15 +71,18 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   repeat: true,
                   delegates: LottieDelegates(
                     values: [
-                      ValueDelegate.color(const ['**'], value: AppColors.green),
+                      ValueDelegate.color(
+                        const ['**'],
+                        value: context.colors.accent,
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'no_notifications'.tr,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: context.colors.textPrimary,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -88,7 +91,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 Text(
                   'all_caught_up'.tr,
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.5),
+                    color: context.colors.textSecondary,
                     fontSize: 14,
                   ),
                 ),
@@ -99,8 +102,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
         // List
         return RefreshIndicator(
-          color: AppColors.green,
-          backgroundColor: AppColors.blue,
+          color: context.colors.accent,
+          backgroundColor: context.colors.surface,
           onRefresh: controller.fetchNotifications,
           child: ListView.separated(
             padding: const EdgeInsets.all(16),
@@ -117,12 +120,16 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: item.isRead ? Colors.white10 : AppColors.blue,
+                    color: item.isRead
+                        ? context.colors.surfaceVariant
+                        : context.colors.surface,
                     borderRadius: BorderRadius.circular(16),
                     border: item.isRead
                         ? null
                         : Border.all(
-                            color: AppColors.green.withValues(alpha: 0.3),
+                            color: context.colors.accent.withValues(
+                              alpha: 0.3,
+                            ),
                           ),
                   ),
                   child: Row(
@@ -134,13 +141,15 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: item.isRead
-                              ? Colors.white10
-                              : AppColors.green.withValues(alpha: 0.15),
+                              ? context.colors.surfaceVariant
+                              : context.colors.accent.withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
                           _iconForType(item.type),
-                          color: item.isRead ? Colors.white38 : AppColors.green,
+                          color: item.isRead
+                              ? context.colors.textDisabled
+                              : context.colors.accent,
                           size: 20,
                         ),
                       ),
@@ -156,7 +165,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                   child: Text(
                                     item.title,
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: context.colors.textPrimary,
                                       fontSize: 14,
                                       fontWeight: item.isRead
                                           ? FontWeight.normal
@@ -168,8 +177,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                   Container(
                                     width: 8,
                                     height: 8,
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.green,
+                                    decoration: BoxDecoration(
+                                      color: context.colors.accent,
                                       shape: BoxShape.circle,
                                     ),
                                   ),
@@ -178,16 +187,16 @@ class _NotificationsPageState extends State<NotificationsPage> {
                             const SizedBox(height: 4),
                             Text(
                               item.body,
-                              style: const TextStyle(
-                                color: Colors.white70,
+                              style: TextStyle(
+                                color: context.colors.textSecondary,
                                 fontSize: 13,
                               ),
                             ),
                             const SizedBox(height: 6),
                             Text(
                               _formatDate(item.createdAt),
-                              style: const TextStyle(
-                                color: Colors.white38,
+                              style: TextStyle(
+                                color: context.colors.textDisabled,
                                 fontSize: 11,
                               ),
                             ),

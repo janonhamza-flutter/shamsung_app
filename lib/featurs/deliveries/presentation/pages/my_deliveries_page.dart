@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/widgets/exit_scope.dart';
 import '../../../../../core/widgets/lottie_loading.dart';
 import '../../../home/presentation/widgets/bottom_nav_bar.dart';
@@ -17,17 +17,17 @@ class MyDeliveriesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExitScope(
       child: Scaffold(
-        backgroundColor: AppColors.darkBlue,
+        backgroundColor: context.colors.background,
         bottomNavigationBar: const BottomNavBar(currentIndex: 2),
 
         // ── AppBar ─────────────────────────────────────────────────────────────
         appBar: AppBar(
-          backgroundColor: AppColors.blue,
+          backgroundColor: context.colors.primary,
           automaticallyImplyLeading: false,
           title: Text(
             'my_deliveries'.tr,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: context.colors.textOnPrimary,
               fontWeight: FontWeight.bold,
               fontSize: 20,
             ),
@@ -42,9 +42,9 @@ class MyDeliveriesPage extends StatelessWidget {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-              decoration: const BoxDecoration(
-                color: AppColors.blue,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: context.colors.primary,
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(24),
                   bottomRight: Radius.circular(24),
                 ),
@@ -54,8 +54,8 @@ class MyDeliveriesPage extends StatelessWidget {
                 children: [
                   Text(
                     'track_deliveries'.tr,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: context.colors.textOnPrimary,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -64,7 +64,9 @@ class MyDeliveriesPage extends StatelessWidget {
                   Text(
                     'all_deliveries_here'.tr,
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.65),
+                      color: context.colors.textOnPrimary.withValues(
+                        alpha: 0.65,
+                      ),
                       fontSize: 13,
                     ),
                   ),
@@ -84,16 +86,16 @@ class MyDeliveriesPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.local_shipping_rounded,
-                      color: AppColors.green,
+                      color: context.colors.accent,
                       size: 16,
                     ),
                     const SizedBox(width: 6),
                     Text(
                       '$count ${'deliveries_count_label'.tr}',
-                      style: const TextStyle(
-                        color: Colors.white70,
+                      style: TextStyle(
+                        color: context.colors.textSecondary,
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),
@@ -129,8 +131,8 @@ class MyDeliveriesPage extends StatelessWidget {
 
                 // List
                 return RefreshIndicator(
-                  color: AppColors.green,
-                  backgroundColor: AppColors.blue,
+                  color: context.colors.accent,
+                  backgroundColor: context.colors.surface,
                   onRefresh: controller.fetchMyDeliveries,
                   child: ListView.builder(
                     padding: const EdgeInsets.symmetric(
@@ -167,23 +169,30 @@ class _ErrorView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.wifi_off_rounded, color: Colors.white38, size: 64),
+            Icon(
+              Icons.wifi_off_rounded,
+              color: context.colors.textSecondary,
+              size: 64,
+            ),
             const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white60, fontSize: 14),
+              style: TextStyle(color: context.colors.textSecondary, fontSize: 14),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: onRetry,
-              icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+              icon: Icon(
+                Icons.refresh_rounded,
+                color: context.colors.textOnPrimary,
+              ),
               label: Text(
                 'retry'.tr,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: context.colors.textOnPrimary),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.green,
+                backgroundColor: context.colors.accent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -213,16 +222,16 @@ class _EmptyView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.local_shipping_outlined,
-              color: Colors.white24,
+              color: context.colors.textDisabled,
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
               'no_deliveries_yet'.tr,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.colors.textPrimary,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -230,7 +239,7 @@ class _EmptyView extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'no_deliveries_hint'.tr,
-              style: const TextStyle(color: Colors.white54, fontSize: 14),
+              style: TextStyle(color: context.colors.textSecondary, fontSize: 14),
               textAlign: TextAlign.center,
             ),
           ],

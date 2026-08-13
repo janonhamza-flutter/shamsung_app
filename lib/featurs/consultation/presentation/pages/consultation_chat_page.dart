@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../data/models/consultation_model.dart';
 import '../controller/consultation_controller.dart';
 import '../widgets/consultation_type_selector.dart';
+
+/// Returns [darkColor] unchanged in Dark Mode; in Light Mode returns
+/// [lightColor], a deepened variant tuned for legibility on light surfaces.
+/// Used to distinguish "AI" vs "technician" — a decorative pairing that
+/// doesn't map onto the semantic palette fields.
+Color _typeAccent(BuildContext context, bool isAi) {
+  if (isAi) {
+    return context.colors.isDark
+        ? Colors.purpleAccent
+        : const Color(0xFF7B1FA2);
+  }
+  return context.colors.isDark ? Colors.blueAccent : const Color(0xFF1565C0);
+}
 
 class ConsultationChatPage extends StatefulWidget {
   final ConsultationModel? initialConsultation;
@@ -32,36 +45,39 @@ class _ConsultationChatPageState extends State<ConsultationChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.background,
       resizeToAvoidBottomInset: true,
 
       appBar: AppBar(
-        backgroundColor: AppColors.blue,
+        backgroundColor: context.colors.surface,
         elevation: 0,
         title: Obx(() {
           final c = ctrl.activeConsultation.value;
           if (c == null) {
-            return Text('new_consultation'.tr, style: _titleStyle);
+            return Text('new_consultation'.tr, style: _titleStyle(context));
           }
           return Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 c.isAi ? Icons.smart_toy_outlined : Icons.engineering_outlined,
-                color: c.isAi ? Colors.purpleAccent : Colors.blueAccent,
+                color: _typeAccent(context, c.isAi),
                 size: 20,
               ),
               const SizedBox(width: 8),
               Text(
                 c.isAi ? 'ai_assistant'.tr : 'technician'.tr,
-                style: _titleStyle,
+                style: _titleStyle(context),
               ),
             ],
           );
         }),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: context.colors.textPrimary,
+          ),
           onPressed: () {
             ctrl.resetChat();
             Get.back();
@@ -78,7 +94,7 @@ class _ConsultationChatPageState extends State<ConsultationChatPage> {
               final hasSent = ctrl.activeMessages.isNotEmpty;
               if (hasSent) return const SizedBox.shrink();
               return Container(
-                color: AppColors.blue.withValues(alpha: 0.5),
+                color: context.colors.surface.withValues(alpha: 0.5),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 10,
@@ -122,8 +138,8 @@ class _ConsultationChatPageState extends State<ConsultationChatPage> {
   }
 }
 
-const _titleStyle = TextStyle(
-  color: Colors.white,
+TextStyle _titleStyle(BuildContext context) => TextStyle(
+  color: context.colors.textPrimary,
   fontWeight: FontWeight.bold,
   fontSize: 16,
 );
@@ -146,24 +162,24 @@ class _EmptyChat extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: AppColors.blue,
+                color: context.colors.surface,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColors.green.withValues(alpha: 0.4),
+                  color: context.colors.accent.withValues(alpha: 0.4),
                   width: 2,
                 ),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.chat_bubble_outline_rounded,
-                color: AppColors.green,
+                color: context.colors.accent,
                 size: 40,
               ),
             ),
             const SizedBox(height: 20),
             Text(
               'ask_question_below'.tr,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.colors.textPrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
@@ -172,8 +188,8 @@ class _EmptyChat extends StatelessWidget {
             Text(
               'choose_type_hint'.tr,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppColors.grey,
+              style: TextStyle(
+                color: context.colors.textSecondary,
                 fontSize: 13,
                 height: 1.5,
               ),
@@ -198,9 +214,9 @@ class _UserBubble extends StatelessWidget {
           maxWidth: MediaQuery.of(context).size.width * 0.75,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: const BoxDecoration(
-          color: AppColors.green,
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          color: context.colors.accent,
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(18),
             topRight: Radius.circular(4),
             bottomLeft: Radius.circular(18),
@@ -210,8 +226,8 @@ class _UserBubble extends StatelessWidget {
         child: Text(
           message,
           textDirection: TextDirection.rtl,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textOnPrimary,
             fontSize: 15,
             height: 1.4,
           ),
@@ -228,7 +244,7 @@ class _ReplyBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = isAi ? Colors.purpleAccent : Colors.blueAccent;
+    final accent = _typeAccent(context, isAi);
     return Align(
       alignment: Alignment.centerLeft,
       child: Row(
@@ -256,7 +272,7 @@ class _ReplyBubble extends StatelessWidget {
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: AppColors.blue,
+                color: context.colors.surfaceVariant,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(4),
                   topRight: Radius.circular(18),
@@ -281,8 +297,8 @@ class _ReplyBubble extends StatelessWidget {
                   Text(
                     reply,
                     textDirection: TextDirection.rtl,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: context.colors.textPrimary,
                       fontSize: 14,
                       height: 1.5,
                     ),
@@ -313,13 +329,15 @@ class _PendingBubble extends StatelessWidget {
             height: 34,
             margin: const EdgeInsets.only(right: 8, bottom: 2),
             decoration: BoxDecoration(
-              color: Colors.orange.withValues(alpha: 0.15),
+              color: context.colors.warning.withValues(alpha: 0.15),
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.orange.withValues(alpha: 0.5)),
+              border: Border.all(
+                color: context.colors.warning.withValues(alpha: 0.5),
+              ),
             ),
             child: Icon(
               isAi ? Icons.smart_toy_outlined : Icons.engineering_outlined,
-              color: Colors.orange,
+              color: context.colors.warning,
               size: 18,
             ),
           ),
@@ -327,14 +345,16 @@ class _PendingBubble extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
-                color: AppColors.blue,
+                color: context.colors.surfaceVariant,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(4),
                   topRight: Radius.circular(18),
                   bottomLeft: Radius.circular(18),
                   bottomRight: Radius.circular(18),
                 ),
-                border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: context.colors.warning.withValues(alpha: 0.3),
+                ),
               ),
               child: isAi
                   // AI → نقاط متحركة
@@ -352,8 +372,8 @@ class _PendingBubble extends StatelessWidget {
                   : Text(
                       'awaiting_technician_reply'.tr,
                       textDirection: TextDirection.rtl,
-                      style: const TextStyle(
-                        color: AppColors.grey,
+                      style: TextStyle(
+                        color: context.colors.textSecondary,
                         fontSize: 13,
                         height: 1.6,
                       ),
@@ -407,8 +427,8 @@ class _DotState extends State<_Dot> with SingleTickerProviderStateMixin {
       child: Container(
         width: 8,
         height: 8,
-        decoration: const BoxDecoration(
-          color: AppColors.green,
+        decoration: BoxDecoration(
+          color: context.colors.accent,
           shape: BoxShape.circle,
         ),
       ),
@@ -431,7 +451,7 @@ class _ChatInputBar extends StatelessWidget {
     final keyboardHeight = mq.viewInsets.bottom;
     final systemNavBar = mq.padding.bottom;
     return Container(
-      color: AppColors.blue,
+      color: context.colors.surface,
       padding: EdgeInsets.only(
         left: 12,
         right: 12,
@@ -445,21 +465,24 @@ class _ChatInputBar extends StatelessWidget {
             child: Container(
               constraints: const BoxConstraints(maxHeight: 110),
               decoration: BoxDecoration(
-                color: AppColors.darkBlue,
+                color: context.colors.background,
                 borderRadius: BorderRadius.circular(22),
                 border: Border.all(
-                  color: AppColors.green.withValues(alpha: 0.4),
+                  color: context.colors.accent.withValues(alpha: 0.4),
                 ),
               ),
               child: TextField(
                 controller: ctrl.messageController,
                 maxLines: null,
                 textDirection: TextDirection.rtl,
-                style: const TextStyle(color: Colors.white, fontSize: 15),
+                style: TextStyle(
+                  color: context.colors.textPrimary,
+                  fontSize: 15,
+                ),
                 decoration: InputDecoration(
                   hintText: 'write_message_hint'.tr,
                   hintStyle: TextStyle(
-                    color: AppColors.grey.withValues(alpha: 0.7),
+                    color: context.colors.textSecondary.withValues(alpha: 0.7),
                     fontSize: 14,
                   ),
                   border: InputBorder.none,
@@ -480,21 +503,21 @@ class _ChatInputBar extends StatelessWidget {
               height: 46,
               decoration: BoxDecoration(
                 color: sending
-                    ? AppColors.green.withValues(alpha: 0.4)
-                    : AppColors.green,
+                    ? context.colors.accent.withValues(alpha: 0.4)
+                    : context.colors.accent,
                 shape: BoxShape.circle,
               ),
               child: sending
-                  ? const Padding(
-                      padding: EdgeInsets.all(12),
+                  ? Padding(
+                      padding: const EdgeInsets.all(12),
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Colors.white,
+                        color: context.colors.textOnPrimary,
                       ),
                     )
-                  : const Icon(
+                  : Icon(
                       Icons.send_rounded,
-                      color: Colors.white,
+                      color: context.colors.textOnPrimary,
                       size: 22,
                     ),
             ),

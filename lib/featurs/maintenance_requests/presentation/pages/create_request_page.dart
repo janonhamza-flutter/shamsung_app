@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constants/app_sizes.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../controller/create_request_controller.dart';
 import '../widgets/request_form_widgets.dart';
 
@@ -14,18 +14,18 @@ class CreateRequestPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.darkBlue,
+        backgroundColor: context.colors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          icon: Icon(Icons.arrow_back_ios_new, color: context.colors.textPrimary),
           onPressed: () => Get.back(),
         ),
         title: Text(
           'new_maintenance_request'.tr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textPrimary,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
@@ -39,7 +39,7 @@ class CreateRequestPage extends StatelessWidget {
             children: [
               const RequestFormHeaderBanner(),
               const SizedBox(height: AppSizes.space30),
-              _sectionLabel('device_information'.tr),
+              _sectionLabel(context, 'device_information'.tr),
               const SizedBox(height: AppSizes.space15),
               RequestFormTextField(
                 controller: controller.deviceController,
@@ -48,7 +48,7 @@ class CreateRequestPage extends StatelessWidget {
                 icon: Icons.phone_android_outlined,
               ),
               const SizedBox(height: AppSizes.space20),
-              _sectionLabel('problem_description'.tr),
+              _sectionLabel(context, 'problem_description'.tr),
               const SizedBox(height: AppSizes.space15),
               RequestFormTextField(
                 controller: controller.problemController,
@@ -58,7 +58,7 @@ class CreateRequestPage extends StatelessWidget {
                 maxLines: 5,
               ),
               const SizedBox(height: AppSizes.space20),
-              _sectionLabel('select_shop'.tr),
+              _sectionLabel(context, 'select_shop'.tr),
               const SizedBox(height: AppSizes.space15),
               RequestFormShopDropdown(controller: controller),
               const SizedBox(height: AppSizes.space40),
@@ -71,11 +71,11 @@ class CreateRequestPage extends StatelessWidget {
     );
   }
 
-  Widget _sectionLabel(String label) {
+  Widget _sectionLabel(BuildContext context, String label) {
     return Text(
       label,
-      style: const TextStyle(
-        color: Colors.white70,
+      style: TextStyle(
+        color: context.colors.textSecondary,
         fontSize: 13,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.8,

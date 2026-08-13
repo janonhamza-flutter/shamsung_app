@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 
 // ─── Section Title ────────────────────────────────────────────────────────────
 
@@ -18,15 +18,15 @@ class RequestSectionTitle extends StatelessWidget {
           width: 3,
           height: 18,
           decoration: BoxDecoration(
-            color: AppColors.green,
+            color: context.colors.accent,
             borderRadius: BorderRadius.circular(2),
           ),
         ),
         const SizedBox(width: 8),
         Text(
           title,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colors.textPrimary,
             fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
@@ -46,11 +46,11 @@ class RequestInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppSizes.radius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
+            color: context.colors.shadow,
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -82,7 +82,7 @@ class RequestInfoRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppColors.green, size: 20),
+          Icon(icon, color: context.colors.accent, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -90,12 +90,12 @@ class RequestInfoRow extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(color: Colors.white54, fontSize: 12),
+                  style: TextStyle(color: context.colors.textSecondary, fontSize: 12),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   value,
-                  style: const TextStyle(color: Colors.white, fontSize: 15),
+                  style: TextStyle(color: context.colors.textPrimary, fontSize: 15),
                 ),
               ],
             ),
@@ -116,7 +116,7 @@ class RequestCardDivider extends StatelessWidget {
     return Container(
       height: 1,
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      color: Colors.white12,
+      color: context.colors.divider,
     );
   }
 }
@@ -138,11 +138,11 @@ class RequestEstimateCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppSizes.radius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
+            color: context.colors.shadow,
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -156,14 +156,14 @@ class RequestEstimateCard extends StatelessWidget {
                 icon: Icons.attach_money_rounded,
                 label: 'estimated_cost'.tr,
                 value: "$estimatedCost ${'currency'.tr}",
-                color: AppColors.green,
+                color: context.colors.accent,
               ),
             ),
           if (estimatedCost != null && estimatedDays != null)
             Container(
               width: 1,
               height: 50,
-              color: Colors.white12,
+              color: context.colors.divider,
               margin: const EdgeInsets.symmetric(horizontal: 16),
             ),
           if (estimatedDays != null)
@@ -174,7 +174,7 @@ class RequestEstimateCard extends StatelessWidget {
                 value: estimatedDays! > 1
                     ? '$estimatedDays ${'days'.tr}'
                     : '$estimatedDays ${'day'.tr}',
-                color: Colors.blueAccent,
+                color: context.colors.info,
               ),
             ),
         ],
@@ -213,7 +213,7 @@ class _EstimateItem extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(color: Colors.white54, fontSize: 12),
+          style: TextStyle(color: context.colors.textSecondary, fontSize: 12),
         ),
       ],
     );

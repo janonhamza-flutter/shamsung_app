@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../controller/request_details_controller.dart';
 import 'approve_sheet_widget.dart';
 import 'reject_dialog_widget.dart';
@@ -18,10 +18,10 @@ class ApproveRejectBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
+            color: context.colors.shadow,
             blurRadius: 12,
             offset: const Offset(0, -4),
           ),
@@ -42,23 +42,23 @@ class ApproveRejectBar extends StatelessWidget {
                     onPressed: () =>
                         RejectDialogWidget.show(context, controller),
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Colors.redAccent,
+                      side: BorderSide(
+                        color: context.colors.error,
                         width: 1.5,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppSizes.radius),
                       ),
                     ),
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.cancel_outlined,
-                      color: Colors.redAccent,
+                      color: context.colors.error,
                       size: 18,
                     ),
                     label: Text(
                       'reject'.tr,
-                      style: const TextStyle(
-                        color: Colors.redAccent,
+                      style: TextStyle(
+                        color: context.colors.error,
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                       ),
@@ -81,21 +81,21 @@ class ApproveRejectBar extends StatelessWidget {
                           ApproveSheetWidget(controller: controller),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.green,
+                      backgroundColor: context.colors.accent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppSizes.radius),
                       ),
                       elevation: 4,
                     ),
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.check_circle_outline_rounded,
-                      color: Colors.white,
+                      color: context.colors.textOnPrimary,
                       size: 18,
                     ),
                     label: Text(
                       'review_and_approve'.tr,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: context.colors.textOnPrimary,
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                       ),
@@ -117,18 +117,22 @@ class _InfoBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.amber.withValues(alpha: 0.1),
+        color: context.colors.warning.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
+        border: Border.all(color: context.colors.warning.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline_rounded, color: Colors.amber, size: 16),
+          Icon(
+            Icons.info_outline_rounded,
+            color: context.colors.warning,
+            size: 16,
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               'technician_waiting_approval'.tr,
-              style: const TextStyle(color: Colors.amber, fontSize: 12),
+              style: TextStyle(color: context.colors.warning, fontSize: 12),
             ),
           ),
         ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../controller/request_details_controller.dart';
 
 /// Confirmation dialog for cancelling a maintenance request.
@@ -20,11 +20,11 @@ class CancelDialogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
         side: BorderSide(
-          color: Colors.redAccent.withValues(alpha: 0.3),
+          color: context.colors.error.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -36,20 +36,20 @@ class CancelDialogWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.redAccent.withValues(alpha: 0.12),
+                color: context.colors.error.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.block_rounded,
-                color: Colors.redAccent,
+                color: context.colors.error,
                 size: 32,
               ),
             ),
             const SizedBox(height: 16),
             Text(
               'cancel_request_title'.tr,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.colors.textPrimary,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -57,8 +57,8 @@ class CancelDialogWidget extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'cancel_request_body'.tr,
-              style: const TextStyle(
-                color: Colors.white54,
+              style: TextStyle(
+                color: context.colors.textSecondary,
                 fontSize: 13,
                 height: 1.5,
               ),
@@ -74,13 +74,13 @@ class CancelDialogWidget extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
-                        side: const BorderSide(color: Colors.white24),
+                        side: BorderSide(color: context.colors.border),
                       ),
                     ),
                     child: Text(
                       'keep_it'.tr,
-                      style: const TextStyle(
-                        color: Colors.white70,
+                      style: TextStyle(
+                        color: context.colors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -97,8 +97,8 @@ class CancelDialogWidget extends StatelessWidget {
                               await controller.cancelRequest();
                             },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
-                        disabledBackgroundColor: Colors.redAccent.withValues(
+                        backgroundColor: context.colors.error,
+                        disabledBackgroundColor: context.colors.error.withValues(
                           alpha: 0.4,
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -108,8 +108,8 @@ class CancelDialogWidget extends StatelessWidget {
                       ),
                       child: Text(
                         'cancel_request'.tr,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: context.colors.textOnPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

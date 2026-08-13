@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../data/models/cart_item_model.dart';
 
 class CartItemTile extends StatelessWidget {
@@ -30,8 +30,11 @@ class CartItemTile extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppColors.blue,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(16),
+          border: context.colors.isDark
+              ? null
+              : Border.all(color: context.colors.border),
         ),
         child: Row(
           children: [
@@ -45,10 +48,10 @@ class CartItemTile extends StatelessWidget {
                     ? CachedNetworkImage(
                         imageUrl: item.accessory.imageUrl,
                         fit: BoxFit.cover,
-                        placeholder: (_, __) => _placeholder(),
-                        errorWidget: (_, __, ___) => _placeholder(),
+                        placeholder: (_, __) => _placeholder(context),
+                        errorWidget: (_, __, ___) => _placeholder(context),
                       )
-                    : _placeholder(),
+                    : _placeholder(context),
               ),
             ),
             const SizedBox(width: 12),
@@ -65,8 +68,8 @@ class CartItemTile extends StatelessWidget {
                           item.accessory.name,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: context.colors.textPrimary,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                           ),
@@ -77,15 +80,15 @@ class CartItemTile extends StatelessWidget {
                         width: 24,
                         height: 24,
                         child: isLoading
-                            ? const CircularProgressIndicator(
-                                color: AppColors.green,
+                            ? CircularProgressIndicator(
+                                color: context.colors.accent,
                                 strokeWidth: 2,
                               )
                             : GestureDetector(
                                 onTap: onRemove,
-                                child: const Icon(
+                                child: Icon(
                                   Icons.delete_outline,
-                                  color: Colors.redAccent,
+                                  color: context.colors.error,
                                   size: 22,
                                 ),
                               ),
@@ -95,8 +98,8 @@ class CartItemTile extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     '${item.accessory.price.toStringAsFixed(2)} ${'currency'.tr}',
-                    style: const TextStyle(
-                      color: AppColors.green,
+                    style: TextStyle(
+                      color: context.colors.accent,
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                     ),
@@ -111,18 +114,18 @@ class CartItemTile extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: isLoading
-                            ? const SizedBox(
+                            ? SizedBox(
                                 width: 16,
                                 height: 16,
                                 child: CircularProgressIndicator(
-                                  color: AppColors.green,
+                                  color: context.colors.accent,
                                   strokeWidth: 2,
                                 ),
                               )
                             : Text(
                                 '${item.quantity}',
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                  color: context.colors.textPrimary,
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -136,7 +139,7 @@ class CartItemTile extends StatelessWidget {
                       Text(
                         '${'item_total'.tr}: ${item.totalPrice.toStringAsFixed(2)} ${'currency'.tr}',
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.6),
+                          color: context.colors.textSecondary,
                           fontSize: 12,
                         ),
                       ),
@@ -151,10 +154,14 @@ class CartItemTile extends StatelessWidget {
     );
   }
 
-  Widget _placeholder() {
+  Widget _placeholder(BuildContext context) {
     return Container(
-      color: AppColors.darkBlue,
-      child: const Icon(Icons.image_outlined, color: Colors.white24, size: 28),
+      color: context.colors.surfaceVariant,
+      child: Icon(
+        Icons.image_outlined,
+        color: context.colors.textDisabled,
+        size: 28,
+      ),
     );
   }
 }
@@ -175,18 +182,18 @@ class _QtyButton extends StatelessWidget {
         height: 28,
         decoration: BoxDecoration(
           color: disabled
-              ? Colors.grey.withValues(alpha: 0.15)
-              : AppColors.green.withValues(alpha: 0.15),
+              ? context.colors.textDisabled.withValues(alpha: 0.15)
+              : context.colors.accent.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: disabled
-                ? Colors.grey.withValues(alpha: 0.3)
-                : AppColors.green.withValues(alpha: 0.4),
+                ? context.colors.textDisabled.withValues(alpha: 0.3)
+                : context.colors.accent.withValues(alpha: 0.4),
           ),
         ),
         child: Icon(
           icon,
-          color: disabled ? Colors.grey : AppColors.green,
+          color: disabled ? context.colors.textDisabled : context.colors.accent,
           size: 16,
         ),
       ),

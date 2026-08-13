@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../data/models/maintenance_request_details_model.dart';
 import 'request_info_widgets.dart';
 
@@ -16,11 +16,11 @@ class RequestPartsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppSizes.radius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
+            color: context.colors.shadow,
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -59,12 +59,12 @@ class _PartTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.green.withValues(alpha: 0.15),
+                  color: context.colors.accent.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.settings_outlined,
-                  color: AppColors.green,
+                  color: context.colors.accent,
                   size: 18,
                 ),
               ),
@@ -74,13 +74,13 @@ class _PartTile extends StatelessWidget {
                   right: -4,
                   child: Container(
                     padding: const EdgeInsets.all(2),
-                    decoration: const BoxDecoration(
-                      color: Colors.orange,
+                    decoration: BoxDecoration(
+                      color: context.colors.warning,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.priority_high,
-                      color: Colors.white,
+                      color: context.colors.textOnPrimary,
                       size: 10,
                     ),
                   ),
@@ -94,15 +94,15 @@ class _PartTile extends StatelessWidget {
               children: [
                 Text(
                   part.name,
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                  style: TextStyle(color: context.colors.textPrimary, fontSize: 14),
                 ),
                 const SizedBox(height: 3),
                 Row(
                   children: [
                     Text(
                       '${'qty'.tr}: ${part.quantity}',
-                      style: const TextStyle(
-                        color: Colors.white38,
+                      style: TextStyle(
+                        color: context.colors.textDisabled,
                         fontSize: 12,
                       ),
                     ),
@@ -120,8 +120,8 @@ class _PartTile extends StatelessWidget {
             children: [
               Text(
                 "${part.price} ${'currency'.tr}",
-                style: const TextStyle(
-                  color: AppColors.green,
+                style: TextStyle(
+                  color: context.colors.accent,
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
@@ -129,7 +129,7 @@ class _PartTile extends StatelessWidget {
               if (part.quantity > 1)
                 Text(
                   "= ${part.total.toStringAsFixed(2)} ${'currency'.tr}",
-                  style: const TextStyle(color: Colors.white38, fontSize: 11),
+                  style: TextStyle(color: context.colors.textDisabled, fontSize: 11),
                 ),
             ],
           ),
@@ -145,14 +145,14 @@ class _RequiredBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: Colors.orange.withValues(alpha: 0.15),
+        color: context.colors.warning.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: Colors.orange.withValues(alpha: 0.4)),
+        border: Border.all(color: context.colors.warning.withValues(alpha: 0.4)),
       ),
       child: Text(
         'required'.tr,
-        style: const TextStyle(
-          color: Colors.orange,
+        style: TextStyle(
+          color: context.colors.warning,
           fontSize: 10,
           fontWeight: FontWeight.w600,
         ),
@@ -172,25 +172,25 @@ class RequestPartsTotalRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.green.withValues(alpha: 0.1),
+        color: context.colors.accent.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.green.withValues(alpha: 0.3)),
+        border: Border.all(color: context.colors.accent.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             'total_parts_cost'.tr,
-            style: const TextStyle(
-              color: Colors.white70,
+            style: TextStyle(
+              color: context.colors.textSecondary,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
           Text(
             "${total.toStringAsFixed(2)} ${'currency'.tr}",
-            style: const TextStyle(
-              color: AppColors.green,
+            style: TextStyle(
+              color: context.colors.accent,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
@@ -218,29 +218,29 @@ class RequestPartsErrorBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.orange.withValues(alpha: 0.08),
+        color: context.colors.warning.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+        border: Border.all(color: context.colors.warning.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.warning_amber_rounded,
-            color: Colors.orange,
+            color: context.colors.warning,
             size: 20,
           ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               message,
-              style: const TextStyle(color: Colors.orange, fontSize: 13),
+              style: TextStyle(color: context.colors.warning, fontSize: 13),
             ),
           ),
           TextButton(
             onPressed: onRetry,
             child: Text(
               'retry'.tr,
-              style: const TextStyle(color: Colors.orange, fontSize: 12),
+              style: TextStyle(color: context.colors.warning, fontSize: 12),
             ),
           ),
         ],
@@ -261,19 +261,19 @@ class RequestRejectionCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.redAccent.withValues(alpha: 0.08),
+        color: context.colors.error.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppSizes.radius),
-        border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
+        border: Border.all(color: context.colors.error.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.cancel_outlined, color: Colors.redAccent, size: 22),
+          Icon(Icons.cancel_outlined, color: context.colors.error, size: 22),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               reason,
-              style: const TextStyle(color: Colors.white70, fontSize: 14),
+              style: TextStyle(color: context.colors.textSecondary, fontSize: 14),
             ),
           ),
         ],

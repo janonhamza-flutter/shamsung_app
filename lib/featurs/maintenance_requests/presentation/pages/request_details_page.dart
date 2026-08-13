@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../../core/constants/app_sizes.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../data/models/maintenance_request_details_model.dart';
 import '../controller/request_details_controller.dart';
 import '../widgets/approve_reject_bar_widget.dart';
@@ -21,8 +21,8 @@ class RequestDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
-      appBar: _buildAppBar(),
+      backgroundColor: context.colors.background,
+      appBar: _buildAppBar(context),
       bottomNavigationBar: Obx(() {
         final status = controller.request.value?.status.toLowerCase() ?? '';
         if (status != 'waiting_customer_approval')
@@ -30,26 +30,28 @@ class RequestDetailsPage extends StatelessWidget {
         return ApproveRejectBar(controller: controller);
       }),
       body: Obx(() {
-        if (controller.isLoading.value) return _loadingState();
-        if (controller.errorMessage.value.isNotEmpty) return _errorState();
+        if (controller.isLoading.value) return _loadingState(context);
+        if (controller.errorMessage.value.isNotEmpty) {
+          return _errorState(context);
+        }
         if (controller.request.value == null) return const SizedBox.shrink();
         return _buildContent(controller.request.value!);
       }),
     );
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.background,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+        icon: Icon(Icons.arrow_back_ios_new, color: context.colors.textPrimary),
         onPressed: () => Get.back(),
       ),
       title: Text(
         'request_details'.tr,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: context.colors.textPrimary,
           fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
@@ -60,21 +62,21 @@ class RequestDetailsPage extends StatelessWidget {
           if (status != 'pending') return const SizedBox.shrink();
           return Obx(
             () => controller.isCancelling.value
-                ? const Padding(
-                    padding: EdgeInsets.all(14),
+                ? Padding(
+                    padding: const EdgeInsets.all(14),
                     child: SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
-                        color: Colors.redAccent,
+                        color: context.colors.error,
                         strokeWidth: 2,
                       ),
                     ),
                   )
                 : IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.block_rounded,
-                      color: Colors.redAccent,
+                      color: context.colors.error,
                     ),
                     tooltip: 'cancel_request'.tr,
                     onPressed: () =>
@@ -83,7 +85,7 @@ class RequestDetailsPage extends StatelessWidget {
           );
         }),
         IconButton(
-          icon: const Icon(Icons.refresh_rounded, color: Colors.white70),
+          icon: Icon(Icons.refresh_rounded, color: context.colors.textSecondary),
           onPressed: controller.refresh,
         ),
         const SizedBox(width: 4),
@@ -91,7 +93,7 @@ class RequestDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _loadingState() => Center(
+  Widget _loadingState(BuildContext context) => Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -103,49 +105,49 @@ class RequestDetailsPage extends StatelessWidget {
           repeat: true,
           delegates: LottieDelegates(
             values: [
-              ValueDelegate.color(const ['**'], value: AppColors.green),
+              ValueDelegate.color(const ['**'], value: context.colors.accent),
             ],
           ),
         ),
         const SizedBox(height: 8),
         Text(
           'loading_details'.tr,
-          style: const TextStyle(color: Colors.white54, fontSize: 14),
+          style: TextStyle(color: context.colors.textSecondary, fontSize: 14),
         ),
       ],
     ),
   );
 
-  Widget _errorState() => Center(
+  Widget _errorState(BuildContext context) => Center(
     child: Padding(
       padding: const EdgeInsets.all(AppSizes.padding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
+          Icon(
             Icons.error_outline_rounded,
-            color: Colors.white24,
+            color: context.colors.textDisabled,
             size: 72,
           ),
           const SizedBox(height: 16),
           Text(
             controller.errorMessage.value,
-            style: const TextStyle(color: Colors.white54, fontSize: 15),
+            style: TextStyle(color: context.colors.textSecondary, fontSize: 15),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: controller.refresh,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.green,
+              backgroundColor: context.colors.accent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            icon: const Icon(Icons.refresh, color: Colors.white),
+            icon: Icon(Icons.refresh, color: context.colors.textOnPrimary),
             label: Text(
               'retry'.tr,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: context.colors.textOnPrimary),
             ),
           ),
         ],

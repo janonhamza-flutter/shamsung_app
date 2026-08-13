@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 
 class ServiceCard extends StatelessWidget {
   final IconData icon;
@@ -16,7 +16,7 @@ class ServiceCard extends StatelessWidget {
       width: 140,
 
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.surface,
 
         borderRadius: BorderRadius.circular(AppSizes.radius),
       ),
@@ -25,11 +25,11 @@ class ServiceCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
 
         children: [
-          Icon(icon, size: 45, color: AppColors.green),
+          Icon(icon, size: 45, color: context.colors.accent),
 
           const SizedBox(height: 10),
 
-          Text(title),
+          Text(title, style: TextStyle(color: context.colors.textPrimary)),
         ],
       ),
     );

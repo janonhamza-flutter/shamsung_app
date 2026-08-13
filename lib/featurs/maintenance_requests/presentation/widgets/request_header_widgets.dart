@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import 'request_status_helpers.dart';
 
 // ─── Status Banner ────────────────────────────────────────────────────────────
@@ -20,13 +20,13 @@ class RequestStatusBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = RequestStatusHelpers.color(status);
+    final color = RequestStatusHelpers.color(context, status);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppColors.blue, color.withValues(alpha: 0.18)],
+          colors: [context.colors.surface, color.withValues(alpha: 0.18)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -34,7 +34,7 @@ class RequestStatusBanner extends StatelessWidget {
         border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
+            color: context.colors.shadow,
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -61,8 +61,8 @@ class RequestStatusBanner extends StatelessWidget {
               children: [
                 Text(
                   deviceModel,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: context.colors.textPrimary,
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
                   ),
@@ -91,7 +91,7 @@ class RequestStatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = RequestStatusHelpers.color(status);
+    final color = RequestStatusHelpers.color(context, status);
     final text = label ?? RequestStatusHelpers.detailLabel(status);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
@@ -125,10 +125,10 @@ class RequestTrackingCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.green.withValues(alpha: 0.3),
+          color: context.colors.accent.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -140,13 +140,16 @@ class RequestTrackingCard extends StatelessWidget {
               children: [
                 Text(
                   'tracking_number'.tr,
-                  style: const TextStyle(color: Colors.white54, fontSize: 12),
+                  style: TextStyle(
+                    color: context.colors.textSecondary,
+                    fontSize: 12,
+                  ),
                 ),
                 const SizedBox(height: 3),
                 Text(
                   trackingNumber,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: context.colors.textPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1,
@@ -161,16 +164,16 @@ class RequestTrackingCard extends StatelessWidget {
               Get.snackbar(
                 'copied'.tr,
                 'tracking_number_copied'.tr,
-                backgroundColor: AppColors.green,
-                colorText: Colors.white,
+                backgroundColor: context.colors.accent,
+                colorText: context.colors.textOnPrimary,
                 duration: const Duration(seconds: 2),
                 snackPosition: SnackPosition.BOTTOM,
                 margin: const EdgeInsets.all(16),
               );
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.copy_rounded,
-              color: Colors.white54,
+              color: context.colors.textSecondary,
               size: 20,
             ),
           ),

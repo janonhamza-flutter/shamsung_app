@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shamsoung/core/route/app_routes.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 
 class BottomNavBar extends StatefulWidget {
   final int currentIndex;
@@ -84,29 +84,46 @@ class _BottomNavBarState extends State<BottomNavBar>
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).viewPadding.bottom;
+    final isDark = context.colors.isDark;
 
     return Container(
       margin: EdgeInsets.fromLTRB(16, 0, 16, bottomPadding + 12),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF0D3D8A), Color(0xFF041E42)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        // Dark Mode keeps its original navy gradient pill, unchanged.
+        // Light Mode gets a proper elevated surface — a floating dark blob
+        // on a pale page read as a disconnected component, not chrome.
+        gradient: isDark
+            ? const LinearGradient(
+                colors: [Color(0xFF0D3D8A), Color(0xFF041E42)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : null,
+        color: isDark ? null : context.colors.surface,
         borderRadius: BorderRadius.circular(28),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.35),
-            blurRadius: 24,
-            spreadRadius: 2,
-            offset: const Offset(0, 8),
-          ),
-          BoxShadow(
-            color: AppColors.green.withValues(alpha: 0.08),
-            blurRadius: 12,
-            offset: const Offset(0, -2),
-          ),
-        ],
+        border: isDark ? null : Border.all(color: context.colors.border),
+        boxShadow: isDark
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.35),
+                  blurRadius: 24,
+                  spreadRadius: 2,
+                  offset: const Offset(0, 8),
+                ),
+                BoxShadow(
+                  color: context.colors.accent.withValues(alpha: 0.08),
+                  blurRadius: 12,
+                  offset: const Offset(0, -2),
+                ),
+              ]
+            : [
+                BoxShadow(
+                  color: context.colors.shadow,
+                  blurRadius: 20,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 8),
+                ),
+              ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(28),
@@ -152,6 +169,21 @@ class _NavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.colors.isDark;
+    // Dark Mode: white-on-navy pill highlight (unchanged from original).
+    // Light Mode: a tasteful accent-tinted chip — recognizable without being
+    // a loud, fully-saturated fill.
+    final selectedFill = isDark
+        ? Colors.white.withValues(alpha: 0.12)
+        : context.colors.accent.withValues(alpha: 0.12);
+    final selectedBorder = isDark
+        ? Colors.white.withValues(alpha: 0.15)
+        : context.colors.accent.withValues(alpha: 0.22);
+    final labelColor = isDark ? Colors.white : context.colors.accent;
+    final unselectedIconColor = isDark
+        ? const Color(0xFFB0C4DE)
+        : context.colors.textSecondary;
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -160,15 +192,10 @@ class _NavBarItem extends StatelessWidget {
         curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected
-              ? Colors.white.withValues(alpha: 0.12)
-              : Colors.transparent,
+          color: isSelected ? selectedFill : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           border: isSelected
-              ? Border.all(
-                  color: Colors.white.withValues(alpha: 0.15),
-                  width: 1,
-                )
+              ? Border.all(color: selectedBorder, width: 1)
               : null,
         ),
         child: Row(
@@ -181,14 +208,14 @@ class _NavBarItem extends StatelessWidget {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? AppColors.green.withValues(alpha: 0.2)
+                      ? context.colors.accent.withValues(alpha: 0.2)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   icon,
                   size: 22,
-                  color: isSelected ? AppColors.green : const Color(0xFFB0C4DE),
+                  color: isSelected ? context.colors.accent : unselectedIconColor,
                 ),
               ),
             ),
@@ -200,8 +227,8 @@ class _NavBarItem extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 6),
                       child: Text(
                         label,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: labelColor,
                           fontSize: 12.5,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.3,

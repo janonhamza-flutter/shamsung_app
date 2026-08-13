@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../data/models/delivery_model.dart';
 
 class DeliveryCard extends StatelessWidget {
@@ -9,18 +9,18 @@ class DeliveryCard extends StatelessWidget {
 
   const DeliveryCard({super.key, required this.delivery});
 
-  Color _statusColor(String status) {
+  Color _statusColor(BuildContext context, String status) {
     switch (status.toLowerCase()) {
       case 'delivered':
-        return AppColors.green;
+        return context.colors.success;
       case 'accepted':
-        return Colors.blueAccent;
+        return context.colors.info;
       case 'pending':
-        return Colors.orangeAccent;
+        return context.colors.warning;
       case 'cancelled':
-        return Colors.redAccent;
+        return context.colors.error;
       default:
-        return Colors.white54;
+        return context.colors.textSecondary;
     }
   }
 
@@ -135,16 +135,19 @@ class DeliveryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = _statusColor(delivery.status);
+    final statusColor = _statusColor(context, delivery.status);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(18),
+        border: context.colors.isDark
+            ? null
+            : Border.all(color: context.colors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
+            color: context.colors.shadow,
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -161,12 +164,12 @@ class DeliveryCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.08),
+                    color: context.colors.surfaceVariant,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     _typeIcon(delivery.type),
-                    color: Colors.white70,
+                    color: context.colors.textSecondary,
                     size: 22,
                   ),
                 ),
@@ -177,8 +180,8 @@ class DeliveryCard extends StatelessWidget {
                     children: [
                       Text(
                         _typeLabel(delivery.type),
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: context.colors.textPrimary,
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),
@@ -186,8 +189,8 @@ class DeliveryCard extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         '${'delivery_number'.tr}: #${delivery.id}',
-                        style: const TextStyle(
-                          color: Colors.white38,
+                        style: TextStyle(
+                          color: context.colors.textDisabled,
                           fontSize: 12,
                         ),
                       ),
@@ -231,7 +234,7 @@ class DeliveryCard extends StatelessWidget {
             ),
 
             const SizedBox(height: 14),
-            const Divider(color: Colors.white12, height: 1),
+            Divider(color: context.colors.divider, height: 1),
             const SizedBox(height: 12),
 
             // ── Info rows ─────────────────────────────────────────────────
@@ -319,17 +322,17 @@ class _InfoRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          Icon(icon, color: Colors.white38, size: 15),
+          Icon(icon, color: context.colors.textDisabled, size: 15),
           const SizedBox(width: 8),
           Text(
             '$label: ',
-            style: const TextStyle(color: Colors.white38, fontSize: 13),
+            style: TextStyle(color: context.colors.textDisabled, fontSize: 13),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
-                color: Colors.white70,
+              style: TextStyle(
+                color: context.colors.textSecondary,
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),

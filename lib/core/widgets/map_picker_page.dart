@@ -5,7 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 
 /// صفحة اختيار الموقع من الخريطة
 /// ترجع [MapPickerResult] عند الضغط على "تأكيد الموقع"
@@ -124,30 +124,28 @@ class _MapPickerPageState extends State<MapPickerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.blue,
         title: const Text(
           'تحديد موقع التسليم',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           if (_isLocating)
-            const Padding(
-              padding: EdgeInsets.all(14),
+            Padding(
+              padding: const EdgeInsets.all(14),
               child: SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
-                  color: Colors.white,
+                  color: context.colors.textPrimary,
                   strokeWidth: 2,
                 ),
               ),
             )
           else
             IconButton(
-              icon: const Icon(Icons.my_location_rounded, color: Colors.white),
+              icon: const Icon(Icons.my_location_rounded),
               onPressed: () {
                 // المستخدم طلب صراحةً العودة لموقعه الحالي → نسمح بالكتابة
                 setState(() => _userPickedManually = false);
@@ -197,13 +195,13 @@ class _MapPickerPageState extends State<MapPickerPage> {
             child: Container(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
               decoration: BoxDecoration(
-                color: AppColors.blue,
+                color: context.colors.surface,
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(20),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
+                    color: context.colors.shadow,
                     blurRadius: 12,
                     offset: const Offset(0, -4),
                   ),
@@ -215,18 +213,18 @@ class _MapPickerPageState extends State<MapPickerPage> {
                 children: [
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.location_on_rounded,
-                        color: AppColors.green,
+                        color: context.colors.accent,
                         size: 18,
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: _isLoadingName
-                            ? const Text(
+                            ? Text(
                                 'جارٍ تحديد اسم الموقع...',
                                 style: TextStyle(
-                                  color: Colors.white54,
+                                  color: context.colors.textSecondary,
                                   fontSize: 13,
                                 ),
                               )
@@ -234,8 +232,8 @@ class _MapPickerPageState extends State<MapPickerPage> {
                                 _locationName.isNotEmpty
                                     ? _locationName
                                     : 'اضغط على الخريطة لاختيار الموقع',
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                  color: context.colors.textPrimary,
                                   fontSize: 13,
                                 ),
                                 maxLines: 2,
@@ -249,21 +247,10 @@ class _MapPickerPageState extends State<MapPickerPage> {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: _confirm,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.green,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      icon: const Icon(
-                        Icons.check_rounded,
-                        color: Colors.white,
-                      ),
+                      icon: const Icon(Icons.check_rounded),
                       label: const Text(
                         'تأكيد الموقع',
                         style: TextStyle(
-                          color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -287,12 +274,15 @@ class _MapPickerPageState extends State<MapPickerPage> {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.darkBlue.withValues(alpha: 0.85),
+                  color: context.colors.overlay,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text(
+                child: Text(
                   'اضغط على الخريطة لتحديد موقع التسليم',
-                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                  style: TextStyle(
+                    color: context.colors.textOnPrimary.withValues(alpha: 0.9),
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ),

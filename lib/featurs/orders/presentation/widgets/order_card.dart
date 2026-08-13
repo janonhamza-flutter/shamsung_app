@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../data/models/order_model.dart';
 
 class OrderCard extends StatelessWidget {
@@ -14,9 +14,9 @@ class OrderCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppColors.blue,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,22 +24,24 @@ class OrderCard extends StatelessWidget {
           // ── Header ────────────────────────────────────────────────────────
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: const BoxDecoration(
-              color: Color(0xFF0D3880),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+            decoration: BoxDecoration(
+              color: context.colors.elevatedSurface,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
             ),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.receipt_long_rounded,
-                  color: AppColors.green,
+                  color: context.colors.accent,
                   size: 18,
                 ),
                 const SizedBox(width: 8),
                 Text(
                   order.orderNumber,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: context.colors.textPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
@@ -58,16 +60,16 @@ class OrderCard extends StatelessWidget {
                 if (order.shop != null) ...[
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.store_rounded,
-                        color: Colors.white54,
+                        color: context.colors.textSecondary,
                         size: 15,
                       ),
                       const SizedBox(width: 6),
                       Text(
                         order.shop!.name,
-                        style: const TextStyle(
-                          color: Colors.white70,
+                        style: TextStyle(
+                          color: context.colors.textSecondary,
                           fontSize: 13,
                         ),
                       ),
@@ -82,17 +84,17 @@ class OrderCard extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 6),
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.circle,
-                          color: AppColors.green,
+                          color: context.colors.accent,
                           size: 6,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             item.accessory?.name ?? 'product'.tr,
-                            style: const TextStyle(
-                              color: Colors.white60,
+                            style: TextStyle(
+                              color: context.colors.textSecondary,
                               fontSize: 13,
                             ),
                             overflow: TextOverflow.ellipsis,
@@ -100,8 +102,8 @@ class OrderCard extends StatelessWidget {
                         ),
                         Text(
                           '${item.quantity} × ${item.unitPrice.toStringAsFixed(2)} ${'currency'.tr}',
-                          style: const TextStyle(
-                            color: Colors.white54,
+                          style: TextStyle(
+                            color: context.colors.textSecondary,
                             fontSize: 12,
                           ),
                         ),
@@ -110,7 +112,7 @@ class OrderCard extends StatelessWidget {
                   ),
                 ),
 
-                const Divider(color: Colors.white12, height: 20),
+                Divider(color: context.colors.divider, height: 20),
 
                 // Footer row: payment + total
                 Row(
@@ -122,7 +124,7 @@ class OrderCard extends StatelessWidget {
                           order.paymentMethod == 'cash_on_delivery'
                               ? Icons.money_rounded
                               : Icons.credit_card_rounded,
-                          color: Colors.white38,
+                          color: context.colors.textDisabled,
                           size: 15,
                         ),
                         const SizedBox(width: 5),
@@ -130,8 +132,8 @@ class OrderCard extends StatelessWidget {
                           order.paymentMethod == 'cash_on_delivery'
                               ? 'payment_cash_on_delivery'.tr
                               : 'payment_pay_after_service'.tr,
-                          style: const TextStyle(
-                            color: Colors.white38,
+                          style: TextStyle(
+                            color: context.colors.textDisabled,
                             fontSize: 12,
                           ),
                         ),
@@ -139,8 +141,8 @@ class OrderCard extends StatelessWidget {
                     ),
                     Text(
                       '${order.totalAmount.toStringAsFixed(2)} ${'currency'.tr}',
-                      style: const TextStyle(
-                        color: AppColors.green,
+                      style: TextStyle(
+                        color: context.colors.accent,
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),

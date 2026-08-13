@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../data/models/maintenance_request_details_model.dart';
 import '../controller/request_details_controller.dart';
 import 'request_details_widgets.dart';
@@ -172,11 +172,11 @@ class _PartsLoadingState extends StatelessWidget {
       children: [
         RequestSectionTitle(title: 'parts'.tr),
         const SizedBox(height: AppSizes.space10),
-        const Center(
+        Center(
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 20),
             child: CircularProgressIndicator(
-              color: AppColors.green,
+              color: context.colors.accent,
               strokeWidth: 2,
             ),
           ),
