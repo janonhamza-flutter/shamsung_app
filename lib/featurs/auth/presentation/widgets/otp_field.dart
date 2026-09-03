@@ -15,6 +15,13 @@ class OtpField extends StatelessWidget {
 
       controller: controller,
 
+      // `controller` is owned and disposed by the GetX controller that
+      // created it (see OtpController.onClose). PinCodeTextField defaults
+      // to disposing externally-supplied controllers itself, which would
+      // double-dispose it and crash with "used after being disposed" once
+      // OtpController's own dispose runs during navigation.
+      autoDisposeControllers: false,
+
       length: 5,
 
       keyboardType: TextInputType.phone,

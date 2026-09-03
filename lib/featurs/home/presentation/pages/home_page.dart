@@ -447,7 +447,10 @@ class _QuickActionsGrid extends StatelessWidget {
                   titleKey: 'action_browse_store',
                   subtitleKey: 'action_browse_store_sub',
                   gradient: LinearGradient(
-                    colors: [context.colors.primary, context.colors.primaryDark],
+                    colors: [
+                      context.colors.primary,
+                      context.colors.primaryDark,
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -494,7 +497,7 @@ class _ActionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           // Dark Mode: the original full saturated gradient tile, unchanged.
           // Light Mode: a near-white tinted surface — a solid saturated

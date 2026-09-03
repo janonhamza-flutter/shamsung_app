@@ -148,23 +148,23 @@ class SignupPage extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSizes.space70),
 
-                    // ── Already have account ──────────────────────────────
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'already_have_account'.tr,
-                          style: AppTextStyles.body,
-                        ),
-                        GestureDetector(
-                          onTap: () {},
-                          child: Text(
-                            'login'.tr,
-                            style: AppTextStyles.buttonText,
-                          ),
-                        ),
-                      ],
-                    ),
+                    // // ── Already have account ──────────────────────────────
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     Text(
+                    //       'already_have_account'.tr,
+                    //       style: AppTextStyles.body,
+                    //     ),
+                    //     GestureDetector(
+                    //       onTap: () {},
+                    //       child: Text(
+                    //         'login'.tr,
+                    //         style: AppTextStyles.buttonText,
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                     const SizedBox(height: AppSizes.space30),
                   ],
                 ),

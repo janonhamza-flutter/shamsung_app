@@ -19,7 +19,10 @@ class CreateRequestPage extends StatelessWidget {
         backgroundColor: context.colors.background,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: context.colors.textPrimary),
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: context.colors.textPrimary,
+          ),
           onPressed: () => Get.back(),
         ),
         title: Text(
@@ -61,6 +64,10 @@ class CreateRequestPage extends StatelessWidget {
               _sectionLabel(context, 'select_shop'.tr),
               const SizedBox(height: AppSizes.space15),
               RequestFormShopDropdown(controller: controller),
+              const SizedBox(height: AppSizes.space20),
+              _sectionLabel(context, 'request_location'.tr),
+              const SizedBox(height: AppSizes.space15),
+              RequestFormLocationPicker(controller: controller),
               const SizedBox(height: AppSizes.space40),
               RequestFormSubmitButton(controller: controller),
               const SizedBox(height: AppSizes.space20),

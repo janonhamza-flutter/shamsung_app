@@ -129,10 +129,7 @@ class _LoadingState extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'finding_nearest_shops'.tr,
-            style: TextStyle(
-              color: context.colors.textSecondary,
-              fontSize: 13,
-            ),
+            style: TextStyle(color: context.colors.textSecondary, fontSize: 13),
           ),
         ],
       ),
@@ -297,11 +294,7 @@ class _ResultsHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(
-          Icons.location_on_rounded,
-          color: context.colors.accent,
-          size: 18,
-        ),
+        Icon(Icons.location_on_rounded, color: context.colors.accent, size: 18),
         const SizedBox(width: 6),
         Text(
           '$count ${count == 1 ? 'shops_found_near_you'.tr : 'shops_found_near_you_plural'.tr}',

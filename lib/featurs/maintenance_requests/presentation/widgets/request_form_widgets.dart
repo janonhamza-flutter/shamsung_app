@@ -356,6 +356,109 @@ class _SelectedShopBadge extends StatelessWidget {
   }
 }
 
+/// Map location picker for the request form.
+class RequestFormLocationPicker extends StatelessWidget {
+  final CreateRequestController controller;
+
+  const RequestFormLocationPicker({super.key, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final isSelected = controller.latitude.value != null;
+      final locationName = controller.locationName.value;
+
+      return GestureDetector(
+        onTap: controller.openMapPicker,
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: context.colors.surfaceVariant,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected
+                  ? context.colors.accent.withValues(alpha: 0.4)
+                  : context.colors.border,
+              width: isSelected ? 1.5 : 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: context.colors.shadow,
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? context.colors.accent.withValues(alpha: 0.15)
+                      : context.colors.surface,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  isSelected
+                      ? Icons.location_on_rounded
+                      : Icons.add_location_alt_rounded,
+                  color: isSelected
+                      ? context.colors.accent
+                      : context.colors.textSecondary,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isSelected
+                          ? 'location_selected'.tr
+                          : 'set_request_location'.tr,
+                      style: TextStyle(
+                        color: isSelected
+                            ? context.colors.textPrimary
+                            : context.colors.textSecondary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    if (isSelected && locationName.isNotEmpty) ...[
+                      const SizedBox(height: 3),
+                      Text(
+                        locationName,
+                        style: TextStyle(
+                          color: context.colors.textSecondary,
+                          fontSize: 12,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Icon(
+                isSelected
+                    ? Icons.edit_location_alt_rounded
+                    : Icons.arrow_forward_ios_rounded,
+                color: isSelected
+                    ? context.colors.accent
+                    : context.colors.textDisabled,
+                size: isSelected ? 22 : 16,
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+}
+
 /// Submit button for the request form.
 class RequestFormSubmitButton extends StatelessWidget {
   final CreateRequestController controller;

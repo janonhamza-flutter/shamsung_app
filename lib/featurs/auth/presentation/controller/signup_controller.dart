@@ -30,6 +30,9 @@ class SignupController extends GetxController {
   @override
   void onInit() {
     phone = Get.arguments ?? '';
+    // Pre-fill with the phone number that was just OTP-verified so the
+    // value submitted to /customer/register matches it exactly.
+    phoneController.text = phone;
     super.onInit();
   }
 

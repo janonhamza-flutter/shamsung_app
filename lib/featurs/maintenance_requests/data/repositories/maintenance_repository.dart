@@ -8,6 +8,8 @@ class MaintenanceRepository {
     required int shopId,
     required String deviceModel,
     required String problemDescription,
+    required double latitude,
+    required double longitude,
   }) async {
     return await dioService.postData(
       endpoint: "/maintenance-requests",
@@ -15,6 +17,8 @@ class MaintenanceRepository {
         "shop_id": shopId,
         "device_model": deviceModel,
         "problem_description": problemDescription,
+        "latitude": latitude,
+        "longitude": longitude,
       },
     );
   }

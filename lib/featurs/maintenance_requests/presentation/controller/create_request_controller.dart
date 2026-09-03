@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../core/route/app_routes.dart';
 import '../../../../core/widgets/app_snackbar.dart';
+import '../../../../core/widgets/map_picker_page.dart';
 import '../../../shops/data/models/shop_model.dart';
 import '../../data/repositories/maintenance_repository.dart';
 
@@ -20,6 +21,10 @@ class CreateRequestController extends GetxController {
 
   /// true عند القدوم من nearest shop — يُخفي الـ dropdown
   RxBool shopPreselected = false.obs;
+
+  Rx<double?> latitude = Rx<double?>(null);
+  Rx<double?> longitude = Rx<double?>(null);
+  RxString locationName = ''.obs;
 
   @override
   void onInit() {
@@ -57,6 +62,15 @@ class CreateRequestController extends GetxController {
     }
   }
 
+  Future<void> openMapPicker() async {
+    final result = await Get.to<MapPickerResult>(() => const MapPickerPage());
+    if (result != null) {
+      latitude.value = result.latitude;
+      longitude.value = result.longitude;
+      locationName.value = result.locationName;
+    }
+  }
+
   Future<void> createRequest() async {
     final device = deviceController.text.trim();
     final problem = problemController.text.trim();
@@ -69,6 +83,10 @@ class CreateRequestController extends GetxController {
       AppSnackbar.error("Please select a shop");
       return;
     }
+    if (latitude.value == null || longitude.value == null) {
+      AppSnackbar.error("Please select the request location on the map");
+      return;
+    }
 
     try {
       isLoading.value = true;
@@ -77,6 +95,8 @@ class CreateRequestController extends GetxController {
         shopId: selectedShopId.value,
         deviceModel: device,
         problemDescription: problem,
+        latitude: latitude.value!,
+        longitude: longitude.value!,
       );
 
       debugPrint("STATUS = ${response.statusCode}");
